@@ -30,15 +30,21 @@ const GAYA = `
      Dipakai supaya D-pad dan tombol aksi tidak pernah menimpa hotbar: hotbar
      setinggi 40 px + 12 px jarak bawah, dan tombol butuh ruang di atasnya. */
   --lk-hud-b: 88px; --lk-hud-r: 12px;
-  /* Diisi ukuranHud(): tepi bawah panel gold, dari ATAS layar. */
-  --lk-gold-b: 48px; --lk-gold-kiri: 100px;
+  /* Jarak dari dasar layar untuk kluster kanan dan D-pad, diisi ukuranHud().
+     Kluster kanan hanya turun ke 10 px kalau tidak menimpa hotbar; kalau
+     menimpa, ia tetap 4 px di atas panel hotbar (lewat --lk-hud-b). */
+  --lk-kanan-b: 10px; --lk-kiri-b: 8px;
+  /* Diisi ukuranHud(): TITIK TENGAH panel gold dari atas layar (bukan tepi
+     bawahnya) — tombol digeser setengah tingginya sendiri supaya benar-benar
+     sebaris dengan panel. */
+  --lk-gold-b: 28px; --lk-gold-kiri: 100px;
   font-family: "VT323", monospace; -webkit-user-select: none; user-select: none;
   -webkit-tap-highlight-color: transparent; }
 .lk-touch[hidden] { display: none; }
 .lk-touch .kelompok { position: fixed; display: grid; gap: 6px; pointer-events: none; }
 /* D-pad di kiri bawah — tempat jempol kiri beristirahat, di ATAS hotbar kanvas
    (hotbar itu bisa diketuk, jadi tidak boleh tertutup). */
-.lk-touch .kiri { left: 10px; bottom: 52px;
+.lk-touch .kiri { left: 10px; bottom: var(--lk-kiri-b);
   grid-template-columns: repeat(3, clamp(38px, 11vw, 52px));
   grid-template-rows: repeat(3, clamp(38px, 11vw, 52px)); }
 
@@ -48,6 +54,7 @@ const GAYA = `
    8 px celah, jadi keduanya berjajar rapi tanpa saling menempel.
    Koordinatnya dikirim ukuranHud() lewat --lk-gold-b dan --lk-gold-kiri. */
 .lk-touch .matikan { right: calc(var(--lk-gold-kiri) + 48px); top: var(--lk-gold-b);
+  transform: translateY(-50%);
   grid-auto-flow: column; grid-auto-columns: 36px; grid-auto-rows: 36px; }
 .lk-touch .matikan .tombol { border-radius: 8px; }
 
@@ -57,7 +64,7 @@ const GAYA = `
    Lari di atas E, Esc di kirinya, Nilai di pojok kiri-atas, Ujian di atas
    Lari, dan alat maju/mundur di baris paling bawah. */
 .lk-touch .kanan {
-  right: 10px; bottom: calc(var(--lk-hud-b) + 4px);
+  right: 10px; bottom: var(--lk-kanan-b);
   grid-template-columns: repeat(3, clamp(42px, 12vw, 56px));
   grid-template-rows: repeat(3, clamp(42px, 12vw, 56px));
 }
@@ -75,13 +82,14 @@ const GAYA = `
    tidak boleh sebesar E. Inventori tidak ada di sini: ia sudah pindah ke
    sebelah tombol power di kiri atas. */
 .lk-touch .kanan .tombol.esc { grid-column: 1 / span 2; grid-row: 3; }
-.lk-touch .tombol { pointer-events: auto; touch-action: none; border: 2px solid #7a4a22;
-  background: rgba(245, 230, 200, .86); color: #3a2a2a; border-radius: 10px;
+.lk-touch .tombol { pointer-events: auto; touch-action: none; border: 2px solid rgba(122, 74, 34, .62);
+  background: rgba(245, 230, 200, .58); color: rgba(58, 42, 42, .92); border-radius: 10px;
   font: 20px/1 "VT323", monospace; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 0 rgba(58, 42, 42, .35); }
-.lk-touch .tombol:active, .lk-touch .tombol.aktif { background: rgba(255, 243, 214, .98); transform: translateY(1px); }
+  box-shadow: 0 2px 0 rgba(58, 42, 42, .18); }
+.lk-touch .tombol:active, .lk-touch .tombol.aktif { background: rgba(255, 243, 214, .86); }
 .lk-touch .tombol.besar { font-size: clamp(13px, 3.6vw, 17px); }
-.lk-touch .tombol.e { background: rgba(255, 226, 168, .96); }
+.lk-touch .tombol.e { background: rgba(255, 226, 168, .68); }
+.lk-touch .tombol.e:active, .lk-touch .tombol.e.aktif { background: rgba(255, 236, 190, .9); }
 .lk-touch .tombol.pilih { font-size: clamp(11px, 3vw, 15px); }
 .lk-touch .tombol.kosong { visibility: hidden; }
 .lk-touch .tombol.tersembunyi { display: none; }
@@ -102,7 +110,6 @@ const GAYA = `
     right: calc(var(--lk-gold-kiri) + 42px); }
   .lk-touch .tombol { font-size: 17px; }
   .lk-touch .tombol.besar, .lk-touch .tombol.pilih { font-size: 12px; }
-  .lk-touch .tombol.daya { font-size: 17px; }
 }
 `;
 
@@ -318,7 +325,7 @@ export function pasangSentuh({ onPetunjuk } = {}) {
      * posisinya harus dikirim dari main.js. Kalau tidak, tombol "sebelah kiri
      * panel gold" akan menebak-nebak dan meleset di layar yang berbeda.
      */
-    ukuranHud({ w, h, hudBawah, goldBawah: gb, goldKiri: gk } = {}) {
+    ukuranHud({ w, h, hudBawah, goldBawah: gb, goldKiri: gk, kananBawah, kiriBawah } = {}) {
       if (h && hudBawah) akar.style.setProperty('--lk-hud-b', `${Math.round(hudBawah)}px`);
       else if (h && !hudBawah) akar.style.setProperty('--lk-hud-b', `${Math.round(h * 0.22 + 68)}px`);
       if (w) {
@@ -328,6 +335,8 @@ export function pasangSentuh({ onPetunjuk } = {}) {
         akar.style.setProperty('--lk-gold-kiri', `${Math.round(gk ?? (w - 158) + 8)}px`);
       }
       if (gb !== undefined) akar.style.setProperty('--lk-gold-b', `${Math.round(gb)}px`);
+      if (kananBawah !== undefined) akar.style.setProperty('--lk-kanan-b', `${Math.round(kananBawah)}px`);
+      if (kiriBawah !== undefined) akar.style.setProperty('--lk-kiri-b', `${Math.round(kiriBawah)}px`);
     },
 
     ringkas(on) {
