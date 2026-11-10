@@ -108,11 +108,15 @@ YANG PERLU DIKETAHUI
   untuk semua perangkat (laptop, HP, tablet) dan selalu terlihat; Esc tetap
   bekerja sebagai jalan pintas. Bisa juga dimatikan lewat Pengaturan > "Tombol
   power".
-- Tata letak tombol layar: inventori (I) di kiri atas, di samping tombol power;
-  D-pad di kiri bawah; di kanan bawah, E paling besar di pojok dengan tombol
-  kecil di sekelilingnya (alat ◀ ▶ di baris paling atas, Lari, Nilai, Ujian,
-  Esc). Deretan ini hanya tampil kalau "Tombol sentuh" di Pengaturan hidup;
-  tombol power tetap ada meski deretan itu dimatikan. Progres disimpan
+- Tata letak tombol layar: power dan inventori (I) SEBARIS dengan panel gold
+  (digantung pada garis tengah panel, bukan tepi bawahnya); D-pad di kiri bawah,
+  kluster kanan di kanan bawah — keduanya didorong turun sampai hampir
+  menyentuh dasar layar, tetapi kalau hotbar angka kebetulan sampai ke
+  sudutnya, tombolnya dinaikkan kembali ke atas hotbar supaya slot tidak
+  tertutup. Tombolnya juga dibuat lebih tembus pandang (isi ~58%, E ~68%)
+  supaya dunia di belakangnya masih kelihatan. Deretan ini hanya tampil kalau
+  "Tombol sentuh" di Pengaturan hidup; tombol power tetap ada meski deretan itu
+  dimatikan. Progres disimpan
   OTOMATIS tepat sebelum pertanyaan konfirmasi muncul, jadi membatalkan
   pertanyaannya tidak membatalkan simpanan. Ada juga baris "Simpan sekarang"
   di menu yang sama untuk yang ingin memastikan.

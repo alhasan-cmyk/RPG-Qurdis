@@ -485,18 +485,42 @@ function ukuranTombolSentuh() {
   // Hotbar: S=40, gap=2, 12 px dari bawah; panel pembungkusnya 8 px lebih tinggi.
   const S = 40;
   const hudBawah = (S + 12 + 4) * z;                 // tepi atas panel hotbar
-  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js).
+  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js) — tingginya 40 px, jadi
+  // titik tengahnya di y=28. Tombol power dan inventori digantung pada TITIK
+  // TENGAH itu (bukan tepi bawahnya): kalau memakai tepi bawah, tombol 40 px
+  // turun 8 px terlalu jauh dan terlihat menggantung di bawah garis panel.
   const goldKiri = (158 + 8) * z;                    // tepi kiri panel + jarak
-  // Tombol power + inventori berjajar di KIRI panel gold. Di layar sempit
-  // (ponsel tegak, view 390 px) panel jam selebar 226 px + panel gold 150 px
-  // sudah memenuhi seluruh lebar — tidak ada sisa untuk dua tombol 36 px.
-  // Kalau begitu, tombolnya TURUN ke bawah panel jam: tetap di kiri panel gold,
-  // tetap tidak menempel, hanya tidak sebaris.
+  const goldTengah = 28 * z;
+  // Di layar sempit (ponsel tegak, view 390 px) panel jam selebar 226 px +
+  // panel gold 150 px sudah memenuhi seluruh lebar — tidak ada sisa untuk
+  // tombol power + inventori. Kalau begitu, pasangan itu TURUN ke bawah panel
+  // jam: tetap di kiri panel gold, tetap tidak menempel, hanya tidak sebaris.
   const lebarTombol = 36 * 2 + 6;                    // dua tombol + jarak
   const jamKanan = 234 * z;
   const sisa = (W * z) - goldKiri - jamKanan;
-  const goldBawah = (sisa >= lebarTombol + 12 ? 48 : 104) * z;
-  state.sentuh.ukuranHud({ w: W * z, h: H * z, hudBawah, goldBawah, goldKiri });
+  const sempit = sisa < lebarTombol + 12;
+  // Layar sempit: titik tengah digeser ke 124 supaya bibir ATAS tombol (40 px)
+  // berhenti 6 px di bawah panel jam yang berakhir di y=98.
+  const goldBawah = sempit ? 124 * z : goldTengah;
+  // Panel hotbar: 9 slot 40 px + jarak 2 px, dibungkus 10 px kiri-kanan, jadi
+  // menempati x = W/2 ± 198 di kanvas. Dibulatkan ke 204 supaya ada sisa aman.
+  const hotbarKanan = W / 2 + 204;
+  const hotbarKiri = W / 2 - 204;
+  // Kluster kanan turun mendekati dasar layar, TAPI hanya kalau sisi kirinya
+  // tidak menimpa hotbar: kalau bertabrakan, kluster tetap di atas panel hotbar
+  // seperti sebelumnya supaya slot angka tidak pernah tertutup.
+  const sel = Math.max(42, Math.min(56, Math.round(W * 0.12)));
+  const klusterKiri = W - 10 - (3 * sel + 2 * 6);
+  // Boleh turun ke 10 px kalau tidak menimpa hotbar; kalau menimpa, bertahan di
+  // atas panel hotbar (hudBawah + 4) — slot angka tidak boleh tertutup.
+  const kananBawah = klusterKiri > hotbarKanan ? 10 * z : hudBawah + 4 * z;
+  // D-pad kiri diperiksa dengan cara yang sama: turun ke 8 px kalau tepi
+  // kanannya masih di kiri hotbar. Di ponsel tegak (390 px) hotbar selebar
+  // hampir seluruh layar, jadi di sana D-pad tetap 52 px seperti dulu.
+  const selKiri = Math.max(38, Math.min(52, Math.round(W * 0.11)));
+  const dpadKanan = 10 + (3 * selKiri + 2 * 6);
+  const kiriBawah = dpadKanan + 4 < hotbarKiri ? 8 * z : hudBawah + 4 * z;
+  state.sentuh.ukuranHud({ w: W * z, h: H * z, hudBawah, goldBawah, goldKiri, kananBawah, kiriBawah });
   // Tombol power duduk di tempat yang sama dengan tombol inventori di kluster
   // sentuh — dikirim angka yang sama supaya keduanya berjajar.
   state.tombolKeluar?.aturPosisi?.({ goldBawah, goldKiri });

@@ -428,6 +428,46 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   ok('power: bulat, bukan kotak', /#\$\{ID\}[^}]*border-radius:\s*50%/.test(sumberGayaDaya),
     'aturan #${ID} { border-radius: 50% } tidak ditemukan');
 
+  // Sejajar dengan panel gold: posisi yang dikirim adalah TITIK TENGAH panel
+  // (bukan tepi bawahnya), dan tombol menggeser dirinya setengah tinggi.
+  ok('kiri atas: digantung pada titik tengah panel gold',
+    /translateY\(-50%\)/.test(matikanPosisi), matikanPosisi.trim());
+  ok('power: ikut titik tengah, bukan tepi bawah panel',
+    /translateY\(-50%\)/.test(sumberGayaDaya) && /goldBawah = 28/.test(sumberGayaDaya),
+    'aturPosisi/transform titik tengah tidak ada');
+  const mainSumber2 = readFileSync(`${AKAR}/src/main.js`, 'utf8');
+  ok('main: gold diukur ke titik tengah panel (28), bukan tepi bawah (48)',
+    /goldTengah = 28 \* z/.test(mainSumber2), 'goldTengah tidak ditemukan');
+  ok('main: layar sempit tetap menurunkan pasangan power+inventori',
+    /goldBawah = sempit \? 124 \* z/.test(mainSumber2), 'cabang layar sempit hilang');
+
+  // Turun ke dasar layar: D-pad dan kluster kanan punya jarak bawah sendiri,
+  // dan main.js menghitungnya dari apakah hotbar ikut tertimpa.
+  ok('D-pad: jarak bawah dari --lk-kiri-b', /bottom:\s*var\(--lk-kiri-b\)/.test(aturan('.lk-touch .kiri')),
+    aturan('.lk-touch .kiri').trim());
+  ok('kanan: jarak bawah dari --lk-kanan-b', /bottom:\s*var\(--lk-kanan-b\)/.test(aturan('.lk-touch .kanan')),
+    aturan('.lk-touch .kanan').trim());
+  ok('main: kluster turun ke 10 px hanya kalau tidak menimpa hotbar',
+    /klusterKiri > hotbarKanan \? 10 \* z : hudBawah \+ 4 \* z/.test(mainSumber2), 'rumus kananBawah tidak ada');
+  ok('main: D-pad turun ke 8 px hanya kalau tidak menimpa hotbar',
+    /dpadKanan \+ 4 < hotbarKiri \? 8 \* z : hudBawah \+ 4 \* z/.test(mainSumber2), 'rumus kiriBawah tidak ada');
+
+  // Transparansi: isi tombol paling banyak 62% (dulu 86%) supaya dunia di
+  // belakangnya masih terlihat. E boleh sedikit lebih pekat karena tombol utama.
+  // Ambil alpha dari `background:` saja — `border:` juga rgba(), dan kalau
+  // dibaca sembarangan uji ini mengukur border, bukan isi tombol.
+  const alfa = (sel) => {
+    const m = /background:\s*rgba\([^)]*?,\s*([\d.]+)\s*\)/.exec(aturan(sel));
+    return m ? Number(m[1]) : NaN;
+  };
+  const alfaTombol = alfa('.lk-touch .tombol');
+  ok('tombol: isi lebih tembus pandang (<= 0,62)', alfaTombol <= 0.62, `alpha ${alfaTombol}`);
+  const alfaE = alfa('.lk-touch .tombol.e');
+  ok('tombol E: lebih tembus pandang tapi tetap paling tegas',
+    alfaE > alfaTombol && alfaE <= 0.72, `alpha E ${alfaE} vs ${alfaTombol}`);
+  ok('tombol: border ikut dilembutkan', /border:\s*2px solid rgba\(122,\s*74,\s*34,\s*\.\d+\)/.test(aturan('.lk-touch .tombol')),
+    aturan('.lk-touch .tombol').trim().slice(0, 90));
+
   // Inventori hanya di SATU tempat (kiri atas). Dulu ia muncul dua kali — di
   // kluster kanan dan di kluster kiri atas — dan di layar 390 px itu memakan
   // satu sel yang bisa dipakai tombol lain. Dihitung dari ELEMEN yang benar-

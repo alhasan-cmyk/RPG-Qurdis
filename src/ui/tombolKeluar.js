@@ -29,7 +29,7 @@ const GAYA = `
   -webkit-tap-highlight-color: transparent;
   box-shadow: 0 2px 0 rgba(58, 42, 42, .35);
 }
-#${ID}:active { background: rgba(255, 232, 224, 1); transform: translateY(1px); }
+#${ID}:active { background: rgba(255, 232, 224, 1); transform: translateY(-50%) translateY(1px); }
 #${ID}[hidden] { display: none; }
 /* Pertanyaan "Keluar?" sedang tampil: tombol power disembunyikan supaya tidak
    ada dua jalan keluar yang bisa ditekan bersamaan. Layar itu sendiri yang
@@ -101,7 +101,12 @@ export function pasangTombolKeluar() {
      * Tempelkan tombol di sebelah KIRI panel gold, sebaris tepi bawahnya.
      * Angka dalam piksel layar (bukan piksel kanvas).
      */
-    aturPosisi({ goldBawah = 48, goldKiri = 166 } = {}) {
+    /**
+     * `goldBawah` = TITIK TENGAH vertikal panel gold diukur dari atas layar.
+     * Nama lama dipertahankan supaya pemanggil tidak perlu diubah, tetapi
+     * artinya sudah bergeser: dulu tepi bawah, sekarang garis tengah.
+     */
+    aturPosisi({ goldBawah = 28, goldKiri = 166 } = {}) {
       b.style.top = `${Math.round(goldBawah)}px`;
       b.style.right = `${Math.round(goldKiri)}px`;
     },
