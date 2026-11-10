@@ -35,7 +35,8 @@ import { pasangTombolKeluar } from './ui/tombolKeluar.js';
 import { pasangLandscape } from './ui/landscape.js';
 import { pasangTombolLayarPenuh, pasangAjakanPasang, pernahPenuh } from './ui/fullscreen.js';
 import { UpgradeUI } from './ui/upgrade-ui.js';
-import { Upgrade, BENIH_HARIAN } from './systems/upgrade.js';
+import { Upgrade } from './systems/upgrade.js';
+import { Kendaraan } from './systems/kendaraan.js';
 import { kirimNilai, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
 import { NilaiUI } from './ui/nilai-ui.js';
 import { ChatUI } from './ui/chat-ui.js';
@@ -75,6 +76,7 @@ const state = {
   pilihanUI: null,
   upgradeUI: null,
   upgrade: null,
+  kendaraan: null,
   farming: null,
   shipping: [],
   npcData: [],
@@ -149,7 +151,10 @@ async function boot() {
   ukuranTombolSentuh();
 
   state.pilihanUI = new PilihanUI(state.audio);
-  state.upgrade = new Upgrade();
+  // Papan "Ragam Usaha Desa" menjual kendaraan; kepemilikannya disimpan di
+  // Kendaraan (systems/kendaraan.js), dan papan hanya membaca/menulisnya.
+  state.kendaraan = new Kendaraan();
+  state.upgrade = new Upgrade(state.kendaraan);
   state.upgradeUI = new UpgradeUI(state.upgrade, state.audio);
   state.upgradeUI.onBeli = () => { terapkanUpgrade(); saveGame(); };
   // Layar nilai dipakai dari dua arah: dari dalam game (Rekap Belajar → V)
@@ -229,6 +234,8 @@ async function boot() {
     state.ilmu.load(save.ilmu);
     // Simpanan lama belum punya `upgrade`; bawaannya tingkat 0, jadi pemain lama
     // tidak kehilangan apa pun dan hanya perlu membelinya seperti pemain baru.
+    // Kendaraan dimuat SEBELUM papan: papan membaca kepemilikan dari sana.
+    state.kendaraan.load(save.kendaraan ?? save.upgrade?.kendaraan);
     state.upgrade.load(save.upgrade);
   }
 
@@ -250,9 +257,9 @@ async function boot() {
     state.weather.roll(state.time.season);
   }
 
-  // Efek peningkatan diterapkan sesudah pemain, tas, dan kandang ada — kalau
-  // dipanggil lebih awal, `state.player` belum lahir dan energi maksimum tidak
-  // ikut naik.
+  // Efek kendaraan (slot tas truk) diterapkan SESUDAH tas dimuat. Kalau
+  // dipanggil sebelum `state.inv.load(...)`, tas masih 24 slot dan barang
+  // simpanan yang ke-25 ke atas akan hilang tanpa pesan apa pun.
   terapkanUpgrade();
 
   // Public chat. The name and avatar are the ones chosen on the homepage, so
@@ -452,16 +459,16 @@ function doSleep(passedOut) {
   // Koperasi pasar (peningkatan "Pasar") menaikkan harga jual. Dihitung di sini,
   // satu tempat, supaya angka di kotak jual dan uang yang benar-benar masuk
   // tidak pernah berbeda.
-  const pengali = state.upgrade?.pengaliJual() ?? 1;
+  // Pengali harga jual dari papan "pasar" sudah tidak ada: papan itu sekarang
+  // menjual kendaraan. Barang dijual dengan harga dasarnya.
+  const pengali = 1;
   let earned = 0;
   for (const s of state.shipping) earned += Math.round((itemDef(s.id)?.sell ?? 0) * pengali) * s.count;
   state.shipping = [];
   state.player.money += earned;
 
-  // Kebun bibit (peningkatan) membagikan benih tiap pagi. Ditaruh sebelum hari
-  // berganti supaya benihnya masuk ke tas hari yang baru, bukan hari yang lewat.
-  const benih = state.upgrade?.benihPagi() ?? 0;
-  if (benih) state.inv.add(BENIH_HARIAN, benih);
+  // Kebun bibit (papan lama) sudah tidak ada, jadi tidak ada benih gratis tiap
+  // pagi. Benih dibeli di toko seperti biasa.
   state.time.nextDay();
   const rained = state.weather.isRaining;
   state.weather.advance(state.time.season);
@@ -564,6 +571,7 @@ function saveGame() {
     requests: state.requests.toJSON(),
     ilmu: state.ilmu.toJSON(),
     upgrade: state.upgrade.toJSON(),
+    kendaraan: state.kendaraan.toJSON(),
     animals: state.areaId === 'valley' && state.animals.length
       ? state.animals.map((a) => ({ fed: a.fed, hasProduce: a.hasProduce, friendship: a.friendship }))
       : state.animalState ?? [],
@@ -689,11 +697,12 @@ function interactTarget() {
     }
   }
 
-  // Papan Ragam Usaha: diletakkan di rumah pemain, jadi peningkatan bisa dibeli
-  // tanpa berjalan jauh. Diperiksa sebelum rak supaya tidak tertutup objek lain
-  // yang berdiri di depannya.
+  // Papan Bengkel Kendaraan: diletakkan di rumah pemain, jadi kendaraan bisa
+  // dibeli tanpa berjalan jauh. `kind` tetap 'usaha' supaya peta, simpanan, dan
+  // alat uji lama tidak perlu diubah — yang berubah hanya nama yang dibaca
+  // pemain.
   if (findObj(f.c, f.r, (o) => o.kind === 'usaha')) {
-    return { kind: 'upgrade', label: 'Ragam Usaha Desa' };
+    return { kind: 'upgrade', label: 'Bengkel Kendaraan' };
   }
 
   // Rak buku di dalam Perpustakaan Desa. Diperiksa sebelum warga dan sebelum
@@ -1026,11 +1035,15 @@ function bukaDialogSaja(npc) {
 /** Buka layar peningkatan dengan seluruh data yang dibutuhkannya. */
 function bukaUpgrade() {
   state.upgradeUI.buka({
+    // Papan sekarang membeli dengan diamond; `ilmu` dan `inv` tidak dipakai
+    // lagi untuk memutuskan apa pun, tetapi tetap dikirim supaya layar rekap
+    // dan alat uji lama tidak langsung rusak.
     ilmu: state.ilmu,
     inv: state.inv,
     tingkatKelas: state.ilmu.tingkat ?? 'X',
-    uang: () => state.player.money,
-    bayar: (n) => { state.player.money = Math.max(0, state.player.money - n); },
+    // Objeknya, bukan fungsinya: papan perlu MEMOTONG saldo saat membeli.
+    diamond: state.diamond,
+    kendaraan: state.kendaraan,
   });
 }
 
@@ -1144,7 +1157,8 @@ function eatHeld(quiet = false) {
   if (!d?.eat) { if (!quiet) showToast('Tidak bisa dimakan.'); return false; }
   const p = state.player;
   // Dapur (peningkatan) membuat setiap makanan memulihkan 25% lebih banyak.
-  const pulih = Math.round((d.eat ?? 0) * (state.upgrade?.pengaliMakan() ?? 1));
+  // Pengali makan dari dapur (papan lama) sudah tidak ada.
+  const pulih = Math.round((d.eat ?? 0));
   if (p.energy >= p.maxEnergy) {
     showToast(`Tenagamu masih penuh — simpan ${d.name} itu.`);
     state.audio.denied();
@@ -1282,23 +1296,15 @@ function updateFishing(dt) {
 function terapkanUpgrade() {
   const up = state.upgrade;
   if (!up) return;
-  // 1. energi maksimum: naik dengan rumah, dan energi yang sedang dipakai ikut
-  //    naik sebesar selisihnya supaya pemain tidak "kehilangan" tenaga saat
-  //    peningkatan dibeli di tengah hari.
-  const maks = 100 + up.energiTambahan();
-  const p = state.player;
-  if (p) {
-    const selisih = maks - (p.maxEnergy ?? 100);
-    p.maxEnergy = maks;
-    if (selisih > 0) p.energy = Math.min(maks, (p.energy ?? 0) + selisih);
-  }
-  // 2. ruang tas dan peti
-  state.inv?.setSlot(up.slotTas());
-  if (state.chestUI) state.chestUI.slotPeti = up.slotPeti();
-  // 3. kandang: tambahan ternak muncul sebagai sapi/ayam baru di kandang yang
-  //    sama. Dibuat sekali per tingkat; kalau simpanan dimuat, jumlahnya
-  //    disesuaikan, bukan ditumpuk.
-  sesuaikanTernak(up.ternakTambahan());
+  // Ruang tas dan peti.
+  //
+  // Slot tas = dasar 24 + tambahan kendaraan (truk +12).
+  // Dihitung dari SATU tempat ini, lalu dipanggil lagi setiap kali kendaraan
+  // berganti atau simpanan dimuat — supaya tas tidak "menyusut" saat pemain
+  // turun dari truk, dan tidak "berlipat" saat simpanan dibuka berulang.
+  state.inv?.setSlot(24 + (state.kendaraan?.slotTas?.() ?? 0));
+  // Peti tetap 24 slot: peningkatan peti sudah tidak dijual lagi.
+  if (state.chestUI) state.chestUI.slotPeti = 24;
 }
 
 /**
@@ -1562,7 +1568,10 @@ function update(dt) {
     // Hold Shift to run. No energy cost: the valley is 48 tiles across and the
     // walk between the farm and the shore is the one thing players repeat all
     // day — charging for it would just make them stop doing it.
-    player.speed = input.held('run') ? RUN_SPEED : WALK_SPEED;
+    // Kendaraan mengali kecepatan, bukan menggantinya: lari tetap mungkin, dan
+    // pemain yang belum punya kendaraan mendapat pengali 1 (tidak berubah).
+    player.speed = (input.held('run') ? RUN_SPEED : WALK_SPEED)
+      * (state.kendaraan?.pengaliCepat() ?? 1);
     player.move(map, a.x, a.y, dt);
     time.update(dt);
 

@@ -28,6 +28,17 @@ globalThis.document ??= { createElement: () => ({ getContext: () => null }), add
 const { view } = await import(join(AKAR, 'src/render/renderer.js'));
 const { UpgradeUI } = await import(join(AKAR, 'src/ui/upgrade-ui.js'));
 const { Upgrade, UPGRADE } = await import(join(AKAR, 'src/systems/upgrade.js'));
+const { Kendaraan } = await import(join(AKAR, 'src/systems/kendaraan.js'));
+const { Diamond } = await import(join(AKAR, 'src/systems/diamond.js'));
+// `icon()` membaca manifest sprite; di Node tidak ada yang dimuat, jadi manifest
+// tiruan dipasang. Ikon mana pun dianggap ada — yang diuji tata letaknya, bukan
+// gambarnya.
+const { assets } = await import(join(AKAR, 'src/render/assets.js'));
+assets.manifest = assets.manifest ?? { sprites: {} };
+assets.manifest.sprites = new Proxy(assets.manifest.sprites ?? {}, {
+  get: (t, k) => (k in t ? t[k] : { frame: [24, 24], cols: 1 }),
+});
+assets.images.set('ui_diamond', { width: 24, height: 24 });
 const { Ilmu } = await import(join(AKAR, 'src/systems/ilmu.js'));
 const { Inventory, setItemData } = await import(join(AKAR, 'src/systems/inventory.js'));
 
@@ -86,9 +97,12 @@ for (const kelas of ['X', 'XI', 'XII']) {
     const inv = new Inventory();
     inv.add('stone', 25); inv.add('wood', 10);
 
-    const up = new Upgrade();
+    // Papan sekarang memakai diamond, bukan uang/bahan/bab. Saldo dibuat 0 di
+    // sini supaya baris "Kurang N diamond" (kalimat terpanjang) ikut diuji.
+    const kendaraan = new Kendaraan();
+    const up = new Upgrade(kendaraan);
     const ui = new UpgradeUI(up, null);
-    ui.buka({ ilmu, inv, tingkatKelas: kelas, uang: () => 500, bayar: () => {} });
+    ui.buka({ ilmu, inv, tingkatKelas: kelas, diamond: () => 0, kendaraan });
 
     // Setiap baris daftar digambar, jadi nama guru di ketujuh baris ikut diperiksa.
     for (let i = 0; i < UPGRADE.length; i++) {
@@ -114,22 +128,55 @@ for (const kelas of ['X', 'XI', 'XII']) {
         if (t.y - 14 < atas || t.y + 6 > bawah) salah(`${label}: keluar panel atas/bawah → "${t.s}"`);
       }
 
-      // Nama guru harus terbaca utuh di kolom kanan — bukan dipotong "...".
+      // Harga kendaraan harus terbaca utuh di kolom kanan — bukan dipotong
+      // "...". Yang diuji "50" atau "✓ punya": angka harga itulah satu-satunya
+      // syarat pembelian, jadi ia tidak boleh hilang.
       const st = ui.status(i);
-      if (st.kitab && !st.lulus && st.guru) {
-        const barisGuru = tulisan.find((t) => t.s === st.guru.nama);
-        if (!barisGuru) {
-          const dipotong = tulisan.find((t) => t.s.startsWith(st.guru.nama.slice(0, 6)) && t.s.includes('…'));
-          salah(`${label}: nama guru tidak utuh`
-            + (dipotong ? ` → "${dipotong.s}"` : ' (tidak tergambar sama sekali)'));
+      if (!st.punya) {
+        const label = `${kelas} · ${nama} (${w}x${h}) · ${UPGRADE[i].judul}`;
+        const barisHarga = tulisan.find((t) => t.s.startsWith(`${st.harga}`));
+        if (!barisHarga) salah(`${label}: harga ${st.harga} tidak tergambar`);
+        if (barisHarga && barisHarga.s.includes('…')) salah(`${label}: harga terpotong → "${barisHarga.s}"`);
+      }
+
+      // Kalimat alasan tidak boleh berakhir "…": di situlah angka kekurangan
+      // diamond ditulis, satu-satunya hal yang memberi tahu murid berapa ujian
+      // lagi yang harus ia lulus.
+      for (const t of tulisan) {
+        if (t.s.includes('…') && /Kurang|diamond|Sudah/.test(t.s)) {
+          salah(`${label}: alasan terpotong → "${t.s}"`);
         }
       }
 
-      // Kalimat alasan tidak boleh berakhir "…": akhir kalimat itulah yang
-      // menyebut nama guru atau nama alat.
+      // Guna kendaraan harus tertulis, bukan "—": pemain harus tahu apa yang
+      // dibelinya sebelum mengumpulkan 50 diamond.
+      const barisGuna = tulisan.find((t) => t.s.startsWith('Guna:'));
+      if (!barisGuna) salah(`${label}: baris Guna tidak ada`);
+      else if (/Guna: —$/.test(barisGuna.s)) salah(`${label}: guna kosong`);
+
+      // TIDAK BOLEH ADA DUA TULISAN YANG BERTUMPUK.
+      //
+      // Uji lama hanya memeriksa tulisan keluar panel. Itu tidak menangkap
+      // kalimat alasan yang memanjang sampai menimpa tombol "E beli · Esc
+      // tutup" di kanan — persis yang terlihat saat pratinjau digambar dengan
+      // huruf yang lebih lebar daripada VT323. Diukur per baris teks.
+      const perBaris = new Map();
       for (const t of tulisan) {
-        if (t.s.includes('…') && /Lulus|Ujian|Kurang|Uangnya|tertinggi/.test(t.s)) {
-          salah(`${label}: alasan terpotong → "${t.s}"`);
+        if (!t.s.trim()) continue;
+        const kunci = Math.round(t.y / 6);      // toleransi 6 px = satu baris
+        if (!perBaris.has(kunci)) perBaris.set(kunci, []);
+        perBaris.get(kunci).push(t);
+      }
+      for (const [, isi] of perBaris) {
+        // Urutkan berdasarkan tepi kiri, lalu pastikan tidak ada yang beririsan
+        // lebih dari 2 px (batas aman untuk spasi antar kolom).
+        const urut = isi.slice().sort((a, b) => a.x - b.x);
+        for (let j = 1; j < urut.length; j++) {
+          const kiri = urut[j - 1];
+          const kanan = urut[j];
+          if (kiri.x + kiri.w - 2 > kanan.x) {
+            salah(`${label}: tulisan bertumpuk → "${kiri.s}" × "${kanan.s}"`);
+          }
         }
       }
     }
@@ -141,4 +188,4 @@ if (masalah) {
   process.exit(1);
 }
 console.log('Tata letak layar Ragam Usaha aman di lima ukuran layar × tiga kelas:');
-console.log('  tidak ada tulisan keluar panel, nama guru utuh, kalimat alasan tidak terpotong.');
+console.log('  tidak ada tulisan keluar panel, harga utuh, guna tertulis, kalimat alasan tidak terpotong.');

@@ -126,12 +126,23 @@ YANG PERLU DIKETAHUI
   OTOMATIS tepat sebelum pertanyaan konfirmasi muncul, jadi membatalkan
   pertanyaannya tidak membatalkan simpanan. Ada juga baris "Simpan sekarang"
   di menu yang sama untuk yang ingin memastikan.
+- BENGKEL KENDARAAN (papan di samping pintu rumah): tiga kendaraan dibeli
+  dengan diamond — Sepeda 10, Sepeda motor 25, Truk pengangkut barang 50.
+  Tidak ada syarat bab dan tidak ada bahan; diamond satu-satunya mata uangnya.
+  Gunanya berbeda, bukan cuma "lebih cepat":
+    · Sepeda        2x lebih cepat dari jalan kaki
+    · Sepeda motor  3,5x lebih cepat (paling gesit)
+    · Truk          tas +12 slot (hasil panen tidak perlu bolak-balik) dan
+                    1,8x lebih cepat
+  Yang dibeli langsung dipakai. Tekan E pada kendaraan yang sedang dipakai
+  untuk turun dan kembali jalan kaki — hanya SATU yang bisa dipakai sekaligus,
+  jadi sepeda tetap berguna setelah punya truk.
 - DIAMOND: setiap ujian bab yang LULUS memberi +1 diamond, dan mengulang bab
   yang sama juga +1 lagi (tanpa batas). Tidak lulus = 0. Hadiahnya per ujian,
   bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya
   tampil di baris atas panel kanan (di atas gold) dan langsung disimpan begitu
   didapat, jadi tidak hilang walau halaman ditutup sebelum sempat tidur.
-  Untuk sekarang diamond hanya DIHITUNG; belum ada tempat membelanjakannya.
+  Diamond dibelanjakan di Bengkel Kendaraan (lihat di atas).
 - Simpanan permainan hanya tersimpan di peramban masing-masing (localStorage).
   Membuka game dari komputer lain akan mulai dari awal, tetapi akun dan nilai
   tetap dianggap sah karena PIN diperiksa Apps Script.

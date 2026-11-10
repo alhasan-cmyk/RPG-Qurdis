@@ -56,111 +56,182 @@ for (const k of ['X', 'XI', 'XII']) {
   for (const id of babAlat) ok(`${k}: bab alat ${id} milik kelas itu`, ilmu.kitab.find((b) => b.id === id)?.kelas === k);
 }
 
-// -------------------------------------------------------- papan Ragam Usaha
-sama('7 peningkatan', UPGRADE.length, 7);
-for (const u of UPGRADE) {
-  for (const k of ['X', 'XI', 'XII']) {
-    const id = u.bab[k];
-    ok(`${u.judul} (${k}) punya bab`, !!id);
-    ok(`${u.judul} (${k}) bab kelas ${k}`, ilmu.kitab.find((b) => b.id === id)?.kelas === k, id);
+// --------------------------------------------------- papan usaha: kendaraan
+//
+// Papan itu sekarang menjual KENDARAAN dengan diamond — bukan rumah/dapur
+// dengan uang dan bahan. Yang diuji: jumlahnya, harganya masuk akal, tidak ada
+// syarat bab yang tertinggal, dan datanya SATU sumber dengan systems/kendaraan.js.
+{
+  const { KENDARAAN } = await import(join(ROOT, 'src/systems/kendaraan.js'));
+
+  sama('papan: 3 kendaraan', UPGRADE.length, 3);
+  sama('papan: id sama dengan daftar kendaraan', UPGRADE.map((u) => u.id), KENDARAAN.map((k) => k.id));
+  sama('papan: harga sama dengan daftar kendaraan', UPGRADE.map((u) => u.harga), KENDARAAN.map((k) => k.harga));
+
+  // Harga yang dipilih pemain: 10 / 25 / 50 diamond. Truk harus paling mahal,
+  // kalau tidak tarikan "mengerjakan soal" hilang.
+  sama('papan: harga 10 / 25 / 50 diamond', KENDARAAN.map((k) => k.harga), [10, 25, 50]);
+  ok('papan: truk paling mahal', KENDARAAN.at(-1).harga === Math.max(...KENDARAAN.map((k) => k.harga)));
+
+  for (const k of KENDARAAN) {
+    ok(`${k.id}: ada nama & judul`, !!k.nama && !!k.judul);
+    ok(`${k.id}: ada kalimat guna`, typeof k.guna === 'string' && k.guna.length > 10, k.guna);
+    ok(`${k.id}: lebih cepat dari jalan kaki`, k.cepat > 1, String(k.cepat));
+    ok(`${k.id}: slot tas tidak negatif`, (k.slotTas ?? 0) >= 0);
+    // Tidak boleh ada sisa syarat bab / bahan / uang dari versi lama.
+    ok(`${k.id}: tidak lagi punya syarat bab`, k.bab === undefined);
+    ok(`${k.id}: tidak lagi butuh bahan`, k.bahan === undefined);
+    ok(`${k.id}: tidak lagi butuh uang`, k.biaya === undefined);
   }
-  ok(`${u.judul}: batas tingkat >= 1`, (u.perTingkat ?? 1) >= 1);
-  ok(`${u.judul}: efek fungsi`, typeof u.efek === 'function');
-  ok(`${u.judul}: ada bahan`, Object.keys(u.bahan ?? {}).length > 0);
-  ok(`${u.judul}: bahan dikenal`, Object.keys(u.bahan).every((b) => NAMA_BAHAN[b]), Object.keys(u.bahan).join(','));
-  ok(`${u.judul}: tanpa label alat palsu`, !u.alat || u.alat === 'beliung', String(u.alat));
-  for (const k of ['X', 'XI', 'XII']) {
-    const id = u.bab[k];
-    if (!id) continue;
-    // Papan boleh berbagi bab dengan pembuka alat, tapi hanya kalau memang tidak
-    // ada bab bebas lagi. Diukur di tools/periksa-data.mjs; di sini cukup pastikan
-    // tidak ada bab dipakai dua papan di kelas yang sama.
-    const lain = UPGRADE.filter((v) => v.id !== u.id && v.bab[k] === id);
-    ok(`${u.judul} (${k}): bab tidak dipakai papan lain`, lain.length === 0, lain.map((v) => v.judul).join(','));
-  }
+
+  // Tiap kendaraan harus terasa berbeda — bukan tiga salinan dengan harga beda.
+  const ragam = new Set(KENDARAAN.map((k) => `${k.cepat}|${k.slotTas ?? 0}`));
+  sama('papan: tiap kendaraan punya efek berbeda', ragam.size, 3);
+  ok('papan: hanya truk yang menambah slot tas', KENDARAAN.filter((k) => (k.slotTas ?? 0) > 0).length === 1);
+  ok('papan: motor yang paling cepat', KENDARAAN.find((k) => k.cepat === Math.max(...KENDARAAN.map((x) => x.cepat))).id === 'motor');
 }
 
-// ------------------------------------------------- status() + alasanTidakBoleh
-const kelasDari = (id) => ilmu.kitab.find((b) => b.id === id)?.kelas ?? 'X';
-const tasDengan = (isi) => {
-  const inv = new Inventory();
-  for (const [id, n] of Object.entries(isi)) inv.add(id, n);
-  return inv;
-};
-const palsu = (lulus = [], tingkat = 0, uang = 0, isi = {}) => ({
-  ilmu: {
-    lulus: new Set(lulus),
-    kitab: (id) => ilmu.kitab.find((b) => b.id === id) ?? null,
-    nomorBab: (id) => ids.filter((x) => kelasDari(x) === kelasDari(id)).indexOf(id) + 1,
-    alatUntukBab: (id) => {
-      const k = kelasDari(id);
-      const a = Object.keys(ilmu.keahlian.syarat[k]).find((x) => ilmu.keahlian.syarat[k][x] === id);
-      return a ? ({ hoe: 'cangkul', water: 'penyiram', axe: 'kapak', pickaxe: 'beliung', scythe: 'sabit', fish: 'pancing' })[a] : null;
-    },
-    guruBab: (id) => {
-      for (const [npc, daftar] of Object.entries(ilmu.keahlian.ajar[kelasDari(id)] ?? {})) {
-        if (daftar.includes(id)) return { npcId: npc, nama: ilmu.npcNama[npc], urutan: daftar.indexOf(id) + 1 };
-      }
-      return null;
-    },
-  },
-  inv: tasDengan(isi),
-  tingkatKelas: (k) => k,
-  uang: () => uang,
-});
-const up = new (await import(join(ROOT, 'src/systems/upgrade.js'))).Upgrade();
+// ---------------------------------------------- status() + alasanTidakBoleh
+//
+// Status papan sekarang hanya bergantung pada dua hal: berapa diamond yang
+// dipunyai, dan kendaraan mana yang sudah dimiliki. Uji ini mengunci keduanya,
+// plus janji bahwa pesannya tidak pernah menyebut bab/guru/bahan lagi.
+{
+  const { Kendaraan } = await import(join(ROOT, 'src/systems/kendaraan.js'));
+  const { Diamond } = await import(join(ROOT, 'src/systems/diamond.js'));
+  const { Upgrade } = await import(join(ROOT, 'src/systems/upgrade.js'));
 
-// Alat-alat yang dipakai uji ini bergantung pada pemetaan bab syarat; ambil dari data.
-const babBibitX = UPGRADE.find((u) => u.id === 'bibit').bab.X;
-const st1 = up.status('rumah', palsu([], 0, 0));
-ok('status: ada judul bab syarat', typeof st1.judulBabInti === 'string' && st1.judulBabInti.length > 0);
-ok('status: ada guru', !!st1.guru?.nama, JSON.stringify(st1.guru));
-ok('status: perlu = bahan tingkat 1', JSON.stringify(st1.perlu) === JSON.stringify(UPGRADE.find((u) => u.id === 'rumah').bahan));
-const st2 = up.status('rumah', palsu([], 0, 0));
-ok('alasan menyebut bab dan guru', /Bab [IVX]+.*— ujian ke /.test(up.alasanTidakBoleh(st2)), up.alasanTidakBoleh(st2));
-const st3 = up.status('rumah', palsu(ids.slice(0, 12), 0, 0));
-ok('alasan menyebut bahan yang kurang', /Kurang .*batu/.test(up.alasanTidakBoleh(st3)), up.alasanTidakBoleh(st3));
-ok('nama bahan tidak muncul sebagai id mentah', !/stone|wood/.test(up.alasanTidakBoleh(st3)), up.alasanTidakBoleh(st3));
-// Bahan harus benar-benar ada di tas dulu, kalau tidak urutannya berhenti di bahan.
-// Jumlahnya persis kebutuhan — menaruh 9999 tidak muat di 24 slot (tumpukan 99),
-// jadi tasnya akan diam-diam menolak dan uji ini gagal karena sebab yang salah.
-const bahanRumah = UPGRADE.find((u) => u.id === 'rumah').bahan;
-const st4 = up.status('rumah', palsu(ids, 0, 0, bahanRumah));
-ok('alasan menyebut uang kalau bahan cukup', /Uangnya kurang G[\d.]+/.test(up.alasanTidakBoleh(st4)), up.alasanTidakBoleh(st4));
-up.level.rumah = up.maks('rumah');
-const st5 = up.status('rumah', palsu(ids, 0, 99999));
-// Papan menampilkan "Sudah pada tingkat tertinggi." — itu jawaban yang benar,
-// bukan alasan kosong. Yang penting: tidak lagi menyebut bab atau bahan.
-ok('penuh: alasan menyebut tingkat tertinggi', /tertinggi/.test(up.alasanTidakBoleh(st5)), up.alasanTidakBoleh(st5));
-ok('penuh: tidak menyebut bab/bahan', !/Bab|Kurang/.test(up.alasanTidakBoleh(st5)), up.alasanTidakBoleh(st5));
+  const kend = new Kendaraan();
+  const up = new Upgrade(kend);
+  const ctxDari = (jumlah) => ({ diamond: () => jumlah, kendaraan: kend });
 
-// --------------------------------------------------- kalimat syarat yang lengkap
-// Yang diuji bukan sekadar "ada alasan", tetapi isi kalimat yang benar-benar
-// dibaca murid: harus menyebut nomor bab, judul bab, nama guru, dan — kalau bab
-// itu juga bab pembuka alat — nama alatnya dalam bahasa Indonesia.
-const { Ilmu } = await import(join(ROOT, 'src/systems/ilmu.js'));
-const ilmuAsli = new Ilmu(ilmu);
-ilmuAsli.tingkat = 'XII';
-ilmuAsli.lulus = new Set();
-const up2 = new (await import(join(ROOT, 'src/systems/upgrade.js'))).Upgrade();
-const stRumah = up2.status('rumah', {
-  ilmu: ilmuAsli, inv: tasDengan({}), uang: () => 0, tingkatKelas: 'XII',
-});
-const kalimat = up2.alasanTidakBoleh(stRumah);
-ok('XII rumah: menyebut nomor bab', /Bab [IVX]+/.test(kalimat), kalimat);
-ok('XII rumah: menyebut judul bab', kalimat.includes(stRumah.judulBabInti), kalimat);
-ok('XII rumah: menyebut nama guru', /ujian ke \S/.test(kalimat), kalimat);
-ok('XII rumah: menyebut alat dengan nama Indonesia', /kapak/.test(kalimat), kalimat);
-ok('XII rumah: tidak membocorkan id alat', !/\baxe\b|\bhoe\b|pickaxe|scythe/.test(kalimat), kalimat);
-
-for (const k of ['X', 'XI', 'XII']) {
-  ilmuAsli.tingkat = k;
-  for (const u of UPGRADE) {
-    const st = up2.status(u.id, { ilmu: ilmuAsli, inv: tasDengan({}), uang: () => 0, tingkatKelas: k });
-    const t = up2.alasanTidakBoleh(st);
-    ok(`${k} ${u.id}: guru ditemukan`, !!st.guru, `${u.id}/${k}`);
-    ok(`${k} ${u.id}: kalimat <= 160 huruf`, t.length <= 160, `${t.length}: ${t}`);
+  const st0 = up.status('truk', ctxDari(0));
+  ok('status: harga terbaca dari data', st0.harga === 50, String(st0.harga));
+  ok('status: kurang 50 diamond saat saldo 0', st0.kurang === 50, String(st0.kurang));
+  ok('status: belum boleh dibeli', st0.boleh === false);
+  ok('status: belum punya', st0.punya === false);
+  ok('alasan: menyebut jumlah diamond yang kurang', /Kurang 50 diamond/.test(up.alasanTidakBoleh(st0)), up.alasanTidakBoleh(st0));
+  ok('alasan: menjelaskan dari mana diamond didapat', /satu bab lulus = 1 diamond/.test(up.alasanTidakBoleh(st0)), up.alasanTidakBoleh(st0));
+  ok('alasan: kalimat panjangnya cukup pendek untuk satu baris',
+    up.alasanTidakBoleh(st0).length <= 60, `${up.alasanTidakBoleh(st0).length}: ${up.alasanTidakBoleh(st0)}`);
+  ok('alasan ringkas tetap menyebut angka', /Kurang 50 diamond/.test(up.alasanTidakBoleh(st0, { ringkas: true })));
+  // Sisa versi lama tidak boleh muncul lagi di kalimat mana pun.
+  for (const st of [st0, up.status('sepeda', ctxDari(9999))]) {
+    const t = `${up.alasanTidakBoleh(st)} ${up.alasanTidakBoleh(st, { ringkas: true })}`;
+    ok('alasan: tidak menyebut bab/guru/bahan/uang', !/Bab |ujian ke |batu|kayu|Uangnya/.test(t), t);
   }
+
+  // Cukup uang -> boleh, dan pembelian benar-benar memotong saldo.
+  // 30 diamond: cukup untuk sepeda (10), sisa 20 tidak cukup untuk truk (50).
+  const d = new Diamond(30);
+  const ctx = { diamond: () => d.jumlah, kendaraan: kend };
+  const stBoleh = up.status('sepeda', ctx);
+  ok('status: boleh dibeli saat diamond cukup', stBoleh.boleh === true);
+  const r = up.beli('sepeda', { diamond: d, kendaraan: kend });
+  ok('beli: berhasil', !!r && r.id === 'sepeda');
+  sama('beli: saldo terpotong 10', d.jumlah, 20);
+  sama('beli: kendaraan tercatat dimiliki', kend.dimiliki, ['sepeda']);
+  sama('beli: yang baru dibeli langsung dipakai', kend.dipakai, 'sepeda');
+  sama('beli: pengali cepat aktif', kend.pengaliCepat(), 2);
+
+  // Tidak boleh beli dua kali, dan tidak boleh beli tanpa uang.
+  ok('beli: tidak bisa beli dua kali', up.beli('sepeda', { diamond: d, kendaraan: kend }) === null);
+  ok('beli: pesan gagal menyebut sudah punya', /sudah punya/i.test(up.pesanGagal), up.pesanGagal);
+  sama('beli: saldo tidak terpotong lagi', d.jumlah, 20);
+  ok('beli: ditolak kalau diamond kurang', up.beli('truk', { diamond: d, kendaraan: kend }) === null);
+  ok('beli: pesan gagal menyebut kekurangan', /Kurang 30 diamond/.test(up.pesanGagal), up.pesanGagal);
+  sama('beli: saldo tetap utuh saat ditolak', d.jumlah, 20);
+
+  // Memakai & menurunkan kendaraan.
+  ok('pakai: sepeda dipakai', kend.pakai('sepeda') === true);
+  sama('pakai: pengali cepat sepeda', kend.pengaliCepat(), 2);
+  ok('pakai: turun = jalan kaki', kend.pakai(null) === true && kend.dipakai === null);
+  sama('pakai: jalan kaki pengali 1', kend.pengaliCepat(), 1);
+  ok('pakai: tidak bisa memakai yang belum dibeli', kend.pakai('motor') === false);
+
+  // Truk menambah slot tas; kendaraan lain tidak.
+  d.tambah(100);
+  up.beli('truk', { diamond: d, kendaraan: kend });
+  sama('truk: dipakai otomatis setelah dibeli', kend.dipakai, 'truk');
+  sama('truk: tas +12', kend.slotTas(), 12);
+  kend.pakai('sepeda');
+  sama('sepeda: tas kembali 0', kend.slotTas(), 0);
+
+  // Simpanan: hanya id yang dikenal, dan "dipakai" tidak boleh menunjuk barang
+  // yang tidak dimiliki — itu yang membuat pemain mendapat efek gratis.
+  const k2 = new Kendaraan();
+  k2.load({ dimiliki: ['truk', 'bukan-kendaraan'], dipakai: 'motor' });
+  sama('muat: id asing dibuang', k2.dimiliki, ['truk']);
+  ok('muat: dipakai yang tidak dimiliki diabaikan', k2.dipakai === null);
+  k2.load({ dimiliki: ['motor', 'sepeda'], dipakai: 'motor' });
+  sama('muat: urutan mengikuti daftar, bukan urutan simpanan', k2.dimiliki, ['sepeda', 'motor']);
+  sama('muat: yang dipakai dipertahankan', k2.dipakai, 'motor');
+  k2.load(undefined);
+  sama('muat: simpanan lama tanpa data -> kosong', k2.dimiliki, []);
+}
+
+// ------------------------------------ kendaraan tersambung ke permainan
+//
+// Tiga sambungan yang mudah putus tanpa ada yang error — dan kalau putus,
+// pemain membeli kendaraan tetapi tidak ada yang berubah:
+//   1. kecepatan berjalan dikali pengaliCepat()
+//   2. slot tas mengikuti slotTas(), dan diterapkan SESUDAH tas dimuat
+//   3. kendaraan ikut tersimpan & dimuat
+{
+  const main = baca('src/main.js');
+  ok('main: kecepatan berjalan memakai pengali kendaraan',
+    /player\.speed = .*\n?.*pengaliCepat\(\)/.test(main) || /pengaliCepat\(\)/.test(main),
+    'pengaliCepat tidak dipakai');
+  ok('main: slot tas memakai slotTas() kendaraan', /slotTas\?\.\(\)/.test(main), 'slotTas tidak dipakai');
+  ok('main: kendaraan ikut tersimpan', /kendaraan: state\.kendaraan\.toJSON\(\)/.test(main));
+  ok('main: kendaraan ikut dimuat', /state\.kendaraan\.load\(/.test(main));
+  // Urutan: memuat tas HARUS sebelum menerapkan slot kendaraan, kalau tidak
+  // barang ke-25 ke atas hilang saat simpanan dibuka.
+  const posLoad = main.indexOf('state.inv.load(');
+  const posTerap = main.indexOf('terapkanUpgrade();', posLoad);
+  // Dua sisi: ada pemanggilan SESUDAH tas dimuat, dan TIDAK ada pemanggilan
+  // tepat sebelumnya. Versi pertama uji ini hanya memeriksa sisi pertama, jadi
+  // pemanggilan tambahan sebelum tas dimuat lolos tanpa ketahuan.
+  const sebelum = main.slice(Math.max(0, posLoad - 400), posLoad);
+  ok('main: efek kendaraan diterapkan sesudah tas dimuat', posLoad > 0 && posTerap > posLoad,
+    `load ${posLoad}, terapkan ${posTerap}`);
+  ok('main: efek kendaraan tidak diterapkan sebelum tas dimuat',
+    !/terapkanUpgrade\(\);/.test(sebelum), 'ada terapkanUpgrade() sebelum state.inv.load');
+  // Papan menerima OBJEK diamond, bukan fungsi. Kalau yang dikirim fungsi,
+  // `beli()` tidak punya apa pun untuk memotong saldo — dan pembelian selalu
+  // ditolak "Kurang N diamond" walau saldonya cukup. Itu pernah terjadi.
+  ok('main: papan diberi objek diamond (bukan fungsi)',
+    /diamond: state\.diamond,/.test(main) && !/diamond: \(\) => state\.diamond\.jumlah/.test(main),
+    'papan masih menerima fungsi, saldo tidak bisa dipotong');
+  ok('main: papan diberi kendaraan', /kendaraan: state\.kendaraan,/.test(main));
+}
+
+// ------------------------------- beli lewat LAYAR, bukan hanya lewat sistem
+//
+// Uji sistem di atas memanggil Kendaraan.beli() langsung; itu tidak menangkap
+// kesalahan bentuk data antara layar dan sistem (diamond sebagai fungsi vs
+// objek). Di sini alurnya dijalankan seperti pemain: tombol E di papan.
+{
+  const { Kendaraan } = await import(join(ROOT, 'src/systems/kendaraan.js'));
+  const { Diamond } = await import(join(ROOT, 'src/systems/diamond.js'));
+  const { Upgrade } = await import(join(ROOT, 'src/systems/upgrade.js'));
+
+  const kend = new Kendaraan();
+  const d = new Diamond(12);
+  const upLayar = new Upgrade(kend);
+  // ctx persis seperti yang dikirim main.js
+  const ctxLayar = { diamond: d, kendaraan: kend };
+  const stLayar = upLayar.status('sepeda', ctxLayar);
+  ok('layar: saldo terbaca dari objek diamond', stLayar.saldo === 12, String(stLayar.saldo));
+  ok('layar: sepeda boleh dibeli saat saldo 12', stLayar.boleh === true);
+
+  const r = upLayar.beli('sepeda', { diamond: ctxLayar.diamond, kendaraan: ctxLayar.kendaraan });
+  ok('layar: pembelian lewat jalur layar berhasil', !!r, JSON.stringify(r));
+  sama('layar: diamond terpotong lewat jalur layar', d.jumlah, 2);
+  sama('layar: sepeda dimiliki & dipakai', kend.dimiliki.concat(kend.dipakai), ['sepeda', 'sepeda']);
+  const stHabis = upLayar.status('motor', ctxLayar);
+  ok('layar: motor tidak boleh setelah saldo habis', stHabis.boleh === false && stHabis.kurang === 23,
+    `${stHabis.boleh} / ${stHabis.kurang}`);
 }
 
 // ------------------------------------------------------------------ diamond
