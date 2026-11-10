@@ -74,10 +74,9 @@ export const mouse = { x: 0, y: 0, clicked: false, wheel: 0 };
  * rotasinya diketahui.
  */
 export const sentuhan = {
-  daftar: [],       // { x, y, jenis: 'mulai' } — koordinat klien
+  daftar: [],       // { x, y, kanvas } — koordinat klien, kanvas asalnya
   kosongkan() { this.daftar.length = 0; },
 };
-
 
 /**
  * Terjemahkan titik layar (clientX/clientY) menjadi piksel di dalam kanvas.
