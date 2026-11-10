@@ -4,12 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lembah Kenanga — Main</title>
+  <!-- Dipasang ke Layar Utama: terbuka tanpa bilah alamat. Ini satu-satunya
+       cara layar penuh di iPhone, tempat Safari tidak punya requestFullscreen. -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a1410">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lembah Ilmu">
+  <link rel="apple-touch-icon" href="assets/homepage/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
   <style>
     html, body { margin: 0; height: 100%; background: #1a1410; overflow: hidden; }
     body { display: flex; align-items: center; justify-content: center; font-family: "VT323", monospace; color: #f5e6c8; }
-    canvas { image-rendering: pixelated; image-rendering: crisp-edges; outline: none; display: block; touch-action: none; }
+    canvas { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; image-rendering: pixelated; image-rendering: crisp-edges; outline: none; display: block; touch-action: none; }
     #loading { position: absolute; font-size: 24px; letter-spacing: 1px; z-index: 20; }
     #home { z-index: 60; }
     /* Layar tegak: permainan dipaksa mendatar (src/ui/landscape.js).

@@ -31,6 +31,7 @@ import { IlmuUI } from './ui/ilmu-ui.js';
 import { PilihanUI } from './ui/pilihan.js';
 import { pasangSentuh } from './ui/touch.js';
 import { pasangLandscape } from './ui/landscape.js';
+import { pasangTombolLayarPenuh, pasangAjakanPasang, pernahPenuh } from './ui/fullscreen.js';
 import { UpgradeUI } from './ui/upgrade-ui.js';
 import { Upgrade, BENIH_HARIAN } from './systems/upgrade.js';
 import { kirimNilai, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
@@ -55,7 +56,7 @@ const state = {
   player: null,
   npcs: [],
   animals: [],
-  camera: new Camera(view.w, view.h),
+  camera: new Camera(view.dunW, view.dunH),
   dialog: new Dialog(),
   inv: new Inventory(),
   chest: new Array(CHEST_SLOTS).fill(null),
@@ -109,6 +110,13 @@ if (document.getElementById('game')) {
   });
 }
 
+// Tombol layar penuh (⛶). Dipasang bersama landscape supaya bisa dipakai sejak
+// layar pemuatan. `onUbah` menghitung ulang kanvas: begitu bilah alamat hilang,
+// tinggi layar bertambah dan pandangan harus ikut memanjang.
+if (document.getElementById('game')) {
+  pasangTombolLayarPenuh({ onUbah: () => renderer.fit() });
+}
+
 async function boot() {
   await document.fonts.ready;
   await loadAssets('assets/', (p) => { loadingEl.textContent = `Memuat aset ${Math.round(p * 100)}%`; });
@@ -129,6 +137,7 @@ async function boot() {
   state.sentuh = pasangSentuh({
     onPetunjuk: () => showToast('◀ jalan · E pakai · ketuk alat', 5),
   });
+  state.sentuh.ukuranHud?.({ w: view.w, h: view.h });
 
   state.pilihanUI = new PilihanUI(state.audio);
   state.upgrade = new Upgrade();
@@ -260,8 +269,15 @@ async function boot() {
   state.camera.snapTo(state.player.x, state.player.y - 16);
   on('time:passout', () => sleep(true));
   on('view:resize', (v) => {
-    state.camera.viewW = v.w; state.camera.viewH = v.h;
+    // Kamera mengikuti ukuran DUNIA (bukan kanvas): dengan skala 0,7 kamera
+    // boleh menampilkan 1/0,7 kali lebih banyak, dan itulah pandangan yang
+    // lebih luas. HUD tetap memakai v.w/v.h (ukuran kanvas).
+    state.camera.viewW = v.dunW ?? v.w; state.camera.viewH = v.dunH ?? v.h;
     state.camera.snapTo(state.player.x, state.player.y - 16);
+    // Tombol sentuh adalah elemen HTML, jadi ia tidak tahu apa-apa soal skala
+    // pandangan. Ukuran kanvas (v.w/v.h) sudah dalam piksel layar, dan itulah
+    // yang dipakai HUD — jadi tombol tidak pernah tertimpa hotbar.
+    state.sentuh?.ukuranHud?.({ w: v.w, h: v.h });
   });
 
   loadingEl.remove();
@@ -270,6 +286,15 @@ async function boot() {
   // sekaligus menekan tombol "Putar otomatis" (peramban hanya mau memutar
   // orientasi dari gestur pengguna, bukan otomatis saat halaman dimuat).
   state.landscape?.siap();
+  // iPhone/iPad: layar penuh hanya bisa lewat "Tambahkan ke Layar Utama", jadi
+  // di situ ditawarkan sekali (bukan di perangkat lain, tempat tombol ⛶ sudah
+  // cukup). Tidak pernah memblokir permainan.
+  pasangAjakanPasang();
+  // Pemain yang dulu memilih layar penuh cukup diberi satu ketukan untuk
+  // melanjutkannya — peramban tidak mengizinkan memintanya sendiri.
+  if (pernahPenuh() && !document.fullscreenElement) {
+    showToast('Ketuk ⛶ di kanan atas untuk layar penuh', 5);
+  }
   canvas.focus();
   if (fresh) showToast(`Selamat datang di ${state.profile.farmName}, ${state.profile.name}!`, 4);
   startLoop({
@@ -292,8 +317,8 @@ function enterArea(id, entryName) {
   state.areaId = id;
   state.map = getArea(id);
   // Zoom stays the same in every area: changing it would also rescale the HUD.
-  state.camera.viewW = view.w;
-  state.camera.viewH = view.h;
+  state.camera.viewW = view.dunW;
+  state.camera.viewH = view.dunH;
   state.camera.bounds = { w: state.map.w, h: state.map.h };
 
   // Ruangan dalam tidak punya ikan maupun serangga: bayangan ikan yang
@@ -1231,7 +1256,7 @@ function applySchedules() {
     if (!p) continue;
     npc.place = entry.at;
     const x = p.c * TILE + TILE / 2, y = (p.r + 1) * TILE;
-    const offScreen = Math.abs(x - cam.ix - view.w / 2) > view.w || Math.abs(y - cam.iy - view.h / 2) > view.h;
+    const offScreen = Math.abs(x - cam.ix - view.dunW / 2) > view.dunW || Math.abs(y - cam.iy - view.dunH / 2) > view.dunH;
     npc.moveTo(x, y, offScreen);
   }
 }
@@ -1248,10 +1273,20 @@ function applySchedules() {
  */
 function titikKetuk() {
   const hasil = [];
+  // keKanvas() mengembalikan piksel KANVAS. Itu koordinat yang dipakai seluruh
+  // UI (HUD, hotbar, panel), jadi `x`/`y` dipakai apa adanya. Untuk yang
+  // menyentuh dunia (petak, objek), pakai `dunia` — piksel dunia, yaitu piksel
+  // kanvas dibagi skala pandangan.
+  const skala = view.skala || 1;
   for (const s of sentuhan.daftar) {
     // Kanvas bisa sedang diputar 90° (ponsel tegak) — keKanvas() yang tahu.
     const k = keKanvas(s.kanvas, s.x, s.y);
-    hasil.push({ x: k.x, y: k.y, dipakai: false });
+    hasil.push({
+      x: k.x,
+      y: k.y,
+      dunia: { x: k.x / skala, y: k.y / skala },
+      dipakai: false,
+    });
   }
   return hasil;
 }
@@ -1393,6 +1428,9 @@ function update(dt) {
   // di ponsel tegak, dan di ponsel zoom otomatisnya 1 sehingga ukuran kanvas
   // tidak sama dengan ukuran layar.
   for (const t of (state.sentuh?.tampil ? titikKetuk() : [])) {
+    // Hotbar adalah UI, jadi memakai koordinat kanvas (`t.x`/`t.y`) — bukan
+    // `t.dunia`. Kalau pandangan diperluas (skala 0,7), hotbar TIDAK ikut
+    // mengecil, dan mengetuknya harus tetap kena slot yang terlihat.
     const S = 40, gap = 2, totalW = 9 * (S + gap) - gap;
     const x0 = Math.round((view.w - totalW) / 2), y0 = view.h - S - 12;
     if (t.y >= y0 - 8 && t.y <= y0 + S + 8) {
@@ -1454,7 +1492,7 @@ function update(dt) {
   state.shadows?.update(dt);
   state.critters?.update(dt, time.hour24);
   for (const a of state.animals) a.update(map, dt);
-  if (!map.indoor) state.weather.update(dt, view.w, view.h, time.season);
+  if (!map.indoor) state.weather.update(dt, view.dunW, view.dunH, time.season);
   else state.weather.particles.length = 0;
   state.camera.follow(player.x, player.y - 16, dt);
 
@@ -1492,7 +1530,9 @@ let darkCv = null, darkCtx = null;
 
 /** Tint the whole view, minus a soft hole around every lamp and lit window. */
 function darknessLayer(ov, cx, cy, now) {
-  const W = view.w, H = view.h;
+  // Seukuran DUNIA (bukan kanvas): lapisan ini digambar di dalam blok yang sudah
+  // diskalakan, dan harus menutupi seluruh pandangan yang lebih luas.
+  const W = view.dunW, H = view.dunH;
   if (!darkCv) { darkCv = document.createElement('canvas'); darkCtx = darkCv.getContext('2d'); }
   if (darkCv.width !== W || darkCv.height !== H) { darkCv.width = W; darkCv.height = H; }
 
@@ -1523,7 +1563,7 @@ function darknessLayer(ov, cx, cy, now) {
 
 /** A warm bloom on top, so a lamp glows rather than merely failing to darken. */
 function drawLampGlow(cx, cy, strength, now) {
-  const W = view.w, H = view.h;
+  const W = view.dunW, H = view.dunH;
   ctx.globalCompositeOperation = 'lighter';
   for (const L of state.map.lights ?? []) {
     const r = L.r * 0.75 * (1 + Math.sin(now * 2 + L.phase) * 0.04);
@@ -1544,7 +1584,7 @@ function drawSoil(cx, cy) {
   const { farming } = state;
   const dry = assets.images.get('tilled_dry'), wet = assets.images.get('tilled_wet');
   const c0 = Math.floor(cx / TILE), r0 = Math.floor(cy / TILE);
-  const c1 = c0 + Math.ceil(view.w / TILE) + 1, r1 = r0 + Math.ceil(view.h / TILE) + 1;
+  const c1 = c0 + Math.ceil(view.dunW / TILE) + 1, r1 = r0 + Math.ceil(view.dunH / TILE) + 1;
   const crops = [];
   for (let r = r0; r <= r1; r++) {
     for (let c = c0; c <= c1; c++) {
@@ -1570,7 +1610,7 @@ function drawCritter(ctx, s, cx, cy) {
   const [w, h] = def.frame;
   const p = state.critters.place(s);
   const x = Math.round(p.x - cx), y = Math.round(p.y - cy);
-  if (x < -w || y < -h || x > view.w + w || y > view.h + h) return;
+  if (x < -w || y < -h || x > view.dunW + w || y > view.dunH + h) return;
   const f = Math.floor((state.critters.t + s.phase) * def.fps) % def.cols;
   ctx.globalAlpha = s.alpha;
   ctx.save();
@@ -1592,7 +1632,7 @@ function drawWaterLife(cx, cy, now) {
     ctx.globalAlpha = 0.55;
     for (const s of shadows.list) {
       const x = Math.round(s.x - cx), y = Math.round(s.y - cy);
-      if (x < -w || y < -h || x > view.w + w || y > view.h + h) continue;
+      if (x < -w || y < -h || x > view.dunW + w || y > view.dunH + h) continue;
       const f = Math.floor((s.animT + s.phase) * shDef.fps) % shDef.cols;
       // The strip faces right, so swimming left is the mirrored draw.
       ctx.save();
@@ -1622,7 +1662,7 @@ function drawAnimatedTerrain(cx, cy, season, now) {
   const { map } = state;
   if (!map.animatedTiles.length) return;
   const c0 = Math.floor(cx / TILE) - 1, r0 = Math.floor(cy / TILE) - 1;
-  const c1 = c0 + Math.ceil(view.w / TILE) + 2, r1 = r0 + Math.ceil(view.h / TILE) + 2;
+  const c1 = c0 + Math.ceil(view.dunW / TILE) + 2, r1 = r0 + Math.ceil(view.dunH / TILE) + 2;
   for (const [c, r, name] of map.animatedTiles) {
     if (c < c0 || c > c1 || r < r0 || r > r1) continue;
     const key = map.terrainFor(name, season);
@@ -1638,15 +1678,35 @@ function render() {
   const { map, player, time, camera, inv, invUI, chestUI, weather } = state;
   const now = performance.now() / 1000;
   const W = view.w, H = view.h;
+  // Dunia yang terlihat, dalam piksel dunia. Dengan skala < 1 angkanya lebih
+  // besar dari kanvas — itulah pandangan yang lebih luas. `DW/DH` dipakai blok
+  // dunia; `W/H` (ukuran kanvas) dipakai UI setelah restore().
+  const DW = view.dunW, DH = view.dunH;
   const shake = state.juice.shake;
   const cx = camera.ix + shake.x, cy = camera.iy + shake.y;
+  const skala = view.skala ?? 1;
   renderer.clear(map.indoor ? '#241a12' : '#100c09'); // letterbox around small maps
+
+  // --- DUNIA digambar dengan skala pandangan:
+  //     `scale()` memperkecil gambar dunia, lalu `fillRect` menutup sisa kanvas
+  //     dengan warna latar (tanpa itu, 25% kanan-bawah tidak pernah tergambar
+  //     karena semua koordinat dunia hanya sampai DW x skala).
+  // Semua kode dunia di blok ini memakai koordinat piksel dunia dan TIDAK perlu
+  // dibagi skala. Ditutup dengan restore() sebelum HUD, panel, dan tombol — UI
+  // sengaja tidak ikut mengecil, karena di ponsel justru teks dan tombol yang
+  // harus tetap besar.
+  ctx.save();
+  if (skala !== 1) {
+    ctx.scale(skala, skala);
+    ctx.fillStyle = map.indoor ? '#241a12' : '#100c09';
+    ctx.fillRect(0, 0, DW + 2, DH + 2);
+  }
 
   // terrain, clipped so maps smaller than the viewport letterbox cleanly
   const tc = map.terrainCanvas(time.season);
   const sx = Math.max(0, cx), sy = Math.max(0, cy);
   const dx = sx - cx, dy = sy - cy;
-  const sw = Math.min(map.w - sx, W - dx), sh = Math.min(map.h - sy, H - dy);
+  const sw = Math.min(map.w - sx, DW - dx), sh = Math.min(map.h - sy, DH - dy);
   if (sw > 0 && sh > 0) ctx.drawImage(tc, sx, sy, sw, sh, dx, dy, sw, sh);
   drawAnimatedTerrain(cx, cy, time.season, now);
   drawWaterLife(cx, cy, now);
@@ -1658,7 +1718,7 @@ function render() {
 
   const drawables = state.areaId === 'valley' ? drawSoil(cx, cy) : [];
   for (const o of map.objects) {
-    if (o.x < cx - 160 || o.x > cx + W + 160 || o.y < cy - 96 || o.y > cy + H + 256) continue;
+    if (o.x < cx - 160 || o.x > cx + DW + 160 || o.y < cy - 96 || o.y > cy + DH + 256) continue;
     drawables.push(o);
   }
   drawables.push(player, ...state.npcs, ...state.animals);
@@ -1732,6 +1792,7 @@ function render() {
 
   // Fireflies go on top of the night tint, not under it — see Critters.split.
   for (const c of critters.airNight) drawCritter(ctx, c, cx, cy);
+  ctx.restore();   // selesai dunia: mulai dari sini semua UI 1:1 lagi
 
   drawHud(ctx, { time, player, inv, weather });
   state.fishingUI?.draw(ctx);

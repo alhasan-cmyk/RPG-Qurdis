@@ -2,7 +2,8 @@
 //
 // Three pages share one panel. Arrow keys move, E confirms, Esc goes back one
 // level (and closes from the root), so a player never gets stuck in a submenu.
-import { view } from '../render/renderer.js';
+import { view, SKALA } from '../render/renderer.js';
+import { bisaLayarPenuh, sedangPenuh, alihkanPenuh } from './fullscreen.js';
 import { panel, text, fit, UI } from './draw.js';
 import { labelKelasPanjang } from '../core/save.js';
 import { muridAktif, jumlahAntre } from '../core/nilai-api.js';
@@ -10,7 +11,7 @@ import { muridAktif, jumlahAntre } from '../core/nilai-api.js';
 const ROOT = [
   { id: 'resume', label: 'Lanjut', hint: 'Tutup menu dan lanjutkan permainan' },
   { id: 'help', label: 'Petunjuk', hint: 'Kontrol dan cara bermain' },
-  { id: 'settings', label: 'Pengaturan', hint: 'Volume musik dan zoom tampilan' },
+  { id: 'settings', label: 'Pengaturan', hint: 'Volume, luas pandangan, dan layar penuh' },
   { id: 'ilmu', label: 'Rekap Belajar', hint: 'Kitab yang dibaca dan ketepatan jawaban' },
   { id: 'quit', label: 'Keluar', hint: 'Kembali ke menu utama' },
 ];
@@ -65,11 +66,18 @@ export class Menu {
   /** Settings rows are built fresh so they always show current values. */
   settingsRows() {
     const z = this.renderer.zoomOverride;
+    const skala = SKALA[this.renderer.skalaNama]?.label ?? 'Normal';
     return [
       { id: 'volume', label: 'Volume musik', value: `${Math.round(this.audio.settings.musicVolume * 100)}%`, bar: this.audio.settings.musicVolume },
       { id: 'sfx', label: 'Volume efek', value: `${Math.round(this.audio.settings.sfxVolume * 100)}%`, bar: this.audio.settings.sfxVolume },
       { id: 'mute', label: 'Bisukan semua', value: this.audio.settings.muted ? 'Ya' : 'Tidak' },
+      // "Luas" memperkecil gambar dunia saja; HUD dan tombol tetap besar.
+      // Inilah yang membuat semua tombol pasti kelihatan di ponsel.
+      { id: 'pandangan', label: 'Luas pandangan', value: skala },
       { id: 'zoom', label: 'Zoom tampilan', value: z === 0 ? 'Otomatis' : `×${z}` },
+      // Baris ini disembunyikan di peramban yang tidak punya API layar penuh
+      // (iPhone Safari) supaya tidak ada tombol yang pasti gagal.
+      ...(bisaLayarPenuh() ? [{ id: 'penuh', label: 'Layar penuh', value: sedangPenuh() ? 'Ya' : 'Tidak' }] : []),
       { id: 'back', label: 'Kembali', value: '' },
     ];
   }
@@ -94,11 +102,15 @@ export class Menu {
         if (row.id === 'sfx') this.audio.setSfxVolume(this.audio.settings.sfxVolume + dir * 0.05);
         if (row.id === 'mute') this.audio.toggleMute();
         if (row.id === 'zoom') this.renderer.stepZoom(dir);
+        if (row.id === 'pandangan') this.renderer.stepSkala(dir);
         return;
       }
       if (action === 'interact') {
         if (row.id === 'back') { this.page = 'root'; this.cursor = 2; }
         if (row.id === 'mute') this.audio.toggleMute();
+        // Ditangani sendiri (asinkron): permintaan layar penuh harus datang dari
+        // gestur, dan gestur itu adalah tombol E yang baru saja ditekan.
+        if (row.id === 'penuh') alihkanPenuh().then(() => this.audio.ui());
         else this.audio.ui();
       }
       return;

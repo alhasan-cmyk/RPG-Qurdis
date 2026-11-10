@@ -42,6 +42,34 @@ petunjuknya jadi kelihatan semua.
 Murid yang membuka dari komputer tidak terpengaruh. Kalau jendela perambannya
 sempit dan tinggi, muncul ajakan memperlebarkan jendela, bukan memutar gambar.
 
+LAYAR LEBIH LEGA
+================
+Tombol bulat di pojok kanan atas layar permainan:
+
+  ⛶  Layar penuh. Bilah alamat dan tombol peramban hilang, jadi layarnya
+     bertambah tinggi. Di Android ini juga membuat kunci mendatar lebih andal.
+     Menekannya sekali lagi mengembalikan seperti semula.
+     (Peramban melarang layar penuh tanpa ketukan, jadi memang harus ditekan —
+     tidak bisa muncul sendiri.)
+
+Di iPhone/iPad tidak ada tombol itu, karena Safari di sana memang tidak punya
+layar penuh. Gantinya: buka lewat Safari, ketuk Bagikan, lalu "Tambahkan ke
+Layar Utama". Game akan terbuka tanpa bilah alamat, seperti aplikasi.
+
+LUAS PANDANGAN (Pengaturan)
+===========================
+Esc -> Pengaturan -> "Luas pandangan" (ubah dengan panah kiri/kanan):
+
+  Normal       gambar dunia 1:1, paling tajam, cocok untuk komputer.
+  Luas (bawaan di ponsel)
+               pandangan +43%, jadi semua tombol dan panel pasti masuk layar.
+  Sangat luas  pandangan 2x, untuk layar yang sangat sempit. Piksel tetap
+               tajam karena 1 piksel dunia = tepat 0,5 piksel layar.
+
+Yang diperkecil HANYA gambar dunianya. HUD, hotbar, teks, dan panel tetap
+sebesar biasa — itu sebabnya tulisan tidak ikut mengecil dan tidak ada yang
+terpotong. Di ponsel "Luas" dipilih otomatis saat pertama dibuka.
+
 CARA LEWAT TERMINAL
 
    git init

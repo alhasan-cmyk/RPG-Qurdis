@@ -22,6 +22,10 @@ import { pressAction, pressActionKode, mouse } from '../core/input.js';
 
 const GAYA = `
 .lk-touch { position: fixed; inset: 0; pointer-events: none; z-index: 40;
+  /* Tinggi HUD yang terlihat (logis x skala pandangan), diisi ukuranHud().
+     Dipakai supaya D-pad dan tombol aksi tidak pernah menimpa hotbar: hotbar
+     setinggi 40 px + 12 px jarak bawah, dan tombol butuh ruang di atasnya. */
+  --lk-hud-b: 88px; --lk-hud-r: 12px;
   font-family: "VT323", monospace; -webkit-user-select: none; user-select: none;
   -webkit-tap-highlight-color: transparent; }
 .lk-touch[hidden] { display: none; }
@@ -33,7 +37,7 @@ const GAYA = `
 /* Tombol aksi di atas D-pad, bukan di kanan bawah: sudut kanan bawah kanvas
    dipakai hotbar (9 slot alat), dan menaruh tombol di sana membuat alat tidak
    bisa dilihat sama sekali. */
-.lk-touch .kanan { right: 10px; bottom: 88px;
+.lk-touch .kanan { right: 10px; bottom: var(--lk-hud-b);
   grid-template-columns: repeat(2, 54px); grid-auto-rows: 44px; }
 .lk-touch .tombol { pointer-events: auto; touch-action: none; border: 2px solid #7a4a22;
   background: rgba(245, 230, 200, .86); color: #3a2a2a; border-radius: 10px;
@@ -51,9 +55,13 @@ const GAYA = `
 .lk-touch .petunjuk { position: fixed; left: 50%; top: 4px; transform: translateX(-50%);
   pointer-events: none; color: #f5e6c8; background: rgba(26, 20, 16, .6);
   padding: 1px 8px; border-radius: 8px; font-size: 14px; opacity: .9; }
-@media (max-height: 500px) {
-  .lk-touch .kiri { bottom: 84px; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 40px); }
-  .lk-touch .kanan { bottom: 76px; grid-template-columns: repeat(2, 46px); grid-auto-rows: 36px; }
+/* Layar pendek (ponsel mendatar): tombol lebih kecil dan lebih rapat. Ambang
+   tinggi memakai piksel LAYAR (bukan logis), jadi tetap benar walau skala
+   pandangan berubah. */
+@media (max-height: 560px) {
+  .lk-touch .kiri { grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(3, 42px); }
+  .lk-touch .kanan { grid-template-columns: repeat(2, 46px); grid-auto-rows: 36px; }
+  .lk-touch .tombol { font-size: 18px; }
 }
 `;
 
@@ -166,6 +174,16 @@ export function pasangSentuh({ onPetunjuk } = {}) {
      * Tanpa ini, di layar 390 px tombol "Nilai" dan "Ujian" menimpa pilihan
      * jawaban A/B/C.
      */
+    /**
+     * Terima ukuran HUD yang terlihat (piksel layar) dan geser tombol ke atas
+     * hotbar. Tanpa ini, memperlebar pandangan bisa membuat hotbar bertabrakan
+     * dengan tombol aksi — persis hal yang mau dihindari.
+     */
+    ukuranHud({ w, h } = {}) {
+      if (h) akar.style.setProperty('--lk-hud-b', `${Math.round(h * 0.22 + 68)}px`);
+      if (w) akar.style.setProperty('--lk-hud-r', `${Math.round(w * 0.02)}px`);
+    },
+
     ringkas(on) {
       if (ringkasSekarang === on) return;
       ringkasSekarang = on;
