@@ -165,6 +165,13 @@ YANG PERLU DIKETAHUI
   Yang dibeli langsung dipakai. Tekan E pada kendaraan yang sedang dipakai
   untuk turun dan kembali jalan kaki — hanya SATU yang bisa dipakai sekaligus,
   jadi sepeda tetap berguna setelah punya truk.
+  WUJUDNYA IKUT BERUBAH: pemain yang memakai kendaraan benar-benar duduk di
+  atasnya (sepeda, motor, atau truk) di dunia, bukan cuma bergerak lebih cepat
+  sambil tetap berjalan kaki. Tinggi kepalanya sama seperti saat berjalan, jadi
+  tidak ada "loncatan" saat naik atau turun. Keempat avatar (laki-laki,
+  perempuan, dan dua varian lainnya) punya lembarnya sendiri. Lempar spritenya
+  dibuat ulang dengan `node tools/buat-sprite-kendaraan.mjs`; kalau skrip itu
+  diubah tanpa membuat ulang, tests/uji.mjs akan gagal ("berkas berbeda").
 - DIAMOND: setiap ujian bab yang LULUS memberi +1 diamond, dan mengulang bab
   yang sama juga +1 lagi (tanpa batas). Tidak lulus = 0. Hadiahnya per ujian,
   bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya
@@ -192,6 +199,9 @@ Alat-alat ini tidak memerlukan peramban. Tiga yang pertama cukup Node.js saja;
 yang terakhir butuh DOM (`npm i jsdom`) dan akan melewati dirinya sendiri kalau
 jsdom belum terpasang:
 
+  node tools/buat-sprite-kendaraan.mjs  # membuat ulang 12 lembar sprite
+                                     # "pemain menaiki kendaraan" (butuh Node
+                                     # saja, tanpa pustaka tambahan)
   node tools/periksa-data.mjs        # 30 bab, 900 soal, pembagian bab ke warga,
                                      # alat, dan isi papan Ragam Usaha
   node tools/uji-tata-letak.mjs      # layar Ragam Usaha di lima ukuran layar:

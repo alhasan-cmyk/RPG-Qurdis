@@ -1,7 +1,9 @@
 // Rangkaian uji lama (85 pemeriksaan) sempat dihapus saat repo diganti isi Drive.
 // Berkas ini memulihkan inti yang paling penting + menambah uji untuk perbaikan
 // papan Ragam Usaha, supaya tidak ada yang bisa kembali tanpa ketahuan.
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync, mkdtempSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -446,6 +448,121 @@ for (const k of ['X', 'XI', 'XII']) {
   sama('muat: tingkat bangunan tetap terbaca', up.tingkat('lemari'), 3);
   up.load({ level: {}, kendaraan: { dimiliki: ['truk'], dipakai: 'truk' } });
   sama('muat: data kendaraan di dalam upgrade dipakai', kend.dimiliki, ['truk']);
+}
+
+// --------------------------- pemain benar-benar menaiki kendaraannya
+//
+// Sampai ronde ini, membeli sepeda hanya mengubah angka kecepatan: pemain tetap
+// berjalan kaki di layar. Yang diuji sekarang: sprite pengendara dipilih saat
+// kendaraan dipakai, dikembalikan saat turun, dan berkas gambarnya benar-benar
+// ada (bukan hanya nama di manifest — sprite yang hilang membuat `sprite()`
+// melempar galat saat menggambar, dan itu baru terlihat ketika bermain).
+{
+  const { KENDARAAN, Kendaraan } = await import(join(ROOT, 'src/systems/kendaraan.js'));
+  const manifest = JSON.parse(baca('assets/manifest.json'));
+  const sprites = manifest.sprites;
+  const AVATAR = ['player_m', 'player_f', 'player_m2', 'player_f2'];
+  const adaManifest = (n) => Boolean(sprites[n]);
+
+  // --- tiap kombinasi avatar x kendaraan punya sprite, bingkai 32x56
+  for (const a of AVATAR) {
+    for (const k of KENDARAAN) {
+      const nama = `${a}_${k.id}`;
+      const def = sprites[nama];
+      ok(`sprite: ${nama} terdaftar`, !!def, nama);
+      if (!def) continue;
+      // Bingkai SAMA dengan karakter biasa (32x48). Bingkai lebih tinggi
+      // sempat dicoba supaya roda dapat ruang, tetapi membuat kepala pemain
+      // melonjak 8 px setiap kali menaiki kendaraan.
+      sama(`sprite: ${nama} berbingkai 32x48`, def.frame, [32, 48]);
+      sama(`sprite: ${nama} 4x4 bingkai`, [def.cols, def.rows], [4, 4]);
+      ok(`sprite: ${nama} berkasnya ada`, existsSync(join(ROOT, 'assets', def.file)), def.file);
+      // PNG asli harus 128x192 — 4 kolom x 4 baris bingkai 32x48.
+      const b = readFileSync(join(ROOT, 'assets', def.file));
+      sama(`sprite: ${nama} berukuran 128x192`, [b.readUInt32BE(16), b.readUInt32BE(20)], [128, 192]);
+    }
+  }
+
+  // --- spriteId(): hanya saat kendaraan dipakai, dan hanya kalau sprite-nya ada
+  const ken = new Kendaraan();
+  ok('spriteId: jalan kaki -> null', ken.spriteId('player_f', adaManifest) === null);
+  ken.load({ dimiliki: ['sepeda'], dipakai: 'sepeda' });
+  sama('spriteId: sepeda dipakai -> sprite sepeda', ken.spriteId('player_f', adaManifest), 'player_f_sepeda');
+  sama('spriteId: avatar lain memakai lembarnya sendiri', ken.spriteId('player_m2', adaManifest), 'player_m2_sepeda');
+  ken.pakai(null);
+  ok('spriteId: turun -> null lagi', ken.spriteId('player_f', adaManifest) === null);
+  // Avatar yang tidak punya lembar kendaraan TIDAK boleh membuat game error:
+  // null berarti tetap pejalan kaki.
+  ken.pakai('sepeda');
+  ok('spriteId: avatar tanpa lembar -> null (bukan galat)', ken.spriteId('avatar_asing', adaManifest) === null);
+  ok('spriteId: tanpa pemeriksa sprite -> null (aman)', ken.spriteId('player_f') === null);
+
+  // --- penghasil sprite harus menghasilkan byte yang SAMA dengan berkas yang
+  // di-commit. Tanpa uji ini, skrip dan aset bisa berbeda diam-diam: skrip
+  // diperbaiki, asetnya lupa dibuat ulang, dan yang dilihat pemain tetap versi
+  // lama. Dijalankan ke direktori sementara, lalu dibandingkan.
+  {
+    const tmp = mkdtempSync(join(tmpdir(), 'sprite-'));
+    mkdirSync(join(tmp, 'assets/sprites/characters'), { recursive: true });
+    for (const a of AVATAR) {
+      mkdirSync(join(tmp, 'assets/sprites/characters', a), { recursive: true });
+      copyFileSync(join(ROOT, `assets/sprites/characters/${a}/${a}_sheet.png`),
+        join(tmp, `assets/sprites/characters/${a}/${a}_sheet.png`));
+    }
+    const hasil = spawnSync(process.execPath,
+      [join(ROOT, 'tools/buat-sprite-kendaraan.mjs'), tmp], { encoding: 'utf8' });
+    ok('sprite: penghasil berjalan tanpa galat', hasil.status === 0, (hasil.stderr || '').slice(0, 400));
+    for (const a of AVATAR) {
+      for (const k of KENDARAAN) {
+        const nama = `${a}_${k.id}`;
+        const baru = join(tmp, `assets/sprites/characters/${a}/${a}_${k.id}.png`);
+        const lama = join(ROOT, `assets/sprites/characters/${a}/${a}_${k.id}.png`);
+        ok(`sprite: ${nama} di-commit sama dengan hasil skrip`,
+          existsSync(baru) && readFileSync(baru).equals(readFileSync(lama)),
+          existsSync(baru) ? 'berkas berbeda — jalankan node tools/buat-sprite-kendaraan.mjs' : 'skrip tidak menghasilkan berkas');
+      }
+    }
+    rmSync(tmp, { recursive: true, force: true });
+  }
+
+  // --- Character memakai sprite itu, dan kembali ke avatar aslinya
+  const { Character } = await import(join(ROOT, 'src/entities/character.js'));
+  const { assets } = await import(join(ROOT, 'src/render/assets.js'));
+  assets.manifest = manifest;
+  const ch = new Character('player_f', 0, 0);
+  ok('karakter: bawaannya jalan kaki', ch.spriteKendaraan === null);
+  ch.spriteKendaraan = 'player_f_sepeda';
+  const gambar = [];
+  const ctxTiruan = {
+    fillStyle: '', globalAlpha: 1, font: '16px x',
+    beginPath() {}, ellipse() {}, fill() {},
+    drawImage(img) { gambar.push(img); },
+  };
+  // draw() memanggil sprite(), yang butuh gambar di assets.images.
+  const png = { width: 128, height: 192 };
+  assets.images.set('player_f_sepeda', png);
+  assets.images.set('player_f', { width: 128, height: 192 });
+  ch.draw(ctxTiruan, 0, 0);
+  ok('karakter: memakai lembar kendaraan saat menaikinya', gambar[0] === png, gambar.length ? 'lembar lain' : 'tidak menggambar');
+  ch.spriteKendaraan = null;
+  ch.draw(ctxTiruan, 0, 0);
+  ok('karakter: kembali ke lembar asli saat turun', gambar.at(-1) !== png);
+  // Nama yang tidak ada di manifest harus diabaikan, bukan melempar galat.
+  ch.spriteKendaraan = 'player_f_tidak_ada';
+  let meledak = false;
+  try { ch.draw(ctxTiruan, 0, 0); } catch { meledak = true; }
+  ok('karakter: nama sprite asing diabaikan', meledak === false);
+
+  // --- main.js: pemilihan wujud dipanggil dari SATU tempat
+  const main = baca('src/main.js');
+  ok('main: wujud kendaraan diterapkan dari terapkanUpgrade()',
+    /function terapkanUpgrade\(\)[\s\S]{0,2500}terapkanTampilanKendaraan\(\);/.test(main),
+    'terapkanTampilanKendaraan tidak dipanggil di terapkanUpgrade');
+  ok('main: wujud memakai spriteId()', /ken\.spriteId\(/.test(main));
+  // Slot tas + kecepatan + wujud harus ikut terbarui saat kendaraan berganti:
+  // papan memanggil onBeli -> terapkanUpgrade -> ketiganya.
+  ok('main: papan memicu terapkanUpgrade setelah membeli/memakai',
+    /upgradeUI\.onBeli = \(\) => \{ terapkanUpgrade\(\);/.test(main));
 }
 
 // ------------------------------------------------------------------ diamond

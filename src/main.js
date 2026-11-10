@@ -1317,6 +1317,25 @@ function terapkanUpgrade() {
   //    sama. Dibuat sekali per tingkat; kalau simpanan dimuat, jumlahnya
   //    disesuaikan, bukan ditumpuk.
   sesuaikanTernak(up.ternakTambahan());
+  // 4. wujud: pemain yang memakai kendaraan duduk di atasnya.
+  terapkanTampilanKendaraan();
+}
+
+/**
+ * Wujud pemain mengikuti kendaraan yang sedang dipakai.
+ *
+ * Dipanggil dari terapkanUpgrade() — jadi ia ikut jalan setiap kali papan
+ * dibeli, kendaraan dipakai/diturunkan, dan simpanan dimuat. SATU tempat: kalau
+ * pemilihan sprite ditulis juga di tempat lain, cepat atau lambat dua tempat itu
+ * berbeda dan pemain turun dari sepeda tetapi tetap terlihat mengayuh.
+ */
+function terapkanTampilanKendaraan() {
+  const p = state.player;
+  const ken = state.kendaraan;
+  if (!p || !ken) return;
+  const avatar = avatarOf(state.profile);
+  const nama = ken.spriteId(avatar, (n) => Boolean(assets.manifest?.sprites?.[n]));
+  p.spriteKendaraan = nama;
 }
 
 /**
