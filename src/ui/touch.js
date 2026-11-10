@@ -17,6 +17,10 @@
 //    perangkat sehingga cukup besar untuk jari.
 // 3. `touch-action: none` + preventDefault: tanpa itu, menyeret jempol di atas
 //    tombol akan menggulir halaman, dan tekan-lama memunculkan menu salin.
+// 4. Bisa dimatikan dari Pengaturan, dan pilihannya diingat. Ada dua alasan
+//    nyata: sebagian ponsel salah melaporkan dirinya sebagai layar sentuh
+//    (tombol muncul di laptop dan menutupi layar), dan sebagian murid memakai
+//    papan ketik Bluetooth di tablet sehingga tombolnya hanya menghalangi.
 
 import { pressAction, pressActionKode, mouse } from '../core/input.js';
 
@@ -101,16 +105,41 @@ const SAAT_MODAL_DISEMBUNYIKAN = new Set([
   'inventory', 'run', 'prevTool', 'nextTool', 'KeyV', 'KeyT',
 ]);
 
+/**
+ * Preferensi pemain soal tombol sentuh. `null` berarti "ikuti perangkat".
+ *
+ * Disimpan di localStorage dan BUKAN di berkas simpanan permainan: pilihan ini
+ * milik perangkat (ponsel ini punya tombol, komputer itu tidak), sedangkan
+ * berkas simpanan berpindah bersama pemain.
+ */
+const KUNCI = 'lk_sentuh';
+
+export function bacaPreferensiSentuh() {
+  try {
+    const v = localStorage.getItem(KUNCI);
+    return v === '1' ? true : v === '0' ? false : null;
+  } catch { return null; }
+}
+
+function tulisPreferensiSentuh(v) {
+  try { localStorage.setItem(KUNCI, v ? '1' : '0'); } catch { /* mode privat */ }
+}
+
 export function pasangSentuh({ onPetunjuk } = {}) {
   const media = window.matchMedia?.('(pointer: coarse)');
-  const sentuh = media ? media.matches : ('ontouchstart' in window);
+  // Deteksi perangkat hanya dipakai kalau pemain belum pernah memilih. Deteksi
+  // ini tidak selalu benar (lihat keputusan 4 di kepala berkas), jadi hasilnya
+  // harus bisa ditimpa — bukan dipaksakan.
+  const terdeteksi = media ? media.matches : ('ontouchstart' in window);
+  const pilihan = bacaPreferensiSentuh();
+  let aktif = pilihan === null ? terdeteksi : pilihan;
   const gaya = document.createElement('style');
   gaya.textContent = GAYA;
   document.head.append(gaya);
 
   const akar = document.createElement('div');
   akar.className = 'lk-touch';
-  akar.hidden = !sentuh;
+  akar.hidden = !aktif;
 
   const buat = ([label, aksi, kelas], kelompok) => {
     const b = document.createElement('div');
@@ -156,7 +185,7 @@ export function pasangSentuh({ onPetunjuk } = {}) {
 
   // Petunjuk TIDAK digambar sebagai elemen di sini: di layar 390 px ia menimpa
   // panel jam. Pemanggil menampilkannya lewat toast kanvas (`onPetunjuk`).
-  if (sentuh) setTimeout(() => onPetunjuk?.(), 1200);
+  if (aktif) setTimeout(() => onPetunjuk?.(), 1200);
 
   // Layar berpindah ke latar (panggilan masuk, aplikasi lain): lepaskan semua
   // tombol, kalau tidak pemain terus berjalan sendiri saat kembali.
@@ -165,7 +194,46 @@ export function pasangSentuh({ onPetunjuk } = {}) {
   let ringkasSekarang = null;
 
   return {
+    /** Apakah tombolnya sedang tampil di layar. */
     get tampil() { return !akar.hidden; },
+
+    /** Apakah perangkat ini memang punya layar sentuh (deteksi, bukan pilihan). */
+    get perangkatSentuh() { return terdeteksi; },
+
+    /**
+     * Nama lama `tampil_(v)` diganti `aturTampil(v)`: nama berakhiran garis
+     * bawah hanya dipakai untuk menandai variabel yang bertabrakan, bukan
+     * untuk mengatur keadaan, dan mudah salah dibaca sebagai field `tampil`.
+     *
+     * Menyalakan/mematikan dari Pengaturan juga MENGINGAT pilihannya — kalau
+     * tidak, tombol yang baru dimatikan muncul lagi setiap halaman dimuat
+     * ulang dan pemain harus mematikannya terus-menerus.
+     */
+    aturTampil(v) {
+      aktif = Boolean(v);
+      akar.hidden = !aktif;
+      tulisPreferensiSentuh(aktif);
+      return aktif;
+    },
+
+    /**
+     * Balikkan keadaan tombol. Inilah yang dipanggil baris Pengaturan.
+     * Mengembalikan keadaan yang baru.
+     */
+    alihkan() {
+      // Ukuran HUD tidak perlu dihitung ulang: variabel CSS-nya tetap terpasang
+      // walau lapisan ini disembunyikan, dan main.js memperbaruinya setiap kali
+      // ukuran layar berubah.
+      return this.aturTampil(!this.tampil);
+    },
+
+    /** Hapus pilihan pemain; tombol kembali mengikuti deteksi perangkat. */
+    ikutiPerangkat() {
+      aktif = terdeteksi;
+      akar.hidden = !aktif;
+      try { localStorage.removeItem(KUNCI); } catch { /* mode privat */ }
+      return aktif;
+    },
 
     /**
      * Sembunyikan tombol yang tidak berguna saat layar modal terbuka (ujian,
@@ -189,8 +257,9 @@ export function pasangSentuh({ onPetunjuk } = {}) {
       ringkasSekarang = on;
       akar.querySelectorAll('[data-modal]').forEach((b) => b.classList.toggle('tersembunyi', on));
     },
-    tampil_(v) { akar.hidden = !v; },
+    // Dipakai layar modal yang ingin menyembunyikan/menampilkan tanpa mengubah
+    // pilihan pemain (mis. saat papan nilai dibuka).
     sembunyikan() { akar.hidden = true; },
-    munculkan() { akar.hidden = false; },
+    munculkan() { if (aktif) akar.hidden = false; },
   };
 }

@@ -15,7 +15,7 @@ import { Animal } from './entities/animal.js';
 import { Inventory, setItemData, itemDef, HOTBAR } from './systems/inventory.js';
 import { Farming } from './systems/farming.js';
 import { Weather } from './systems/weather.js';
-import { drawHud, drawPrompt, drawToast } from './ui/hud.js';
+import { drawHud, drawPrompt, drawToast, kotakTombolKeluar } from './ui/hud.js';
 import { InventoryUI } from './ui/inventory-ui.js';
 import { ChestUI, CHEST_SLOTS } from './ui/chest-ui.js';
 import { ShopUI } from './ui/shop-ui.js';
@@ -137,6 +137,8 @@ async function boot() {
   state.sentuh = pasangSentuh({
     onPetunjuk: () => showToast('◀ jalan · E pakai · ketuk alat', 5),
   });
+  // Pilihan pemain soal tombol sentuh disimpan per perangkat (lihat ui/touch.js),
+  // jadi di sini tidak ada yang perlu dimuat: pasangSentuh sudah membacanya.
   state.sentuh.ukuranHud?.({ w: view.w, h: view.h });
 
   state.pilihanUI = new PilihanUI(state.audio);
@@ -251,6 +253,17 @@ async function boot() {
     audio: state.audio,
     renderer,
     ilmu: state.ilmu,
+    // Baris "Tombol sentuh" di Pengaturan butuh lapisan ini untuk mengetahui
+    // keadaannya dan mengubahnya. Tanpa ini, tombol yang muncul keliru di
+    // laptop tidak bisa dimatikan sama sekali.
+    sentuh: state.sentuh,
+    // Baris "Simpan sekarang" memakai saveGame yang sama dengan keluar dan
+    // tidur; tidak ada jalur simpan kedua yang bisa berbeda isinya.
+    onSimpan: () => (saveGame()
+      ? 'Tersimpan di peramban ini.'
+      // Mode privat dan kuota penuh membuat localStorage menolak. Berbohong
+      // "Tersimpan" di situ lebih buruk daripada mengakuinya.
+      : 'GAGAL menyimpan — peramban menolak. Coba tutup mode privat.'),
     onQuit: () => { saveGame(); location.href = 'index.html'; },
   });
   // V di Rekap Belajar membuka rincian nilai per bab tanpa menutup menu:
@@ -477,8 +490,11 @@ function saveGame() {
   // jadi setiap penyimpanan mengirim permintaan yang pasti gagal. Progres tidak
   // pernah hilang karena itu — `writeSave` di bawah ini yang jadi sumber
   // kebenaran — tetapi janji "lanjut dari komputer lain" tidak berlaku.
-  writeSave(data, 0);
+  // Nilai kembalian diteruskan: baris "Simpan sekarang" memakainya untuk
+  // membedakan "Tersimpan" dari "peramban menolak menyimpan".
+  const ok = writeSave(data, 0);
   writeProfile(state.profile);
+  return ok;
 }
 
 /**
@@ -1418,6 +1434,44 @@ function update(dt) {
     return;
   }
 
+  // Tombol keluar di pojok kanan atas: kotak kecil di kanvas. Ditangani di sini,
+  // SEBELUM hotbar, karena letaknya tidak bertabrakan tetapi urutannya harus
+  // pasti: satu ketukan hanya boleh melakukan satu hal.
+  //
+  // Kenapa tombol ini ada padahal Esc sudah bekerja: di ponsel tidak ada Esc
+  // yang jelas (ada tombol "Esc" di lapisan sentuh, tetapi maknanya tidak
+  // terbaca oleh murid baru), dan di komputer pemain baru mencoba klik pojok
+  // kanan atas. Satu tombol kecil lebih murah daripada satu sesi yang tidak
+  // bisa ditutup.
+  if (!state.menu?.open) {
+    const tk = kotakTombolKeluar();
+    let kena = false;
+    // Klik tetikus (koordinat kanvas langsung).
+    if (mouse.clicked && mouse.x >= tk.x && mouse.x <= tk.x + tk.w
+      && mouse.y >= tk.y && mouse.y <= tk.y + tk.h) {
+      mouse.clicked = false;
+      kena = true;
+    }
+    // Ketukan jari: memakai `titikKetuk()` seperti hotbar, karena kanvas bisa
+    // sedang diputar 90° atau diperbesar zoom.
+    for (const t of (state.sentuh?.tampil ? titikKetuk() : [])) {
+      if (t.dipakai) continue;
+      // Memakai `x`/`y` (piksel kanvas), BUKAN `dunia`. Seluruh HUD digambar
+      // 1:1 di kanvas, jadi tombol ini tidak ikut mengecil saat skala pandangan
+      // 0,7 — sedangkan `dunia` sudah dibagi skala itu dan akan meleset.
+      if (t.x >= tk.x && t.x <= tk.x + tk.w && t.y >= tk.y && t.y <= tk.y + tk.h) {
+        t.dipakai = true;
+        kena = true;
+      }
+    }
+    if (kena) {
+      state.audio.ui();
+      state.menu.toggle();
+      input.endFrame();
+      return;
+    }
+  }
+
   // Ketuk hotbar untuk memilih alat. Di ponsel tidak ada tombol 1-9, dan hotbar
   // adalah tempat yang paling wajar diketuk — ia sudah menggambar sembilan slot
   // itu. Geometrinya HARUS sama dengan ui/hud.js (S=40, gap=2, di tengah bawah);
@@ -1794,7 +1848,16 @@ function render() {
   for (const c of critters.airNight) drawCritter(ctx, c, cx, cy);
   ctx.restore();   // selesai dunia: mulai dari sini semua UI 1:1 lagi
 
-  drawHud(ctx, { time, player, inv, weather });
+  // `tombolKeluar` disembunyikan saat layar modal terbuka: ketukan di sana tidak
+  // diproses (update() sudah `return` lebih dulu), dan tombol yang terlihat
+  // tetapi diam lebih membingungkan daripada tombol yang tidak ada.
+  const modalTerbuka = Boolean(
+    state.pilihanUI?.open || state.upgradeUI?.open || state.ilmuUI?.open
+    || state.nilaiUI?.open || state.menu?.open || invUI?.open || chestUI?.open
+    || state.shopUI?.open || state.dialog?.active || state.chatUI?.open
+    || state.fishing?.active,
+  );
+  drawHud(ctx, { time, player, inv, weather, tombolKeluar: !modalTerbuka });
   state.fishingUI?.draw(ctx);
   if (!state.fishing?.active && !state.dialog.active && !state.pilihanUI?.open && !state.upgradeUI?.open && !state.fadeDir && !invUI.open && !chestUI.open && !state.shopUI?.open && !state.menu?.open && !state.ilmuUI?.open && !state.nilaiUI?.open) {
     const t = interactTarget();
