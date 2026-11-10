@@ -1,0 +1,16 @@
+{
+  "name": "Lembah Ilmu — RPG Qur'an Hadis",
+  "short_name": "Lembah Ilmu",
+  "description": "Petualangan belajar Al-Qur'an Hadis untuk kelas X.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#1a1410",
+  "theme_color": "#1a1410",
+  "lang": "id",
+  "icons": [
+    { "src": "assets/homepage/logo.png", "sizes": "1192x527", "type": "image/png", "purpose": "any" }
+  ]
+}
