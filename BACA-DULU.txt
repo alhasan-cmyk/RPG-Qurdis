@@ -1,0 +1,64 @@
+LEMBAH ILMU — siap diunggah ke GitHub Pages
+============================================
+
+CARA TERCEPAT (tanpa terminal)
+
+1. Buat repository baru di github.com, misalnya bernama "lembah-ilmu".
+   Pilih Public (Pages gratis hanya untuk repo publik di akun gratis).
+
+2. Unggah SEMUA berkas di dalam zip ini ke repo itu:
+   - lewat web: tombol "Add file" -> "Upload files", lalu seret seluruh isi
+     folder (bukan foldernya, tetapi berkas dan subfoldernya),
+   - atau lewat terminal (lihat bagian bawah).
+
+   Yang penting: index.html harus berada di AKAR repo, bukan di dalam
+   subfolder. Begitu juga game.html dan folder src/ serta assets/.
+
+3. Buka Settings -> Pages. Di bagian "Build and deployment":
+     Source   : Deploy from a branch
+     Branch   : main  /  (root)
+   Simpan. Tunggu 1-2 menit.
+
+4. Alamat situsmu:
+     https://NAMA-AKUN.github.io/lembah-ilmu/
+   Permainan ada di:
+     https://NAMA-AKUN.github.io/lembah-ilmu/game.html
+
+CARA LEWAT TERMINAL
+
+   git init
+   git add .
+   git commit -m "Lembah Ilmu"
+   git branch -M main
+   git remote add origin https://github.com/NAMA-AKUN/lembah-ilmu.git
+   git push -u origin main
+
+   Lalu lakukan langkah 3 di atas sekali saja.
+
+CARA OTOMATIS (repo berisi KODE SUMBER, bukan isi situs)
+
+Pakai cara ini kalau yang kamu unggah adalah zip "lembah-ilmu-game-sumber.zip"
+(proyek lengkap). Di dalam zip itu sudah ada:
+  .github/workflows/pages.yml  — penyusun + penerbit otomatis
+  tools/publish.py             — menyusun dist/ dari src/ dan assets/
+
+Setelah repo berisi kode sumber dan didorong ke GitHub:
+  1. Settings -> Pages -> Source: GitHub Actions
+  2. Setiap dorongan ke `main`, GitHub menjalankan tools/publish.py lalu
+     menerbitkan hasilnya. Riwayat build ada di tab Actions.
+  3. Alamatnya tetap https://NAMA-AKUN.github.io/lembah-ilmu/ dan
+     /game.html.
+
+Jangan pakai dua cara sekaligus (branch dan Actions); pilih salah satu.
+Kalau repo berisi ISI SITUS (zip ini), pakai cara branch di atas.
+
+YANG PERLU DIKETAHUI
+
+- Obrolan desa dan akun TIDAK ADA di GitHub Pages. Halaman statis tidak bisa
+  menjalankan Python. Game, perpustakaan 30 bab, ujian, dan pengiriman nilai
+  ke Google Sheets tetap berjalan normal — nilai dikirim langsung dari
+  peramban murid ke Apps Script.
+- Kalau ingin obrolan hidup, jalankan `python3 tools/serve.py` di komputer
+  atau VPS. Lihat JALANKAN.md bagian 7.
+- Nilai murid masuk ke spreadsheet guru; sambungannya diatur di
+  src/core/nilai-api.js dan JALANKAN.md bagian 6.
