@@ -163,6 +163,83 @@ for (const k of ['X', 'XI', 'XII']) {
   }
 }
 
+// ------------------------------------------------------------------ diamond
+//
+// Aturan yang diminta pemain: lulus satu bab = +1 diamond, dan MENGULANG bab
+// yang sama juga +1 lagi. Uji ini mengunci dua hal yang mudah rusak tanpa
+// ketahuan: hadiahnya tidak boleh dobel dalam satu ujian, dan tidak boleh
+// memberi apa pun kalau tidak lulus.
+{
+  const { Diamond, DIAMOND_PER_LULUS } = await import(join(ROOT, 'src/systems/diamond.js'));
+
+  ok('diamond: hadiah per lulus = 1', DIAMOND_PER_LULUS === 1, String(DIAMOND_PER_LULUS));
+
+  const d = new Diamond();
+  sama('diamond: pemain baru mulai dari 0', d.jumlah, 0);
+
+  sama('diamond: tidak lulus -> 0 hadiah', d.hadiahLulus(false), 0);
+  sama('diamond: gagal tidak menambah apa pun', d.jumlah, 0);
+
+  sama('diamond: lulus -> +1', d.hadiahLulus(true), 1);
+  sama('diamond: jumlah jadi 1', d.jumlah, 1);
+
+  // Diulang: bab yang SAMA, dan tetap dapat.
+  sama('diamond: ulang bab yang sama tetap +1', d.hadiahLulus(true), 1);
+  sama('diamond: jumlah jadi 2 setelah ulang', d.jumlah, 2);
+  sama('diamond: sepuluh kali lulus jadi 12', (Array.from({ length: 10 }, () => d.hadiahLulus(true)), d.jumlah), 12);
+
+  // Simpanan lama tidak punya field ini sama sekali: harus jadi 0, bukan NaN.
+  const lama = new Diamond();
+  lama.load(undefined);
+  sama('diamond: simpanan lama tanpa data -> 0', lama.jumlah, 0);
+  sama('diamond: simpanan rusak (NaN) -> 0', (lama.load({ jumlah: 'bukan angka' }), lama.jumlah), 0);
+  sama('diamond: simpanan negatif dijepit ke 0', (lama.load({ jumlah: -5 }), lama.jumlah), 0);
+  sama('diamond: simpanan pecahan dibulatkan ke bawah', (lama.load({ jumlah: 3.9 }), lama.jumlah), 3);
+
+  // Simpan -> muat -> tetap sama.
+  const d2 = new Diamond(7);
+  sama('diamond: toJSON hanya menyimpan angka', d2.toJSON(), { jumlah: 7 });
+  const d3 = new Diamond();
+  d3.load(JSON.parse(JSON.stringify(d2)));            // lewat JSON, seperti di localStorage
+  sama('diamond: muat ulang tidak menghilangkan jumlah', d3.jumlah, 7);
+
+  // `terakhir` dipakai layar hasil untuk menulis "+1". Gagal harus mengosongkannya,
+  // kalau tidak layar menulis "+1" untuk ujian yang tidak lulus.
+  const d4 = new Diamond();
+  d4.hadiahLulus(true);
+  sama('diamond: terakhir = 1 setelah lulus', d4.terakhir, 1);
+  d4.hadiahLulus(false);
+  sama('diamond: terakhir dikosongkan setelah gagal', d4.terakhir, 0);
+
+  // Jalur di main.js: hadiah diberikan TEPAT SEKALI per onLulus, dan disimpan
+  // segera. Diperiksa dari sumber karena main.js butuh kanvas untuk dijalankan.
+  const mainSumber = baca('src/main.js');
+  ok('main: hadiah diberikan di jalur onLulus', /state\.diamond\.hadiahLulus\(/.test(mainSumber));
+  ok('main: hadiah disimpan segera setelah didapat',
+    /if \(dapat\) \{\s*\n\s*saveGame\(\);/.test(mainSumber), 'saveGame tidak langsung dipanggil');
+  ok('main: hadiah tidak bergantung pada keberhasilan kirim nilai',
+    mainSumber.indexOf('state.diamond.hadiahLulus(') < mainSumber.indexOf('return kirimNilai({'),
+    'hadiah diberikan setelah kirimNilai');
+  ok('main: diamond ikut tersimpan', /diamond: state\.diamond\.toJSON\(\)/.test(mainSumber));
+  ok('main: diamond ikut dimuat', /state\.diamond\.load\(save\.diamond\)/.test(mainSumber));
+
+  // HUD menggambar dua baris: ikon diamond di atas koin.
+  const hudSumber = baca('src/ui/hud.js');
+  ok('hud: menggambar ikon diamond', /icon\(ctx, 'ui_diamond'/.test(hudSumber));
+  ok('hud: ikon diamond di ATAS ikon koin',
+    hudSumber.indexOf("icon(ctx, 'ui_diamond'") < hudSumber.indexOf("icon(ctx, 'ui_coin'"),
+    'urutan baris terbalik');
+  ok('hud: panel kanan atas cukup tinggi untuk dua baris',
+    /GOLD_TINGGI = 56/.test(hudSumber), 'tinggi panel bukan 56');
+
+  // Aset: ikonnya harus ada di manifest, kalau tidak panel diamond kosong tanpa error.
+  const manifest = JSON.parse(baca('assets/manifest.json'));
+  ok('aset: ui_diamond terdaftar', !!manifest.sprites.ui_diamond, JSON.stringify(manifest.sprites.ui_diamond ?? null));
+  sama('aset: ui_diamond berbingkai 24x24', manifest.sprites.ui_diamond?.frame, [24, 24]);
+  ok('aset: berkas ui_diamond ada', /^PNG/.test(readFileSync(join(ROOT, 'assets/sprites/ui/ui_diamond.png')).subarray(1, 4).toString('latin1'))
+    || readFileSync(join(ROOT, 'assets/sprites/ui/ui_diamond.png')).length > 100);
+}
+
 // ------------------------------------------------------------------ laporan
 console.log(`\n${lulus} lulus, ${gagal} gagal`);
 process.exit(gagal ? 1 : 0);

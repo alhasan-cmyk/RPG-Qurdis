@@ -126,6 +126,12 @@ YANG PERLU DIKETAHUI
   OTOMATIS tepat sebelum pertanyaan konfirmasi muncul, jadi membatalkan
   pertanyaannya tidak membatalkan simpanan. Ada juga baris "Simpan sekarang"
   di menu yang sama untuk yang ingin memastikan.
+- DIAMOND: setiap ujian bab yang LULUS memberi +1 diamond, dan mengulang bab
+  yang sama juga +1 lagi (tanpa batas). Tidak lulus = 0. Hadiahnya per ujian,
+  bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya
+  tampil di baris atas panel kanan (di atas gold) dan langsung disimpan begitu
+  didapat, jadi tidak hilang walau halaman ditutup sebelum sempat tidur.
+  Untuk sekarang diamond hanya DIHITUNG; belum ada tempat membelanjakannya.
 - Simpanan permainan hanya tersimpan di peramban masing-masing (localStorage).
   Membuka game dari komputer lain akan mulai dari awal, tetapi akun dan nilai
   tetap dianggap sah karena PIN diperiksa Apps Script.

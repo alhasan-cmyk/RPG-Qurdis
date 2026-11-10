@@ -445,14 +445,19 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   ok('power: :active tidak menimpa geseran titik tengah',
     !/translateY\(-50%\)\s*translateY/.test(sumberGayaDaya), 'ada translateY ganda di :active');
   const mainSumber2 = readFileSync(`${AKAR}/src/main.js`, 'utf8');
-  // 24 = tengah OPTIK isi panel (ikon koin di y 16..32), bukan 28 (tengah
-  // kotak 8..48) dan bukan 48 (tepi bawah, yang bikin tombol melorot).
-  ok('main: gold diukur ke tengah optik isi panel (24)',
-    /goldTengah = 24 \* z/.test(mainSumber2), 'goldTengah tidak ditemukan');
-  ok('power: tidak lagi melorot di bawah angka gold',
-    !/goldTengah = (28|48) \* z/.test(mainSumber2), 'masih memakai titik tengah kotak/tepi bawah');
+  // Panel kanan atas kini DUA baris (diamond di atas, gold di bawah). Tombol
+  // power digantung pada garis tengah baris PERTAMA — 8 (tepi atas panel) + 12
+  // (setengah tinggi baris 24) = 20. Bukan 28 (tengah kotak lama) dan bukan 48
+  // (tepi bawah, yang dulu membuat tombol melorot).
+  ok('main: power di tengah baris diamond (8 + 24/2)',
+    /goldTengah = \(8 \+ 24 \/ 2\) \* z/.test(mainSumber2), 'goldTengah tidak ditemukan');
+  ok('power: tidak lagi melorot ke tengah kotak/tepi bawah',
+    !/goldTengah = (28|48) \* z/.test(mainSumber2), 'masih memakai angka lama');
+  ok('hud: ukuran panel kanan atas diekspor, bukan ditulis dua kali',
+    /export const GOLD_LEBAR/.test(readFileSync(`${AKAR}/src/ui/hud.js`, 'utf8'))
+    && /GOLD_LEBAR \+ 8/.test(mainSumber2), 'GOLD_LEBAR tidak dipakai main.js');
   ok('main: layar sempit tetap menurunkan pasangan power+inventori',
-    /goldBawah = sempit \? 124 \* z/.test(mainSumber2), 'cabang layar sempit hilang');
+    /goldBawah = sempit \? \(98 \+ 6 \+ 40 \/ 2\) \* z/.test(mainSumber2), 'cabang layar sempit hilang');
 
   // Turun ke dasar layar: D-pad dan kluster kanan punya jarak bawah sendiri,
   // dan main.js menghitungnya dari apakah hotbar ikut tertimpa.

@@ -15,7 +15,7 @@ import { Animal } from './entities/animal.js';
 import { Inventory, setItemData, itemDef, HOTBAR } from './systems/inventory.js';
 import { Farming } from './systems/farming.js';
 import { Weather } from './systems/weather.js';
-import { drawHud, drawPrompt, drawToast } from './ui/hud.js';
+import { drawHud, drawPrompt, drawToast, GOLD_LEBAR } from './ui/hud.js';
 import { InventoryUI } from './ui/inventory-ui.js';
 import { ChestUI, CHEST_SLOTS } from './ui/chest-ui.js';
 import { ShopUI } from './ui/shop-ui.js';
@@ -27,6 +27,7 @@ import { Social, GIFT_REPLY, MAX_HEARTS } from './systems/social.js';
 import { Requests, requestText } from './systems/requests.js';
 import { Chat } from './systems/chat.js';
 import { Ilmu, POIN_JAWAB_TEPAT } from './systems/ilmu.js';
+import { Diamond } from './systems/diamond.js';
 import { IlmuUI } from './ui/ilmu-ui.js';
 import { PilihanUI } from './ui/pilihan.js';
 import { pasangSentuh } from './ui/touch.js';
@@ -70,6 +71,7 @@ const state = {
   menu: null,
   ilmu: null,
   ilmuUI: null,
+  diamond: new Diamond(),
   pilihanUI: null,
   upgradeUI: null,
   upgrade: null,
@@ -156,23 +158,37 @@ async function boot() {
   // Progres belajar disimpan begitu terjadi, bukan menunggu pemain tidur: satu
   // pertemuan di kelas bisa berakhir tanpa pernah menyentuh kasur.
   state.ilmuUI.onProgress = saveGame;
+  // Layar hasil ujian perlu tahu berapa diamond yang baru didapat, jadi hadiahnya
+  // diambil dari objek yang sama — tidak ada penghitungan kedua di UI.
+  state.ilmuUI.diamond = state.diamond;
 
   // Setiap bab yang LULUS dikirim ke spreadsheet guru. Yang gagal tidak
   // dikirim sama sekali — keputusan sekolah, dan dijaga di dua tempat
   // (di sini dan di Code.gs) supaya tidak bisa dilangkahi.
-  state.ilmuUI.onLulus = (hasil) => kirimNilai({
-    kitab: hasil.kitab,
-    judul: hasil.judul,
-    benar: hasil.benar,
-    jumlah: hasil.jumlah,
-    nilai: hasil.nilai,
-    kelas: labelKelasMurid(state.ilmu.tingkat, state.ilmu.rombel) || muridAktif()?.kelas,
-  }).then((r) => {
-    // Nilai yang tertahan dari sesi sebelumnya ikut terkirim begitu satu
-    // pengiriman berhasil — bukan menunggu game dibuka ulang.
-    if (r?.ok) kirimAntre();
-    return r;
-  });
+  // Hadiah diamond diberikan DI SINI, di jalur yang sama dengan pengiriman nilai:
+  // satu ujian yang lulus = satu hadiah, sekali. Ditaruh sebelum `kirimNilai`
+  // supaya hadiahnya tidak bergantung pada jaringan — spreadsheet yang sedang
+  // mati tidak boleh membuat murid kehilangan diamond yang sudah ia usahakan.
+  state.ilmuUI.onLulus = (hasil) => {
+    const dapat = state.diamond.hadiahLulus(Boolean(hasil?.lulus ?? true));
+    if (dapat) {
+      saveGame();                 // langsung ditulis; jangan menunggu tidur
+      showToast(`+${dapat} diamond · ${hasil?.judul ?? 'bab lulus'}`, 3.5);
+    }
+    return kirimNilai({
+      kitab: hasil.kitab,
+      judul: hasil.judul,
+      benar: hasil.benar,
+      jumlah: hasil.jumlah,
+      nilai: hasil.nilai,
+      kelas: labelKelasMurid(state.ilmu.tingkat, state.ilmu.rombel) || muridAktif()?.kelas,
+    }).then((r) => {
+      // Nilai yang tertahan dari sesi sebelumnya ikut terkirim begitu satu
+      // pengiriman berhasil — bukan menunggu game dibuka ulang.
+      if (r?.ok) kirimAntre();
+      return r;
+    });
+  };
 
   state.farming = new Farming(crops);
   state.social = new Social(npcData);
@@ -202,6 +218,7 @@ async function boot() {
     state.time.load(save.time);
     state.weather.load(save.weather);
     state.inv.load(save.inv);
+    state.diamond.load(save.diamond);
     state.farming.load(save.soil);
     state.shipping = save.shipping ?? [];
     if (save.chest) save.chest.forEach((s, i) => { state.chest[i] = s; });
@@ -485,13 +502,12 @@ function ukuranTombolSentuh() {
   // Hotbar: S=40, gap=2, 12 px dari bawah; panel pembungkusnya 8 px lebih tinggi.
   const S = 40;
   const hudBawah = (S + 12 + 4) * z;                 // tepi atas panel hotbar
-  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js). Tombol power dan inventori
-  // digantung pada TITIK TENGAH OPTIK isi panel, bukan titik tengah kotaknya:
-  // ikon koin digambar di y 16..32 (ui/hud.js), dan angka gold mulai di y 16 —
-  // jadi mata membaca "tengah" di sekitar y=24, bukan 28 (tengah kotak 8..48).
-  // Memakai 28 membuat tombol terlihat melorot 4 px di sebelah angka gold.
-  const goldKiri = (158 + 8) * z;                    // tepi kiri panel + jarak
-  const goldTengah = 24 * z;                         // tengah OPTIK isi panel
+  // Panel kanan atas sekarang DUA baris (diamond di atas, gold di bawah); ukuran
+  // dan posisinya datang dari ui/hud.js supaya tidak ada dua angka yang bisa
+  // berbeda. Tombol power + inventori digantung pada garis tengah baris ATAS
+  // (baris diamond), karena di situlah mata pemain mendarat lebih dulu.
+  const goldKiri = (GOLD_LEBAR + 8) * z;             // tepi kiri panel + jarak
+  const goldTengah = (8 + 24 / 2) * z;               // tengah baris pertama
   // Di layar sempit (ponsel tegak, view 390 px) panel jam selebar 226 px +
   // panel gold 150 px sudah memenuhi seluruh lebar — tidak ada sisa untuk
   // tombol power + inventori. Kalau begitu, pasangan itu TURUN ke bawah panel
@@ -500,9 +516,9 @@ function ukuranTombolSentuh() {
   const jamKanan = 234 * z;
   const sisa = (W * z) - goldKiri - jamKanan;
   const sempit = sisa < lebarTombol + 12;
-  // Layar sempit: titik tengah digeser ke 124 supaya bibir ATAS tombol (40 px)
-  // berhenti 6 px di bawah panel jam yang berakhir di y=98.
-  const goldBawah = sempit ? 124 * z : goldTengah;
+  // Layar sempit: titik tengah digeser supaya bibir ATAS tombol (40 px) berhenti
+  // 6 px di bawah panel jam yang berakhir di y=98.
+  const goldBawah = sempit ? (98 + 6 + 40 / 2) * z : goldTengah;
   // Panel hotbar: 9 slot 40 px + jarak 2 px, dibungkus 10 px kiri-kanan, jadi
   // menempati x = W/2 ± 198 di kanvas. Dibulatkan ke 204 supaya ada sisa aman.
   const hotbarKanan = W / 2 + 204;
@@ -539,6 +555,7 @@ function saveGame() {
     weather: state.weather.toJSON(),
     player: { x: p.x, y: p.y, dir: p.dir, money: p.money, energy: p.energy, maxEnergy: p.maxEnergy },
     inv: state.inv.toJSON(),
+    diamond: state.diamond.toJSON(),
     chest: state.chest,
     soil: state.farming.toJSON(),
     shipping: state.shipping,
@@ -1885,7 +1902,10 @@ function render() {
   // Tombol keluar di kanvas sudah DIHAPUS. Jalan keluarnya satu saja: tombol
   // power di kiri atas (ui/tombolKeluar.js), yang mengirim aksi 'menu' yang
   // sama dengan Esc.
-  drawHud(ctx, { time, player, inv, weather });
+  // `player.diamond` dibaca HUD untuk baris atas panel kanan; objek pemain
+  // sendiri tidak menyimpannya (diamond milik progres belajar, bukan badan
+  // pemain), jadi digabungkan di sini, sekali, tanpa mengubah Character.
+  drawHud(ctx, { time, player: { ...player, diamond: state.diamond.jumlah }, inv, weather });
 
   // Tombol power disembunyikan selagi pertanyaan "Keluar?" tampil: ada dua jalan
   // keluar yang bisa ditekan bersamaan kalau tidak. Tombol ini elemen HTML,
