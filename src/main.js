@@ -485,12 +485,13 @@ function ukuranTombolSentuh() {
   // Hotbar: S=40, gap=2, 12 px dari bawah; panel pembungkusnya 8 px lebih tinggi.
   const S = 40;
   const hudBawah = (S + 12 + 4) * z;                 // tepi atas panel hotbar
-  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js) — tingginya 40 px, jadi
-  // titik tengahnya di y=28. Tombol power dan inventori digantung pada TITIK
-  // TENGAH itu (bukan tepi bawahnya): kalau memakai tepi bawah, tombol 40 px
-  // turun 8 px terlalu jauh dan terlihat menggantung di bawah garis panel.
+  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js). Tombol power dan inventori
+  // digantung pada TITIK TENGAH OPTIK isi panel, bukan titik tengah kotaknya:
+  // ikon koin digambar di y 16..32 (ui/hud.js), dan angka gold mulai di y 16 —
+  // jadi mata membaca "tengah" di sekitar y=24, bukan 28 (tengah kotak 8..48).
+  // Memakai 28 membuat tombol terlihat melorot 4 px di sebelah angka gold.
   const goldKiri = (158 + 8) * z;                    // tepi kiri panel + jarak
-  const goldTengah = 28 * z;
+  const goldTengah = 24 * z;                         // tengah OPTIK isi panel
   // Di layar sempit (ponsel tegak, view 390 px) panel jam selebar 226 px +
   // panel gold 150 px sudah memenuhi seluruh lebar — tidak ada sisa untuk
   // tombol power + inventori. Kalau begitu, pasangan itu TURUN ke bawah panel
@@ -517,8 +518,10 @@ function ukuranTombolSentuh() {
   // D-pad kiri diperiksa dengan cara yang sama: turun ke 8 px kalau tepi
   // kanannya masih di kiri hotbar. Di ponsel tegak (390 px) hotbar selebar
   // hampir seluruh layar, jadi di sana D-pad tetap 52 px seperti dulu.
+  // D-pad: jarak antar tombol 2 px (CSS .lk-touch .kiri), bukan 6 px — empat
+  // tombol arah harus terasa satu genggaman, bukan empat tombol terpisah.
   const selKiri = Math.max(38, Math.min(52, Math.round(W * 0.11)));
-  const dpadKanan = 10 + (3 * selKiri + 2 * 6);
+  const dpadKanan = 10 + (3 * selKiri + 2 * 2);
   const kiriBawah = dpadKanan + 4 < hotbarKiri ? 8 * z : hudBawah + 4 * z;
   state.sentuh.ukuranHud({ w: W * z, h: H * z, hudBawah, goldBawah, goldKiri, kananBawah, kiriBawah });
   // Tombol power duduk di tempat yang sama dengan tombol inventori di kluster
