@@ -44,11 +44,13 @@ const HELP_TEXT = [
 ];
 
 export class Menu {
-  constructor({ audio, renderer, onQuit, ilmu = null }) {
+  constructor({ audio, renderer, onQuit, ilmu = null, sentuh = null }) {
     this.audio = audio;
     this.renderer = renderer;
     this.onQuit = onQuit;
     this.ilmu = ilmu;
+    /** Lapisan tombol sentuh (ui/touch.js), atau null kalau tidak dipasang. */
+    this.sentuh = sentuh;
     this.onNilai = null;   // dipasang main.js: membuka layar Nilai & Pengiriman
     this.open = false;
     this.page = 'root';
@@ -68,17 +70,28 @@ export class Menu {
     const z = this.renderer.zoomOverride;
     const skala = SKALA[this.renderer.skalaNama]?.label ?? 'Normal';
     return [
-      { id: 'volume', label: 'Volume musik', value: `${Math.round(this.audio.settings.musicVolume * 100)}%`, bar: this.audio.settings.musicVolume },
-      { id: 'sfx', label: 'Volume efek', value: `${Math.round(this.audio.settings.sfxVolume * 100)}%`, bar: this.audio.settings.sfxVolume },
-      { id: 'mute', label: 'Bisukan semua', value: this.audio.settings.muted ? 'Ya' : 'Tidak' },
+      { id: 'volume', label: 'Volume musik', value: `${Math.round(this.audio.settings.musicVolume * 100)}%`, bar: this.audio.settings.musicVolume, hint: 'Musik latar' },
+      { id: 'sfx', label: 'Volume efek', value: `${Math.round(this.audio.settings.sfxVolume * 100)}%`, bar: this.audio.settings.sfxVolume, hint: 'Bunyi cangkul, panen, langkah' },
+      { id: 'mute', label: 'Bisukan semua', value: this.audio.settings.muted ? 'Ya' : 'Tidak', hint: 'Matikan seluruh suara' },
       // "Luas" memperkecil gambar dunia saja; HUD dan tombol tetap besar.
       // Inilah yang membuat semua tombol pasti kelihatan di ponsel.
-      { id: 'pandangan', label: 'Luas pandangan', value: skala },
-      { id: 'zoom', label: 'Zoom tampilan', value: z === 0 ? 'Otomatis' : `×${z}` },
+      { id: 'pandangan', label: 'Luas pandangan', value: skala, hint: 'Perkecil gambar dunia, HUD tetap besar' },
+      { id: 'zoom', label: 'Zoom tampilan', value: z === 0 ? 'Otomatis' : `×${z}`, hint: 'Perbesar seluruh tampilan' },
+      // Tanpa baris ini, tombol sentuh yang muncul keliru di laptop (atau
+      // menutupi layar di tablet berponsel-ketik) tidak bisa dimatikan sama
+      // sekali. Pilihannya diingat di perangkat ini (ui/touch.js).
+      ...(this.sentuh ? [{
+        id: 'sentuh',
+        label: 'Tombol sentuh',
+        value: this.sentuh.tampil ? 'Tampil' : 'Mati',
+        hint: this.sentuh.perangkatSentuh
+          ? 'Tombol di layar untuk jempol'
+          : 'Perangkat ini tidak terdeteksi punya layar sentuh',
+      }] : []),
       // Baris ini disembunyikan di peramban yang tidak punya API layar penuh
       // (iPhone Safari) supaya tidak ada tombol yang pasti gagal.
-      ...(bisaLayarPenuh() ? [{ id: 'penuh', label: 'Layar penuh', value: sedangPenuh() ? 'Ya' : 'Tidak' }] : []),
-      { id: 'back', label: 'Kembali', value: '' },
+      ...(bisaLayarPenuh() ? [{ id: 'penuh', label: 'Layar penuh', value: sedangPenuh() ? 'Ya' : 'Tidak', hint: 'Sembunyikan bilah peramban' }] : []),
+      { id: 'back', label: 'Kembali', value: '', hint: 'Balik ke daftar jeda' },
     ];
   }
 
@@ -103,14 +116,21 @@ export class Menu {
         if (row.id === 'mute') this.audio.toggleMute();
         if (row.id === 'zoom') this.renderer.stepZoom(dir);
         if (row.id === 'pandangan') this.renderer.stepSkala(dir);
+        // Kiri = mati, kanan = tampil. Arah ini dipilih supaya sama dengan baris
+        // lain (kanan selalu "menambah"), bukan karena urutan nilainya penting.
+        if (row.id === 'sentuh') this.sentuh.aturTampil(dir > 0);
         return;
       }
       if (action === 'interact') {
-        if (row.id === 'back') { this.page = 'root'; this.cursor = 2; }
+        // Kembali ke daftar utama dengan kursor di baris "Pengaturan" lagi —
+        // dicari lewat id, bukan nomor, supaya tidak meleset kalau urutan ROOT
+        // berubah.
+        if (row.id === 'back') { this.page = 'root'; this.cursor = ROOT.findIndex((r) => r.id === 'settings'); }
         if (row.id === 'mute') this.audio.toggleMute();
         // Ditangani sendiri (asinkron): permintaan layar penuh harus datang dari
         // gestur, dan gestur itu adalah tombol E yang baru saja ditekan.
         if (row.id === 'penuh') alihkanPenuh().then(() => this.audio.ui());
+        else if (row.id === 'sentuh') { this.sentuh.alihkan(); this.audio.ui(); }
         else this.audio.ui();
       }
       return;
@@ -174,15 +194,35 @@ export class Menu {
     text(ctx, ROOT[this.cursor].hint, x + w / 2, y + h - 30, { font: UI.font, align: 'center', color: '#7a6647' });
   }
 
+  /**
+   * Berapa baris Pengaturan yang muat di layar sekarang.
+   *
+   * Panelnya dulu setinggi jumlah baris, jadi setiap baris baru menambah tinggi
+   * dan di jendela 360 px baris "Layar penuh" dan "Kembali" mulai terpotong.
+   * Sekarang tingginya dibatasi layar dan daftarnya bergulir — pola yang sama
+   * dengan rak perpustakaan dan papan Ragam Usaha.
+   */
+  barisPengaturanMu(at = 40) {
+    // 76 px kepala + 34 px baris petunjuk di kaki + 16 px tepi atas/bawah.
+    return Math.max(1, Math.floor((view.h - 24 - 76 - 34) / at));
+  }
+
   drawSettings(ctx) {
     const rows = this.settingsRows();
-    const w = Math.min(420, view.w - 32), h = 76 + rows.length * 40 + 34;
+    const BARIS = 40;
+    const muat = this.barisPengaturanMu(BARIS);
+    const lihat = Math.min(rows.length, muat);
+    const w = Math.min(420, view.w - 32), h = 76 + lihat * BARIS + 34;
     const x = Math.round((view.w - w) / 2), y = Math.max(8, Math.round((view.h - h) / 2));
     panel(ctx, x, y, w, h);
     text(ctx, 'PENGATURAN', x + w / 2, y + 20, { font: UI.fontTitle, align: 'center', color: UI.red });
 
-    rows.forEach((row, i) => {
-      const ry = y + 58 + i * 40;
+    // Kursor selalu terlihat: jendela bergeser hanya kalau ia keluar dari daftar.
+    const atas = Math.max(0, Math.min(this.cursor - lihat + 1, rows.length - lihat));
+    this._geserPengaturan = atas;
+    rows.slice(atas, atas + lihat).forEach((row, j) => {
+      const i = atas + j;
+      const ry = y + 58 + j * BARIS;
       const on = i === this.cursor;
       if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 16, ry - 4, w - 32, 34); }
       text(ctx, `${on ? '▶' : ' '} ${row.label}`, x + 30, ry, { font: UI.fontBig });
@@ -198,7 +238,23 @@ export class Menu {
       if (row.value) text(ctx, row.value, x + w - 30, ry, { font: UI.fontBig, align: 'right' });
     });
 
-    text(ctx, '←/→ ubah  ·  E pilih  ·  Esc kembali', x + w / 2, y + h - 30,
+    // Panah kecil di tepi daftar menunjukkan masih ada baris di atas/bawah.
+    // Tanpa ini, baris "Kembali" yang tergeser keluar layar tampak seperti
+    // hilang — dan pemain mengira menunya rusak, padahal Esc tetap bekerja.
+    // Ditaruh rapat di tepi panel, bukan di kolom nilai (x + w - 30 dipakai
+    // nilai baris — panah di situ menimpa "Tidak").
+    if (atas > 0) text(ctx, '▲', x + w - 12, y + 46, { font: UI.font, align: 'right', color: '#8a7550' });
+    if (atas + lihat < rows.length) {
+      text(ctx, '▼', x + w - 12, y + 58 + lihat * BARIS - 8, { font: UI.font, align: 'right', color: '#8a7550' });
+    }
+
+    // Keterangan baris yang sedang ditunjuk, lalu petunjuk tombol. Kalau panelnya
+    // bergulir, posisi baris disebut supaya pemain tahu masih ada di atas/bawah.
+    const kini = rows[this.cursor];
+    const geser = lihat < rows.length ? `  (${this.cursor + 1}/${rows.length})` : '';
+    text(ctx, fit(ctx, `${kini?.hint ?? ''}${geser}`, w - 40, UI.font),
+      x + w / 2, y + h - 46, { font: UI.font, align: 'center', color: '#7a6647' });
+    text(ctx, '←/→ ubah  ·  E pilih  ·  Esc kembali', x + w / 2, y + h - 28,
       { font: UI.font, align: 'center', color: '#7a6647' });
   }
 

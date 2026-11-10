@@ -116,16 +116,20 @@ YANG PERLU DIKETAHUI
 
 MEMERIKSA DATA SEBELUM MENDORONG
 
-Dua alat ini tidak memerlukan peramban maupun pemasangan apa pun (cukup Node.js):
+Alat-alat ini tidak memerlukan peramban. Tiga yang pertama cukup Node.js saja;
+yang terakhir butuh DOM (`npm i jsdom`) dan akan melewati dirinya sendiri kalau
+jsdom belum terpasang:
 
   node tools/periksa-data.mjs        # 30 bab, 900 soal, pembagian bab ke warga,
                                      # alat, dan isi papan Ragam Usaha
   node tools/uji-tata-letak.mjs      # layar Ragam Usaha di lima ukuran layar:
                                      # nama guru utuh, kalimat tidak terpotong
   node tests/uji.mjs                 # seluruh uji sistem (±2.900 pemeriksaan)
+  node tools/uji-sentuh.mjs          # baris "Tombol sentuh" di Pengaturan
+                                     # (butuh DOM: npm i jsdom)
 
-Jalankan keduanya setiap kali mengubah src/data/ilmu.json atau
-src/systems/upgrade.js. Kesalahan di dua berkas itu tidak membuat game error —
-ia hanya membuat keterangan di layar menjadi salah, misalnya satu bab ditagih
-dua kali atau nama guru tidak muncul. Itu paling sulit ditemukan saat bermain,
-jadi diperiksa di sini.
+Jalankan semuanya sebelum mendorong. Yang paling perlu dijaga adalah setiap kali
+mengubah src/data/ilmu.json atau src/systems/upgrade.js: kesalahan di dua berkas
+itu tidak membuat game error — ia hanya membuat keterangan di layar menjadi
+salah, misalnya satu bab ditagih dua kali atau nama guru tidak muncul. Itu
+paling sulit ditemukan saat bermain, jadi diperiksa di sini.

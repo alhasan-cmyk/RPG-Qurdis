@@ -137,6 +137,8 @@ async function boot() {
   state.sentuh = pasangSentuh({
     onPetunjuk: () => showToast('◀ jalan · E pakai · ketuk alat', 5),
   });
+  // Pilihan pemain soal tombol sentuh disimpan per perangkat (lihat ui/touch.js),
+  // jadi di sini tidak ada yang perlu dimuat: pasangSentuh sudah membacanya.
   state.sentuh.ukuranHud?.({ w: view.w, h: view.h });
 
   state.pilihanUI = new PilihanUI(state.audio);
@@ -251,6 +253,10 @@ async function boot() {
     audio: state.audio,
     renderer,
     ilmu: state.ilmu,
+    // Baris "Tombol sentuh" di Pengaturan butuh lapisan ini untuk mengetahui
+    // keadaannya dan mengubahnya. Tanpa ini, tombol yang muncul keliru di
+    // laptop tidak bisa dimatikan sama sekali.
+    sentuh: state.sentuh,
     onQuit: () => { saveGame(); location.href = 'index.html'; },
   });
   // V di Rekap Belajar membuka rincian nilai per bab tanpa menutup menu:
