@@ -44,7 +44,9 @@ const GAYA = `
 .lk-touch .kelompok { position: fixed; display: grid; gap: 6px; pointer-events: none; }
 /* D-pad di kiri bawah — tempat jempol kiri beristirahat, di ATAS hotbar kanvas
    (hotbar itu bisa diketuk, jadi tidak boleh tertutup). */
-.lk-touch .kiri { left: 10px; bottom: var(--lk-kiri-b);
+/* Jarak 2 px (bukan 6 px seperti kluster kanan): empat tombol arah dibaca mata
+   sebagai SATU pad, dan jempol tidak perlu menggeser jauh antar tombol. */
+.lk-touch .kiri { left: 10px; bottom: var(--lk-kiri-b); gap: 2px;
   grid-template-columns: repeat(3, clamp(38px, 11vw, 52px));
   grid-template-rows: repeat(3, clamp(38px, 11vw, 52px)); }
 

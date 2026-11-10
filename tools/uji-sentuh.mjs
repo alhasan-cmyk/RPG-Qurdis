@@ -436,13 +436,23 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
     /translateY\(-50%\)/.test(sumberGayaDaya) && /goldBawah = 28/.test(sumberGayaDaya),
     'aturPosisi/transform titik tengah tidak ada');
   const mainSumber2 = readFileSync(`${AKAR}/src/main.js`, 'utf8');
-  ok('main: gold diukur ke titik tengah panel (28), bukan tepi bawah (48)',
-    /goldTengah = 28 \* z/.test(mainSumber2), 'goldTengah tidak ditemukan');
+  // 24 = tengah OPTIK isi panel (ikon koin di y 16..32), bukan 28 (tengah
+  // kotak 8..48) dan bukan 48 (tepi bawah, yang bikin tombol melorot).
+  ok('main: gold diukur ke tengah optik isi panel (24)',
+    /goldTengah = 24 \* z/.test(mainSumber2), 'goldTengah tidak ditemukan');
+  ok('power: tidak lagi melorot di bawah angka gold',
+    !/goldTengah = (28|48) \* z/.test(mainSumber2), 'masih memakai titik tengah kotak/tepi bawah');
   ok('main: layar sempit tetap menurunkan pasangan power+inventori',
     /goldBawah = sempit \? 124 \* z/.test(mainSumber2), 'cabang layar sempit hilang');
 
   // Turun ke dasar layar: D-pad dan kluster kanan punya jarak bawah sendiri,
   // dan main.js menghitungnya dari apakah hotbar ikut tertimpa.
+  // Empat tombol arah harus terasa satu pad: jaraknya 2 px, bukan 6 px.
+  ok('D-pad: tombol arah rapat (gap 2 px)', /gap:\s*2px/.test(aturan('.lk-touch .kiri')),
+    aturan('.lk-touch .kiri').trim());
+  ok('main: lebar D-pad dihitung dengan jarak 2 px',
+    /dpadKanan = 10 \+ \(3 \* selKiri \+ 2 \* 2\)/.test(mainSumber2),
+    'rumus dpadKanan masih memakai jarak lama');
   ok('D-pad: jarak bawah dari --lk-kiri-b', /bottom:\s*var\(--lk-kiri-b\)/.test(aturan('.lk-touch .kiri')),
     aturan('.lk-touch .kiri').trim());
   ok('kanan: jarak bawah dari --lk-kanan-b', /bottom:\s*var\(--lk-kanan-b\)/.test(aturan('.lk-touch .kanan')),

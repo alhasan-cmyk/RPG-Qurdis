@@ -108,8 +108,11 @@ YANG PERLU DIKETAHUI
   untuk semua perangkat (laptop, HP, tablet) dan selalu terlihat; Esc tetap
   bekerja sebagai jalan pintas. Bisa juga dimatikan lewat Pengaturan > "Tombol
   power".
-- Tata letak tombol layar: power dan inventori (I) SEBARIS dengan panel gold
-  (digantung pada garis tengah panel, bukan tepi bawahnya); D-pad di kiri bawah,
+- Tata letak tombol layar: power dan inventori (I) SEBARIS dengan angka gold
+  (digantung pada garis tengah IKON koin, bukan garis tengah kotak panel — kalau
+  memakai tengah kotak, tombolnya terlihat melorot 4 px); D-pad (empat tombol
+  arah) dirapatkan 2 px antar tombol supaya terbaca sebagai satu pad, dan
+  diletakkan di kiri bawah,
   kluster kanan di kanan bawah — keduanya didorong turun sampai hampir
   menyentuh dasar layar, tetapi kalau hotbar angka kebetulan sampai ke
   sudutnya, tombolnya dinaikkan kembali ke atas hotbar supaya slot tidak
