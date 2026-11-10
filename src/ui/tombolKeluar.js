@@ -27,9 +27,17 @@ const GAYA = `
   background: rgba(248, 214, 206, .94); color: #8a2c1d;
   cursor: pointer; touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  /* "top" yang dikirim aturPosisi() adalah GARIS TENGAH panel gold, bukan
+     tepi atas tombol — jadi tombolnya harus digeser setengah tingginya sendiri.
+     Tanpa baris ini tombol 40 px menggantung 20 px di bawah angka gold, dan
+     pemain melihatnya SEBAGAI "belum dinaikkan" berapa kali pun angka top
+     diperkecil. Tombol inventori di ui/touch.js memakai aturan yang sama. */
+  transform: translateY(-50%);
   box-shadow: 0 2px 0 rgba(58, 42, 42, .35);
 }
-#${ID}:active { background: rgba(255, 232, 224, 1); transform: translateY(-50%) translateY(1px); }
+/* Saat ditekan: isi tombol memekat, posisinya TIDAK bergeser — geseran 1 px
+   akan menimpa translateY(-50%) di atas dan tombolnya melompat 20 px. */
+#${ID}:active { background: rgba(255, 232, 224, 1); }
 #${ID}[hidden] { display: none; }
 /* Pertanyaan "Keluar?" sedang tampil: tombol power disembunyikan supaya tidak
    ada dua jalan keluar yang bisa ditekan bersamaan. Layar itu sendiri yang
@@ -54,6 +62,13 @@ const IKON = `
  * Posisi HARUS dikirim pemanggil lewat `aturPosisi`, karena tombol ini duduk di
  * sebelah panel gold yang digambar di kanvas — dan posisi panel itu berbeda di
  * tiap ukuran layar.
+ *
+ * SATU HAL YANG MUDAH SALAH: di ponsel tegak, kanvas diputar 90° oleh CSS
+ * (ui/landscape.js). Tombol ini elemen HTML biasa — ia TIDAK ikut berputar.
+ * Layar tegak 390x844 terlihat pemain sebagai 844x390 mendatar, dan pojok kiri
+ * atas di layar itu adalah (0,0) layar tegak juga (titik (0,0) tetap di (0,0)
+ * setelah diputar +90° — lihat TRANSFORM_PUTAR). Jadi koordinat mendatar boleh
+ * dipakai apa adanya; yang berubah hanya sisi mana yang disebut "bawah".
  */
 export function pasangTombolKeluar() {
   const sudah = document.getElementById(ID);
@@ -106,7 +121,7 @@ export function pasangTombolKeluar() {
      * Nama lama dipertahankan supaya pemanggil tidak perlu diubah, tetapi
      * artinya sudah bergeser: dulu tepi bawah, sekarang garis tengah.
      */
-    aturPosisi({ goldBawah = 28, goldKiri = 166 } = {}) {
+    aturPosisi({ goldBawah = 24, goldKiri = 166 } = {}) {
       b.style.top = `${Math.round(goldBawah)}px`;
       b.style.right = `${Math.round(goldKiri)}px`;
     },

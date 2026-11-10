@@ -432,9 +432,18 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   // (bukan tepi bawahnya), dan tombol menggeser dirinya setengah tinggi.
   ok('kiri atas: digantung pada titik tengah panel gold',
     /translateY\(-50%\)/.test(matikanPosisi), matikanPosisi.trim());
-  ok('power: ikut titik tengah, bukan tepi bawah panel',
-    /translateY\(-50%\)/.test(sumberGayaDaya) && /goldBawah = 28/.test(sumberGayaDaya),
-    'aturPosisi/transform titik tengah tidak ada');
+  // Dulu uji ini HANYA membaca dua potongan teks, dan lolos padahal tombolnya
+  // masih menggantung: memang ada `translateY(-50%)` di berkas, tetapi milik
+  // aturan :active (yang bahkan menimpanya dengan translateY(1px)). Sekarang
+  // yang diperiksa BLOK CSS tombolnya sendiri, bukan seluruh berkas.
+  const blokDaya = /#\$\{ID\} \{([^}]*)\}/.exec(sumberGayaDaya)?.[1] ?? '';
+  ok('power: blok #lk-tombol-daya memakai translateY(-50%)',
+    /transform:\s*translateY\(-50%\)/.test(blokDaya),
+    blokDaya.trim().slice(0, 120) || '(blok tidak ditemukan)');
+  ok('power: titik tengah panel dipakai sebagai default (24)',
+    /goldBawah = 24/.test(sumberGayaDaya), 'default aturPosisi bukan 24');
+  ok('power: :active tidak menimpa geseran titik tengah',
+    !/translateY\(-50%\)\s*translateY/.test(sumberGayaDaya), 'ada translateY ganda di :active');
   const mainSumber2 = readFileSync(`${AKAR}/src/main.js`, 'utf8');
   // 24 = tengah OPTIK isi panel (ikon koin di y 16..32), bukan 28 (tengah
   // kotak 8..48) dan bukan 48 (tepi bawah, yang bikin tombol melorot).

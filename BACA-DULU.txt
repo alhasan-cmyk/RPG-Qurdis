@@ -108,6 +108,9 @@ YANG PERLU DIKETAHUI
   untuk semua perangkat (laptop, HP, tablet) dan selalu terlihat; Esc tetap
   bekerja sebagai jalan pintas. Bisa juga dimatikan lewat Pengaturan > "Tombol
   power".
+- Tombol power digeser dengan `translateY(-50%)` supaya titik tumpunya adalah
+  GARIS TENGAH panel gold. Tanpa itu tombolnya selalu duduk 20 px di bawah
+  angka gold — persis keluhan "power belum dinaikkan" yang muncul berulang.
 - Tata letak tombol layar: power dan inventori (I) SEBARIS dengan angka gold
   (digantung pada garis tengah IKON koin, bukan garis tengah kotak panel — kalau
   memakai tengah kotak, tombolnya terlihat melorot 4 px); D-pad (empat tombol
