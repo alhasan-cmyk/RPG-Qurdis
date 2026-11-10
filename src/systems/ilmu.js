@@ -55,6 +55,18 @@ const URUTAN_ALAT = ['hoe', 'water', 'axe', 'pickaxe', 'scythe', 'fish'];
 const ROMAWI = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 export function nomorRomawi(n) { return ROMAWI[n] ?? String(n); }
 
+/**
+ * Nama Indonesia alat, untuk kalimat yang dibaca murid.
+ *
+ * Dipisah dari `KATA_ALAT` karena yang ini benda ("cangkul"), bukan kata kerja
+ * ("mencangkul"). Tanpa peta ini, kalimat syarat menulis "Bab ini juga membuka
+ * axe" — benar secara data, tetapi tidak berarti apa pun bagi murid.
+ */
+export const NAMA_ALAT = {
+  hoe: 'cangkul', water: 'penyiram', axe: 'kapak', pickaxe: 'beliung',
+  scythe: 'sabit', fish: 'pancing', seed: 'benih', shovel: 'sekop',
+};
+
 /** Kata kerja yang dipakai warga saat menawarkan: "belajar mencangkul". */
 export const KATA_ALAT = {
   hoe: 'mencangkul', water: 'menyiram', axe: 'menebang', pickaxe: 'menambang',
@@ -195,6 +207,52 @@ export class Ilmu {
       .find((a) => this.data.keahlian.guru[a] === npcId);
     const satu = this.data.keahlian?.syarat?.[kelas]?.[alat];
     return satu ? [satu] : [];
+  }
+
+  /**
+   * Siapa yang mengajarkan sebuah bab DI KELAS PEMAIN.
+   *
+   * Dipakai layar-layar yang menyebut "lulus Bab IV dulu" — papan Ragam Usaha,
+   * kotak pilihan warga, dan pesan alat terkunci. Tanpa nama gurunya, murid
+   * hanya melihat nomor bab dan harus menebak ke warga mana ia harus datang;
+   * dengan 6 warga dan 8–12 bab, tebakan itu jarang benar.
+   *
+   * Mengembalikan `{ npcId, nama, urutan }` (urutan = bab ke berapa bagi guru
+   * itu), atau null kalau bab itu tidak diajarkan siapa pun di kelas ini.
+   */
+  guruBab(kitabId) {
+    if (!kitabId) return null;
+    for (const npcId of Object.keys(this.data.keahlian?.ajar?.[this.tingkat ?? this.kelasBawaan()] ?? {})) {
+      const daftar = this.babDiajar(npcId);
+      const i = daftar.indexOf(kitabId);
+      if (i >= 0) {
+        return {
+          npcId,
+          nama: (this.data.npcNama ?? {})[npcId] ?? npcId,
+          urutan: i + 1,
+        };
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Nama alat yang bab pembukanya adalah bab ini, untuk kelas pemain.
+   *
+   * Dipakai kalimat syarat papan Ragam Usaha: "…Sekaligus membuka kapak."
+   * Tanpa ini, papan yang memarkir syaratnya di bab pembuka alat tampak seperti
+   * salah ketik — dua hal berbeda menunjuk bab yang sama, tanpa penjelasan.
+   */
+  alatUntukBab(kitabId, kelas = null) {
+    if (!kitabId) return null;
+    const k = kelas ?? this.tingkat ?? this.kelasBawaan();
+    const peta = this.data.keahlian?.syarat?.[k] ?? {};
+    const alat = Object.keys(peta).find((a) => peta[a] === kitabId);
+    if (!alat) return null;
+    // Urutan cadangan: nama dari data (kalau suatu saat ditambahkan), lalu tabel
+    // NAMA_ALAT di berkas ini, terakhir id mentah — jangan sampai layar menulis
+    // "axe" hanya karena data belum punya nama.
+    return this.data.keahlian?.alatNama?.[alat] ?? NAMA_ALAT[alat] ?? alat;
   }
 
   /** Alat yang dipegang warga ini (kalau ada), dan bab pembukanya. */

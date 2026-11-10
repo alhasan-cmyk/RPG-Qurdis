@@ -10,6 +10,23 @@ import { panel, text, wrap, fit, UI } from './draw.js';
 import { UPGRADE, NAMA_BAHAN } from '../systems/upgrade.js';
 
 export class UpgradeUI {
+  /**
+   * Ukuran tata letak, satu tempat.
+   *
+   * Diekspor supaya alat uji (tools/uji-tata-letak.mjs) memakai angka yang SAMA
+   * dengan yang digambar — bukan salinan yang cepat atau lambat jadi berbeda
+   * dan membuat uji "lulus" padahal layarnya sudah berubah.
+   */
+  static TATA = {
+    PAD: 18,          // tepi kiri/kanan isi panel
+    LEBAR_MAKS: 600,  // panel tidak pernah lebih lebar dari ini
+    HUD: 34,          // tinggi hotbar di atas; panel tidak boleh menimpanya
+    ROW: 32,          // tinggi satu baris daftar (dua baris teks di kolom kanan)
+    RINCI: 92,        // kotak rincian: bahan, guna, dan sampai tiga baris alasan
+    KEPALA: 40,       // judul "RAGAM USAHA DESA"
+    BARIS_MAKS: 4,    // baris yang digambar sekaligus
+  };
+
   constructor(upgrade, audio = null) {
     this.up = upgrade;
     this.audio = audio;
@@ -52,14 +69,10 @@ export class UpgradeUI {
       const st = this.status();
       if (!st.boleh) {
         this.audio?.denied?.();
-        // Satu pesan per kegagalan, berurutan dari yang paling menentukan:
-        // tingkat penuh -> bab -> bahan -> uang. Bahan disebut lebih dulu
-        // daripada uang karena bahan harus dicari di ladang, sedangkan uang
-        // datang sendiri dari hasil panen.
-        if (st.penuh) this.pesan = 'Sudah pada tingkat tertinggi.';
-        else if (!st.lulus) this.pesan = `Lulus dulu ${st.labelBab}${st.judulBab ? ': ' + (st.judulBab.split(' — ')[1] ?? st.judulBab) : ''}.`;
-        else if (st.bahanKurang.length) this.pesan = `Bahan kurang: ${st.bahanKurang.map((b) => `${b.kurang} ${NAMA_BAHAN[b.bahan] ?? b.bahan}`).join(', ')}.`;
-        else this.pesan = `Uangnya kurang G${st.uangKurang.toLocaleString('id-ID')}.`;
+        // Alasan disusun di sistem (Upgrade.alasanTidakBoleh), satu sumber yang
+        // sama dengan baris status di layar — supaya tombol E dan tulisan di
+        // panel tidak pernah berkata berbeda.
+        this.pesan = this.up.alasanTidakBoleh(st, { namaBahan: NAMA_BAHAN });
         return true;
       }
       const r = this.up.beli(st.id, { inv: this.ctx.inv, uang: this.ctx.uang() });
@@ -84,16 +97,12 @@ export class UpgradeUI {
     // peningkatan tidak muat di situ bersama rinciannya; karena itu daftarnya
     // memakai jendela gulir — pola yang sama dengan rak perpustakaan — dan baris
     // yang ditunjuk dirinci di kotak bawah.
-    const PAD = 18;
-    const W = Math.min(600, view.w - 24);
-    const HUD = 34;                     // hotbar: digambar paling atas, jangan ditimpa
-    const ROW = 26;
-    const RINCI = 70;                   // kotak rincian (3 baris teks + tepi)
-    const KEPALA = 40;
+    const { PAD, LEBAR_MAKS, HUD, ROW, RINCI, KEPALA } = UpgradeUI.TATA;
+    const W = Math.min(LEBAR_MAKS, view.w - 24);
     // Baris yang digambar dibatasi empat: dengan tujuh baris panelnya setinggi
     // layar dan kotak rincian tertutup hotbar. Empat baris + rincian terbaca
     // utuh, sisanya digapai dengan W/S (penanda "baris 1–4 dari 7" di kanan).
-    const lihat = Math.max(3, Math.min(4, UPGRADE.length));
+    const lihat = Math.max(3, Math.min(UpgradeUI.TATA.BARIS_MAKS, UPGRADE.length));
     const H = Math.min(view.h - HUD - 8, KEPALA + lihat * ROW + RINCI + 8);
     this.barisTerlihat = lihat;
     const x = Math.round((view.w - W) / 2);
@@ -109,14 +118,39 @@ export class UpgradeUI {
       const u = UPGRADE[i];
       const st = this.up.status(u.id, this.ctx);
       const on = i === this.cursor;
-      if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 8, cy - 13, W - 16, ROW - 2); }
+      if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 8, cy - 14, W - 16, ROW - 2); }
       const tingkat = st.penuh ? `${st.level}/${st.maks} penuh` : `${st.level}/${st.maks}`;
-      const judul = fit(ctx, `${on ? '▸ ' : '  '}${u.judul} (${u.alat}) · ${tingkat}`, innerW - 96, UI.font);
+      // Nama alat hanya ditulis kalau alatnya memang ada di hotbar (`u.alat`).
+      // Dulu semua baris punya "(Pena)", "(Lesung)", dst. — alat yang tidak ada
+      // di permainan, dan membuat murid mengira ada yang hilang.
+      const alat = u.alat ? ` (${u.alat})` : '';
+      // Kolom kanan selebar 148 px; judul harus berhenti sebelum kolom itu,
+      // bukan sebelum `innerW - 150`, kalau tidak tulisan panjang menabrak
+      // keterangan bab di layar sempit.
+      const judul = fit(ctx, `${on ? '▸ ' : '  '}${u.judul}${alat} · ${tingkat}`, innerW - 168, UI.font);
       text(ctx, judul, x + PAD, cy, { font: UI.font, color: st.penuh ? '#7a6647' : UI.outline });
       // Syarat bab: hijau kalau sudah lulus, merah kalau belum — warna yang sama
       // dengan layar ujian, jadi murid tidak perlu belajar arti warna baru.
-      const babTeks = st.kitab ? `${st.labelBab} ${st.lulus ? '✓' : '✗'}` : '—';
-      text(ctx, babTeks, x + W - PAD, cy, { font: UI.font, align: 'right', color: st.lulus ? '#4f7a2f' : '#b8432e' });
+      // Nama guru ikut ditulis karena "Bab IV" saja tidak memberi tahu harus
+      // menemui siapa; dengan 6 warga, menebaknya hampir selalu salah.
+      // Nama guru ditulis di BARIS KEDUA, bukan disambung ke "Bab V ✗ · …".
+      // Digabung, `fit` memotong ekornya — dan ekornya itulah nama gurunya,
+      // satu-satunya petunjuk ke siapa murid harus datang. Diukur dengan VT323
+      // 16 px: "Bab 17 ✗ · Kang Dadang" butuh 176 px, sedangkan kolom kanan
+      // hanya 148 px. Dua baris selebar 148 px selalu cukup.
+      const warnaBab = st.lulus ? '#4f7a2f' : '#b8432e';
+      if (!st.kitab) {
+        text(ctx, '—', x + W - PAD, cy, { font: UI.font, align: 'right', color: warnaBab });
+      } else if (st.lulus) {
+        text(ctx, `${st.labelBab} ✓`, x + W - PAD, cy, { font: UI.font, align: 'right', color: warnaBab });
+      } else {
+        // Nama guru ditaruh di atas nomor bab: yang dicari murid lebih dulu
+        // adalah orangnya, nomor bab menyusul.
+        if (st.guru) {
+          text(ctx, st.guru.nama, x + W - PAD, cy - 7, { font: UI.font, align: 'right', color: warnaBab });
+        }
+        text(ctx, `${st.labelBab} ✗`, x + W - PAD, cy + 7, { font: UI.font, align: 'right', color: warnaBab });
+      }
       cy += ROW;
     }
     // Penanda halaman hanya muncul kalau daftarnya memang terpotong.
@@ -130,8 +164,9 @@ export class UpgradeUI {
     const ry = y + H - RINCI - 2;
     ctx.fillStyle = '#f3e3c2';
     ctx.fillRect(x + 10, ry, W - 20, RINCI);
-    const bahan = Object.entries(st.def.bahan).map(([b, n]) => {
-      const perlu = n * (st.level + 1);
+    // `st.perlu` dihitung sistem (satu sumber dengan yang ditagih saat membeli),
+    // jadi angka di layar tidak mungkin berbeda dengan yang dipotong dari tas.
+    const bahan = Object.entries(st.perlu).map(([b, perlu]) => {
       const punya = this.ctx.inv.count(b);
       return `${NAMA_BAHAN[b] ?? b} ${Math.min(punya, perlu)}/${perlu}`;
     }).join(' · ');
@@ -140,18 +175,63 @@ export class UpgradeUI {
       { font: UI.font, color: st.uangKurang || st.bahanKurang.length ? '#b8432e' : '#4f7a2f' });
     // Guna peningkatan ditulis apa adanya, termasuk pada tingkat 0: pemain harus
     // tahu apa yang ia beli sebelum mengumpulkan 25 batu.
-    text(ctx, `Guna: ${st.def.efek(st.penuh ? st.level : st.level + 1) || '—'}`, x + PAD, ry + 34,
-      { font: UI.font, color: '#5a4230' });
+    // `fit` dipakai di sini, bukan hanya di baris bahan: "Guna: Makanan
+    // memulihkan +25% energi" kepanjangan di layar 390 px, dan dulu keluar dari
+    // kotak rincian tanpa dipotong sama sekali.
+    text(ctx, fit(ctx, `Guna: ${st.def.efek(st.penuh ? st.level : st.level + 1) || '—'}`, innerW - 8, UI.font),
+      x + PAD, ry + 34, { font: UI.font, color: '#5a4230' });
     // Baris terakhir: status di kiri, tombol di kanan. Petunjuk tombol sengaja di
     // sini, bukan di kaki panel — kaki panel berimpit dengan hotbar.
-    if (this.pesan) {
-      text(ctx, fit(ctx, this.pesan, innerW - 132, UI.font), x + PAD, ry + 52, { font: UI.font, color: UI.red });
-    } else if (!st.lulus) {
-      text(ctx, fit(ctx, `${st.labelBab} belum lulus — itu syaratnya.`, innerW - 132, UI.font),
-        x + PAD, ry + 52, { font: UI.font, color: '#b8432e' });
+    //
+    // Kalimatnya diambil dari Upgrade.alasanTidakBoleh, sumber yang SAMA dengan
+    // yang muncul saat E ditekan. Dulu ada dua perumus pesan di dua tempat, dan
+    // yang di layar hanya berkata "Bahan belum cukup" tanpa menyebut apa yang
+    // kurang.
+    //
+    // Lebar yang tersedia untuk alasan berhenti SEBELUM tombol "E beli · Esc
+    // tutup" di kanan, dengan jarak 12 px. Sebelumnya yang dipakai `innerW - 132`
+    // tanpa memperhitungkan lebar tombol itu — di layar 640 px kalimatnya
+    // menabrak tombol, dan di ponsel tegak nama gurunya terpotong tepat di
+    // bagian yang paling penting.
+    ctx.font = UI.font;
+    const lebarTombol = ctx.measureText('E beli · Esc tutup').width;
+    const ruangAlasan = Math.max(80, innerW - lebarTombol - 12);
+    // Kalimat lengkap didahulukan; hanya kalau ia tidak muat, dipakai versi
+    // ringkas yang tetap menyebut nomor bab + nama guru. Dengan begitu layar
+    // lebar mendapat penjelasan utuh (termasuk "sekaligus membuka kapak"),
+    // sedangkan layar sempit tidak pernah menampilkan kalimat terpotong "…".
+    const panjang = this.up.alasanTidakBoleh(st, { namaBahan: NAMA_BAHAN });
+    const pendek = this.up.alasanTidakBoleh(st, { namaBahan: NAMA_BAHAN, ringkas: true });
+    // Kotak rincian 84 px: baris bahan (+16), guna (+34), lalu alasan sampai
+    // tiga baris (+52, +64, +76). Tiga baris masih di dalam kotak. `wrap`
+    // mengembalikan potongan kata terakhir yang masih panjang, jadi jumlah
+    // baris dihitung longgar: kalau hasil bungkusnya pas tiga baris tetapi
+    // baris terakhirnya nyaris selebar penuh, kata berikutnya hampir pasti
+    // turun ke baris keempat yang tidak terlihat.
+    const muat = (t) => {
+      const b = wrap(ctx, t, ruangAlasan, UI.font);
+      if (b.length < 3) return true;
+      if (b.length > 3) return false;
+      return ctx.measureText(b[2]).width < ruangAlasan * 0.85;
+    };
+    const alasan = st.boleh ? '' : (this.pesan || (muat(panjang) ? panjang : (muat(pendek) ? pendek : panjang)));
+    if (st.boleh) {
+      text(ctx, 'Boleh dibeli.', x + PAD, ry + 52, { font: UI.font, color: '#4f7a2f' });
     } else {
-      text(ctx, st.boleh ? 'Boleh dibeli.' : (st.bahanKurang.length ? 'Bahan belum cukup.' : 'Uang belum cukup.'),
-        x + PAD, ry + 52, { font: UI.font, color: st.boleh ? '#4f7a2f' : '#8a7550' });
+      // Alasan bisa memuat dua baris (bab + "juga membuka cangkul"). Dipotong
+      // `fit` ia akan berakhir "…", dan justru bagian akhirnya yang menjelaskan
+      // kenapa bab papan sama dengan bab alat. Jadi dipotong PER KATA: baris
+      // pertama selebar ruang, sisanya dirapatkan ke bawah.
+      const baris = wrap(ctx, alasan, ruangAlasan, UI.font).slice(0, 3);
+      // Sesudah berhasil membeli, pesannya kabar baik ("selesai"), bukan
+      // peringatan — jangan dicetak merah.
+      const baruSaja = /selesai/.test(this.pesan);
+      const warna = st.penuh ? '#8a7550' : (baruSaja ? '#4f7a2f' : UI.red);
+      baris.forEach((t, i) => {
+        // Baris kedua naik 12 px saja: kotak rincian hanya 70 px, dan tombol
+        // "Boleh dibeli" di y yang sama harus tetap terpisah jelas.
+        text(ctx, t, x + PAD, ry + 52 + i * 14, { font: UI.font, color: warna });
+      });
     }
     text(ctx, 'E beli · Esc tutup', x + W - PAD, ry + 52,
       { font: UI.font, align: 'right', color: '#7a6647' });

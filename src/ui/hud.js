@@ -1,7 +1,7 @@
 // HUD: clock panel, money, energy bar, hotbar with item icons.
 import { view } from '../render/renderer.js';
 import { assets } from '../render/assets.js';
-import { panel, text, icon, slot, UI } from './draw.js';
+import { panel, text, wrap, icon, slot, UI } from './draw.js';
 import { itemDef } from '../systems/inventory.js';
 
 const SEASON_ICON = { spring: 4, summer: 5, autumn: 6, winter: 7 };
@@ -86,7 +86,17 @@ export function drawPrompt(ctx, str) {
 export function drawToast(ctx, msg) {
   const W = view.w;
   ctx.font = UI.fontBig;
-  const w = ctx.measureText(msg).width + 44;
-  panel(ctx, (W - w) / 2, 80, w, 42);
-  text(ctx, msg, W / 2, 90, { font: UI.fontBig, align: 'center' });
+  // Pesan panjang — "Lulus dulu Bab V: Mendakwahkan Keramahan Islam — ujian ke
+  // Kang Dadang." — dulu melebarkan panelnya sampai keluar layar; di ponsel
+  // awalnya dan akhirnya tidak terbaca, padahal justru akhirnya yang menyebut
+  // nama guru. Sekarang panelnya selebar layar paling banyak, teks dibungkus
+  // dan dinaikkan baris demi baris.
+  const maks = Math.min(W - 24, 520);
+  const baris = wrap(ctx, msg, maks - 44, UI.fontBig);
+  const w = Math.min(maks, Math.max(...baris.map((t) => ctx.measureText(t).width)) + 44);
+  const h = 22 + baris.length * 22;
+  panel(ctx, (W - w) / 2, 80, w, h);
+  baris.forEach((t, i) => {
+    text(ctx, t, W / 2, 90 + i * 22, { font: UI.fontBig, align: 'center' });
+  });
 }
