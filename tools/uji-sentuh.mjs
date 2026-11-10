@@ -11,6 +11,7 @@
 // Kalau jsdom tidak ada, berkas keluaran 0 dengan catatan "dilewati" — bukan
 // gagal: pemeriksaan lain (tests/uji.mjs) tetap bisa jalan tanpa pemasangan.
 
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -328,6 +329,99 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
     }
   }
   ok(`keluar ${w}x${h}: tidak ada teks keluar panel`, tulisKonf.length > 0);
+}
+
+// ------------------------------------- Tombol keluar di pojok kanan atas (HUD)
+//
+// Tombol ini harus (a) tidak menimpa panel lain di ukuran layar mana pun,
+// (b) tetap di dalam layar, dan (c) benar-benar membuka menu saat diketuk.
+{
+  const { drawHud, kotakTombolKeluar } = await import(`${AKAR}/src/ui/hud.js`);
+  // HUD menggambar ikon dari atlas sprite. Uji ini tidak butuh gambarnya —
+  // hanya perlu manifest yang tidak null supaya `icon()` tidak melempar.
+  const { assets } = await import(`${AKAR}/src/render/assets.js`);
+  assets.manifest = assets.manifest ?? { sprites: {} };
+  assets.manifest.sprites = new Proxy(assets.manifest.sprites ?? {}, {
+    get: (t, k) => (k in t ? t[k] : { frame: [16, 16], cols: 1 }),
+  });
+  const { itemDef: iDef, setItemData: setItem } = await import(`${AKAR}/src/systems/inventory.js`);
+  const { Inventory } = await import(`${AKAR}/src/systems/inventory.js`);
+  setItem(JSON.parse(readFileSync(`${AKAR}/src/data/items.json`, 'utf8')));
+  const waktu = { dateText: 'Musim Semi 1, Th 1', clockText: '06:00', season: 'spring' };
+  const cuaca = { name: 'Cerah', iconIndex: 0 };
+  const pemain = { money: 1234, energy: 80, maxEnergy: 100 };
+  const tas = new Inventory();
+
+  /** Panel yang digambar HUD — dicatat lewat fillRect dari `panel()`. */
+  const panelHud = [];
+  for (const [w, h] of [[844, 390], [640, 360], [568, 320], [390, 844], [1280, 720], [320, 240]]) {
+    view.w = w; view.h = h;
+    panelHud.length = 0;
+    const ctx = {
+      fillStyle: '#000', strokeStyle: '#000', lineWidth: 1, textAlign: 'left',
+      font: '16px x', canvas: {},
+      measureText(s) { const px = Number(/(\d+)px/.exec(this.font)?.[1] ?? 16); return { width: s.length * px * 0.5 }; },
+      fillText() {}, strokeText() {},
+      // Panel kayu digambar sebagai satu isian besar per panel oleh `panel()`.
+      fillRect(x, y, rw, rh) { if (rho(rw, rh)) panelHud.push({ x, y, w: rw, h: rh }); },
+      strokeRect() {}, clearRect() {}, drawImage() {}, save() {}, restore() {},
+      translate() {}, scale() {}, rotate() {}, beginPath() {}, closePath() {},
+      moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},
+      quadraticCurveTo() {}, bezierCurveTo() {}, clip() {}, setTransform() {},
+    };
+    // Hanya panel besar (panel HUD) yang dicatat; isian kecil adalah bar energi.
+    // Latar tombol keluar sendiri juga isian — ia dikecualikan, kalau tidak
+    // tombolnya akan "menimpa dirinya sendiri".
+    const kotak = kotakTombolKeluar();
+    const rho = (rw, rh) => rw >= 30 && rh >= 20 && !(rw === kotak.w && rh === kotak.h);
+    drawHud(ctx, { time: waktu, player: pemain, inv: tas, weather: cuaca });
+
+    const t = kotakTombolKeluar();
+    ok(`HUD ${w}x${h}: tombol di dalam layar`,
+      t.x >= 0 && t.y >= 0 && t.x + t.w <= w && t.y + t.h <= h, JSON.stringify(t));
+    ok(`HUD ${w}x${h}: tombol di pojok kanan atas`, t.x + t.w >= w - 12 && t.y <= 60, JSON.stringify(t));
+
+    // Tidak boleh beririsan dengan panel mana pun.
+    const tabrak = panelHud.filter((p) => p.x < t.x + t.w && p.x + p.w > t.x
+      && p.y < t.y + t.h && p.y + p.h > t.y);
+    ok(`HUD ${w}x${h}: tidak menimpa panel lain`, tabrak.length === 0,
+      JSON.stringify(tabrak.map((p) => `${p.x},${p.y} ${p.w}x${p.h}`)));
+  }
+
+  // Saat layar modal terbuka, tombol TIDAK digambar: ketukan tidak diproses di
+  // sana, dan tombol yang terlihat tetapi diam lebih membingungkan.
+  {
+    view.w = 844; view.h = 390;
+    let adaIsian = 0;
+    const ctx2 = {
+      fillStyle: '#000', strokeStyle: '#000', lineWidth: 1, textAlign: 'left',
+      font: '16px x', canvas: {},
+      measureText() { return { width: 10 }; }, fillText() {}, strokeText() {},
+      fillRect(x, y, rw, rh) {
+        const t2 = kotakTombolKeluar();
+        if (x === t2.x && y === t2.y && rw === t2.w && rh === t2.h) adaIsian++;
+      },
+      strokeRect() {}, clearRect() {}, drawImage() {}, save() {}, restore() {},
+      translate() {}, scale() {}, rotate() {}, beginPath() {}, closePath() {},
+      moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},
+      quadraticCurveTo() {}, bezierCurveTo() {}, clip() {}, setTransform() {},
+    };
+    drawHud(ctx2, { time: waktu, player: pemain, inv: tas, weather: cuaca });
+    ok('HUD: tombol keluar digambar saat tidak ada modal', adaIsian > 0, String(adaIsian));
+    adaIsian = 0;
+    drawHud(ctx2, { time: waktu, player: pemain, inv: tas, weather: cuaca, tombolKeluar: false });
+    ok('HUD: tombol keluar tidak digambar saat modal terbuka', adaIsian === 0, String(adaIsian));
+  }
+
+  // Ketukan di dalam kotak harus dikenali, di luar tidak.
+  view.w = 390; view.h = 844;
+  const t = kotakTombolKeluar();
+  const dalam = (x, y) => x >= t.x && x <= t.x + t.w && y >= t.y && y <= t.y + t.h;
+  ok('ketuk: tengah tombol dikenali', dalam(t.x + t.w / 2, t.y + t.h / 2));
+  ok('ketuk: tepi kiri-atas dikenali', dalam(t.x, t.y));
+  ok('ketuk: 1 px di luar kiri tidak', !dalam(t.x - 1, t.y + 5));
+  ok('ketuk: 1 px di luar bawah tidak', !dalam(t.x + 5, t.y + t.h + 1));
+  ok('ketuk: pojok layar (0,0) tidak', !dalam(0, 0));
 }
 
 console.log(`\n${lulus} lulus, ${gagal} gagal`);
