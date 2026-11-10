@@ -103,11 +103,16 @@ YANG PERLU DIKETAHUI
 - Akun murid dicatat LANGSUNG dari peramban ke Web App Apps Script (tab `Akun`
   di spreadsheet guru); nilai juga langsung ke Apps Script (tab `Nilai`).
   Tidak ada server perantara, jadi tidak ada yang perlu dinyalakan.
-- Keluar dari permainan: ketuk tombol POWER (lingkaran merah) di kiri atas,
-  sebelah kiri panel gold, lalu pilih "Keluar ke menu utama". Bisa juga Esc.
-- Tata letak tombol sentuh: power + inventori (I) di kiri atas; D-pad di kiri
-  bawah; di kanan bawah, E paling besar di pojok dengan tombol kecil di
-  sekelilingnya (alat ◀ ▶ di baris paling atas, Lari, Nilai, Ujian, Esc). Progres disimpan
+- Keluar dari permainan: klik/tap tombol POWER (lingkaran merah) di kiri atas,
+  tepat di kiri panel gold, lalu pilih "Keluar ke menu utama". Tombol ini SATU
+  untuk semua perangkat (laptop, HP, tablet) dan selalu terlihat; Esc tetap
+  bekerja sebagai jalan pintas. Bisa juga dimatikan lewat Pengaturan > "Tombol
+  power".
+- Tata letak tombol layar: inventori (I) di kiri atas, di samping tombol power;
+  D-pad di kiri bawah; di kanan bawah, E paling besar di pojok dengan tombol
+  kecil di sekelilingnya (alat ◀ ▶ di baris paling atas, Lari, Nilai, Ujian,
+  Esc). Deretan ini hanya tampil kalau "Tombol sentuh" di Pengaturan hidup;
+  tombol power tetap ada meski deretan itu dimatikan. Progres disimpan
   OTOMATIS tepat sebelum pertanyaan konfirmasi muncul, jadi membatalkan
   pertanyaannya tidak membatalkan simpanan. Ada juga baris "Simpan sekarang"
   di menu yang sama untuk yang ingin memastikan.

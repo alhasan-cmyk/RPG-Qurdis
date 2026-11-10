@@ -55,7 +55,7 @@ const HELP_TEXT = [
 ];
 
 export class Menu {
-  constructor({ audio, renderer, onQuit, onSimpan = null, ilmu = null, sentuh = null }) {
+  constructor({ audio, renderer, onQuit, onSimpan = null, ilmu = null, sentuh = null, tombolKeluar = null }) {
     this.audio = audio;
     this.renderer = renderer;
     this.onQuit = onQuit;
@@ -66,6 +66,8 @@ export class Menu {
     this.ilmu = ilmu;
     /** Lapisan tombol sentuh (ui/touch.js), atau null kalau tidak dipasang. */
     this.sentuh = sentuh;
+    /** Tombol power (ui/tombolKeluar.js) — ada di semua perangkat. */
+    this.tombolKeluar = tombolKeluar;
     this.onNilai = null;   // dipasang main.js: membuka layar Nilai & Pengiriman
     this.open = false;
     this.page = 'root';
@@ -102,6 +104,14 @@ export class Menu {
       // Tanpa baris ini, tombol sentuh yang muncul keliru di laptop (atau
       // menutupi layar di tablet berponsel-ketik) tidak bisa dimatikan sama
       // sekali. Pilihannya diingat di perangkat ini (ui/touch.js).
+      // Tombol power muncul di semua perangkat, jadi barisnya terpisah dari
+      // "Tombol sentuh". Dimatikan tidak menutup jalan keluar: Esc tetap bekerja.
+      ...(this.tombolKeluar ? [{
+        id: 'power',
+        label: 'Tombol power',
+        value: this.tombolKeluar.tampil ? 'Tampil' : 'Mati',
+        hint: 'Lingkaran di kiri atas untuk keluar (Esc tetap bekerja)',
+      }] : []),
       ...(this.sentuh ? [{
         id: 'sentuh',
         label: 'Tombol sentuh',
@@ -146,6 +156,7 @@ export class Menu {
         // Kiri = mati, kanan = tampil. Arah ini dipilih supaya sama dengan baris
         // lain (kanan selalu "menambah"), bukan karena urutan nilainya penting.
         if (row.id === 'sentuh') this.sentuh.aturTampil(dir > 0);
+        if (row.id === 'power') this.tombolKeluar.aturTampil(dir > 0);
         return;
       }
       if (action === 'interact') {
@@ -158,6 +169,7 @@ export class Menu {
         // gestur, dan gestur itu adalah tombol E yang baru saja ditekan.
         if (row.id === 'penuh') alihkanPenuh().then(() => this.audio.ui());
         else if (row.id === 'sentuh') { this.sentuh.alihkan(); this.audio.ui(); }
+        else if (row.id === 'power') { this.tombolKeluar.aturTampil(!this.tombolKeluar.tampil); this.audio.ui(); }
         else this.audio.ui();
       }
       return;

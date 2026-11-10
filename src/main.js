@@ -15,7 +15,7 @@ import { Animal } from './entities/animal.js';
 import { Inventory, setItemData, itemDef, HOTBAR } from './systems/inventory.js';
 import { Farming } from './systems/farming.js';
 import { Weather } from './systems/weather.js';
-import { drawHud, drawPrompt, drawToast, kotakTombolKeluar } from './ui/hud.js';
+import { drawHud, drawPrompt, drawToast } from './ui/hud.js';
 import { InventoryUI } from './ui/inventory-ui.js';
 import { ChestUI, CHEST_SLOTS } from './ui/chest-ui.js';
 import { ShopUI } from './ui/shop-ui.js';
@@ -30,6 +30,7 @@ import { Ilmu, POIN_JAWAB_TEPAT } from './systems/ilmu.js';
 import { IlmuUI } from './ui/ilmu-ui.js';
 import { PilihanUI } from './ui/pilihan.js';
 import { pasangSentuh } from './ui/touch.js';
+import { pasangTombolKeluar } from './ui/tombolKeluar.js';
 import { pasangLandscape } from './ui/landscape.js';
 import { pasangTombolLayarPenuh, pasangAjakanPasang, pernahPenuh } from './ui/fullscreen.js';
 import { UpgradeUI } from './ui/upgrade-ui.js';
@@ -137,6 +138,10 @@ async function boot() {
   state.sentuh = pasangSentuh({
     onPetunjuk: () => showToast('◀ jalan · E pakai · ketuk alat', 5),
   });
+  // Tombol power: satu-satunya jalan keluar yang terlihat, untuk SEMUA
+  // perangkat. Dipasang di luar lapisan sentuh justru karena lapisan itu
+  // disembunyikan di komputer.
+  state.tombolKeluar = pasangTombolKeluar();
   // Pilihan pemain soal tombol sentuh disimpan per perangkat (lihat ui/touch.js),
   // jadi di sini tidak ada yang perlu dimuat: pasangSentuh sudah membacanya.
   ukuranTombolSentuh();
@@ -257,6 +262,7 @@ async function boot() {
     // keadaannya dan mengubahnya. Tanpa ini, tombol yang muncul keliru di
     // laptop tidak bisa dimatikan sama sekali.
     sentuh: state.sentuh,
+    tombolKeluar: state.tombolKeluar,
     // Baris "Simpan sekarang" memakai saveGame yang sama dengan keluar dan
     // tidur; tidak ada jalur simpan kedua yang bisa berbeda isinya.
     onSimpan: () => (saveGame()
@@ -491,6 +497,9 @@ function ukuranTombolSentuh() {
   const sisa = (W * z) - goldKiri - jamKanan;
   const goldBawah = (sisa >= lebarTombol + 12 ? 48 : 104) * z;
   state.sentuh.ukuranHud({ w: W * z, h: H * z, hudBawah, goldBawah, goldKiri });
+  // Tombol power duduk di tempat yang sama dengan tombol inventori di kluster
+  // sentuh — dikirim angka yang sama supaya keduanya berjajar.
+  state.tombolKeluar?.aturPosisi?.({ goldBawah, goldKiri });
 }
 
 function saveGame() {
@@ -1466,43 +1475,9 @@ function update(dt) {
     return;
   }
 
-  // Tombol keluar di pojok kanan atas: kotak kecil di kanvas. Ditangani di sini,
-  // SEBELUM hotbar, karena letaknya tidak bertabrakan tetapi urutannya harus
-  // pasti: satu ketukan hanya boleh melakukan satu hal.
-  //
-  // Kenapa tombol ini ada padahal Esc sudah bekerja: di ponsel tidak ada Esc
-  // yang jelas (ada tombol "Esc" di lapisan sentuh, tetapi maknanya tidak
-  // terbaca oleh murid baru), dan di komputer pemain baru mencoba klik pojok
-  // kanan atas. Satu tombol kecil lebih murah daripada satu sesi yang tidak
-  // bisa ditutup.
-  if (!state.menu?.open) {
-    const tk = kotakTombolKeluar();
-    let kena = false;
-    // Klik tetikus (koordinat kanvas langsung).
-    if (mouse.clicked && mouse.x >= tk.x && mouse.x <= tk.x + tk.w
-      && mouse.y >= tk.y && mouse.y <= tk.y + tk.h) {
-      mouse.clicked = false;
-      kena = true;
-    }
-    // Ketukan jari: memakai `titikKetuk()` seperti hotbar, karena kanvas bisa
-    // sedang diputar 90° atau diperbesar zoom.
-    for (const t of (state.sentuh?.tampil ? titikKetuk() : [])) {
-      if (t.dipakai) continue;
-      // Memakai `x`/`y` (piksel kanvas), BUKAN `dunia`. Seluruh HUD digambar
-      // 1:1 di kanvas, jadi tombol ini tidak ikut mengecil saat skala pandangan
-      // 0,7 — sedangkan `dunia` sudah dibagi skala itu dan akan meleset.
-      if (t.x >= tk.x && t.x <= tk.x + tk.w && t.y >= tk.y && t.y <= tk.y + tk.h) {
-        t.dipakai = true;
-        kena = true;
-      }
-    }
-    if (kena) {
-      state.audio.ui();
-      state.menu.toggle();
-      input.endFrame();
-      return;
-    }
-  }
+  // Jalan keluar tidak ditangani di sini: tombol power adalah elemen HTML
+  // (ui/tombolKeluar.js) yang mengirim aksi 'menu' yang sama dengan Esc, jadi
+  // ia masuk lewat jalur papan ketik di atas.
 
   // Ketuk hotbar untuk memilih alat. Di ponsel tidak ada tombol 1-9, dan hotbar
   // adalah tempat yang paling wajar diketuk — ia sudah menggambar sembilan slot
@@ -1880,16 +1855,15 @@ function render() {
   for (const c of critters.airNight) drawCritter(ctx, c, cx, cy);
   ctx.restore();   // selesai dunia: mulai dari sini semua UI 1:1 lagi
 
-  // `tombolKeluar` disembunyikan saat layar modal terbuka: ketukan di sana tidak
-  // diproses (update() sudah `return` lebih dulu), dan tombol yang terlihat
-  // tetapi diam lebih membingungkan daripada tombol yang tidak ada.
-  const modalTerbuka = Boolean(
-    state.pilihanUI?.open || state.upgradeUI?.open || state.ilmuUI?.open
-    || state.nilaiUI?.open || state.menu?.open || invUI?.open || chestUI?.open
-    || state.shopUI?.open || state.dialog?.active || state.chatUI?.open
-    || state.fishing?.active,
-  );
-  drawHud(ctx, { time, player, inv, weather, tombolKeluar: !modalTerbuka });
+  // Tombol keluar di kanvas sudah DIHAPUS. Jalan keluarnya satu saja: tombol
+  // power di kiri atas (ui/tombolKeluar.js), yang mengirim aksi 'menu' yang
+  // sama dengan Esc.
+  drawHud(ctx, { time, player, inv, weather });
+
+  // Tombol power disembunyikan selagi pertanyaan "Keluar?" tampil: ada dua jalan
+  // keluar yang bisa ditekan bersamaan kalau tidak. Tombol ini elemen HTML,
+  // jadi keadaannya disegarkan di sini — satu tempat, seperti `ringkas` di bawah.
+  state.tombolKeluar?.saatTanya?.(Boolean(state.menu?.konfirmasiKeluar));
   state.fishingUI?.draw(ctx);
   if (!state.fishing?.active && !state.dialog.active && !state.pilihanUI?.open && !state.upgradeUI?.open && !state.fadeDir && !invUI.open && !chestUI.open && !state.shopUI?.open && !state.menu?.open && !state.ilmuUI?.open && !state.nilaiUI?.open) {
     const t = interactTarget();

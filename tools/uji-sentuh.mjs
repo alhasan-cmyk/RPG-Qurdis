@@ -331,97 +331,44 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   ok(`keluar ${w}x${h}: tidak ada teks keluar panel`, tulisKonf.length > 0);
 }
 
-// ------------------------------------- Tombol keluar di pojok kanan atas (HUD)
+// ------------------------------------------------------- Tombol keluar di kanvas
 //
-// Tombol ini harus (a) tidak menimpa panel lain di ukuran layar mana pun,
-// (b) tetap di dalam layar, dan (c) benar-benar membuka menu saat diketuk.
+// Sudah DIHAPUS: satu tombol keluar untuk semua perangkat (tombol power), jadi
+// HUD tidak boleh lagi menggambar tombol apa pun di pojok kanan atas. Uji ini
+// menjaga agar tombol lama tidak kembali tanpa sengaja.
 {
-  const { drawHud, kotakTombolKeluar } = await import(`${AKAR}/src/ui/hud.js`);
-  // HUD menggambar ikon dari atlas sprite. Uji ini tidak butuh gambarnya —
-  // hanya perlu manifest yang tidak null supaya `icon()` tidak melempar.
+  const { drawHud } = await import(`${AKAR}/src/ui/hud.js`);
   const { assets } = await import(`${AKAR}/src/render/assets.js`);
   assets.manifest = assets.manifest ?? { sprites: {} };
   assets.manifest.sprites = new Proxy(assets.manifest.sprites ?? {}, {
     get: (t, k) => (k in t ? t[k] : { frame: [16, 16], cols: 1 }),
   });
-  const { itemDef: iDef, setItemData: setItem } = await import(`${AKAR}/src/systems/inventory.js`);
-  const { Inventory } = await import(`${AKAR}/src/systems/inventory.js`);
+  const { Inventory, setItemData: setItem } = await import(`${AKAR}/src/systems/inventory.js`);
   setItem(JSON.parse(readFileSync(`${AKAR}/src/data/items.json`, 'utf8')));
   const waktu = { dateText: 'Musim Semi 1, Th 1', clockText: '06:00', season: 'spring' };
   const cuaca = { name: 'Cerah', iconIndex: 0 };
   const pemain = { money: 1234, energy: 80, maxEnergy: 100 };
-  const tas = new Inventory();
 
-  /** Panel yang digambar HUD — dicatat lewat fillRect dari `panel()`. */
-  const panelHud = [];
-  for (const [w, h] of [[844, 390], [640, 360], [568, 320], [390, 844], [1280, 720], [320, 240]]) {
+  for (const [w, h] of [[844, 390], [568, 320], [390, 844]]) {
     view.w = w; view.h = h;
-    panelHud.length = 0;
+    const isian = [];
     const ctx = {
       fillStyle: '#000', strokeStyle: '#000', lineWidth: 1, textAlign: 'left',
       font: '16px x', canvas: {},
-      measureText(s) { const px = Number(/(\d+)px/.exec(this.font)?.[1] ?? 16); return { width: s.length * px * 0.5 }; },
-      fillText() {}, strokeText() {},
-      // Panel kayu digambar sebagai satu isian besar per panel oleh `panel()`.
-      fillRect(x, y, rw, rh) { if (rho(rw, rh)) panelHud.push({ x, y, w: rw, h: rh }); },
-      strokeRect() {}, clearRect() {}, drawImage() {}, save() {}, restore() {},
-      translate() {}, scale() {}, rotate() {}, beginPath() {}, closePath() {},
-      moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},
-      quadraticCurveTo() {}, bezierCurveTo() {}, clip() {}, setTransform() {},
-    };
-    // Hanya panel besar (panel HUD) yang dicatat; isian kecil adalah bar energi.
-    // Latar tombol keluar sendiri juga isian — ia dikecualikan, kalau tidak
-    // tombolnya akan "menimpa dirinya sendiri".
-    const kotak = kotakTombolKeluar();
-    const rho = (rw, rh) => rw >= 30 && rh >= 20 && !(rw === kotak.w && rh === kotak.h);
-    drawHud(ctx, { time: waktu, player: pemain, inv: tas, weather: cuaca });
-
-    const t = kotakTombolKeluar();
-    ok(`HUD ${w}x${h}: tombol di dalam layar`,
-      t.x >= 0 && t.y >= 0 && t.x + t.w <= w && t.y + t.h <= h, JSON.stringify(t));
-    ok(`HUD ${w}x${h}: tombol di pojok kanan atas`, t.x + t.w >= w - 12 && t.y <= 60, JSON.stringify(t));
-
-    // Tidak boleh beririsan dengan panel mana pun.
-    const tabrak = panelHud.filter((p) => p.x < t.x + t.w && p.x + p.w > t.x
-      && p.y < t.y + t.h && p.y + p.h > t.y);
-    ok(`HUD ${w}x${h}: tidak menimpa panel lain`, tabrak.length === 0,
-      JSON.stringify(tabrak.map((p) => `${p.x},${p.y} ${p.w}x${p.h}`)));
-  }
-
-  // Saat layar modal terbuka, tombol TIDAK digambar: ketukan tidak diproses di
-  // sana, dan tombol yang terlihat tetapi diam lebih membingungkan.
-  {
-    view.w = 844; view.h = 390;
-    let adaIsian = 0;
-    const ctx2 = {
-      fillStyle: '#000', strokeStyle: '#000', lineWidth: 1, textAlign: 'left',
-      font: '16px x', canvas: {},
       measureText() { return { width: 10 }; }, fillText() {}, strokeText() {},
-      fillRect(x, y, rw, rh) {
-        const t2 = kotakTombolKeluar();
-        if (x === t2.x && y === t2.y && rw === t2.w && rh === t2.h) adaIsian++;
-      },
+      fillRect(x, y, rw, rh) { isian.push({ x, y, w: rw, h: rh }); },
       strokeRect() {}, clearRect() {}, drawImage() {}, save() {}, restore() {},
       translate() {}, scale() {}, rotate() {}, beginPath() {}, closePath() {},
       moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},
       quadraticCurveTo() {}, bezierCurveTo() {}, clip() {}, setTransform() {},
     };
-    drawHud(ctx2, { time: waktu, player: pemain, inv: tas, weather: cuaca });
-    ok('HUD: tombol keluar digambar saat tidak ada modal', adaIsian > 0, String(adaIsian));
-    adaIsian = 0;
-    drawHud(ctx2, { time: waktu, player: pemain, inv: tas, weather: cuaca, tombolKeluar: false });
-    ok('HUD: tombol keluar tidak digambar saat modal terbuka', adaIsian === 0, String(adaIsian));
+    drawHud(ctx, { time: waktu, player: pemain, inv: new Inventory(), weather: cuaca });
+    // Tidak ada isian persegi di pojok kanan atas selain panel gold (150x40 di
+    // y 8). Tombol lama berukuran 34x30 di y 52 — bentuk itu harus hilang.
+    const sisa = isian.filter((r) => r.y > 44 && r.y < 100 && r.x > w - 60 && r.w <= 45 && r.h <= 40);
+    ok(`HUD ${w}x${h}: tidak ada tombol di pojok kanan atas`, sisa.length === 0,
+      JSON.stringify(sisa));
   }
-
-  // Ketukan di dalam kotak harus dikenali, di luar tidak.
-  view.w = 390; view.h = 844;
-  const t = kotakTombolKeluar();
-  const dalam = (x, y) => x >= t.x && x <= t.x + t.w && y >= t.y && y <= t.y + t.h;
-  ok('ketuk: tengah tombol dikenali', dalam(t.x + t.w / 2, t.y + t.h / 2));
-  ok('ketuk: tepi kiri-atas dikenali', dalam(t.x, t.y));
-  ok('ketuk: 1 px di luar kiri tidak', !dalam(t.x - 1, t.y + 5));
-  ok('ketuk: 1 px di luar bawah tidak', !dalam(t.x + 5, t.y + t.h + 1));
-  ok('ketuk: pojok layar (0,0) tidak', !dalam(0, 0));
 }
 
 // ------------------------------------------- Tata letak tombol sentuh (grid)
@@ -473,7 +420,13 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   const matikanPosisi = aturan('.lk-touch .matikan');
   ok('kiri atas: memakai posisi dari --lk-gold-*', /--lk-gold-kiri/.test(matikanPosisi) && /--lk-gold-b/.test(matikanPosisi), matikanPosisi.trim());
   ok('kiri atas: berjajar ke samping', /grid-auto-flow:\s*column/.test(matikanPosisi));
-  ok('power: bulat, bukan kotak', /border-radius:\s*50%/.test(aturan('.lk-touch .tombol.daya')));
+  // Gaya tombol power ada di berkasnya sendiri (#lk-tombol-daya), bukan di CSS
+  // lapisan sentuh — ia harus tampil juga di komputer.
+  // Dibaca dari BERKAS, bukan dari <style> di DOM: blok ini berjalan sebelum
+  // tombolnya dipasang pada sebagian jalur uji, jadi elemennya belum tentu ada.
+  const sumberGayaDaya = readFileSync(`${AKAR}/src/ui/tombolKeluar.js`, 'utf8');
+  ok('power: bulat, bukan kotak', /#\$\{ID\}[^}]*border-radius:\s*50%/.test(sumberGayaDaya),
+    'aturan #${ID} { border-radius: 50% } tidak ditemukan');
 
   // Inventori hanya di SATU tempat (kiri atas). Dulu ia muncul dua kali — di
   // kluster kanan dan di kluster kiri atas — dan di layar 390 px itu memakan
@@ -490,7 +443,75 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   ok('tombol Esc muncul tepat satu kali', hitung('Esc') === 1, String(hitung('Esc')));
   ok('tombol E muncul tepat satu kali', hitung('E') === 1, String(hitung('E')));
   const isiMatikan = [...lapisan.querySelectorAll('.matikan .tombol')].map((b) => b.textContent.trim()).join(',');
-  ok('kluster kiri atas berisi power + inventori', isiMatikan === '⏻,I', isiMatikan);
+  // Power sudah pindah ke ui/tombolKeluar.js (satu tombol untuk semua
+  // perangkat), jadi kluster ini tinggal inventori.
+  ok('kluster kiri atas berisi inventori saja', isiMatikan === 'I', isiMatikan);
+}
+
+// --------------------------------------------- Tombol power (satu untuk semua)
+//
+// Satu-satunya jalan keluar yang terlihat. Harus ada JUGA di komputer, karena
+// itulah alasannya dipisah dari lapisan sentuh.
+{
+  const { pasangTombolKeluar } = await import(`${AKAR}/src/ui/tombolKeluar.js`);
+  // Perangkat tanpa sentuh (laptop).
+  Object.defineProperty(dom.window, 'matchMedia', {
+    value: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }),
+    configurable: true, writable: true,
+  });
+  const power = pasangTombolKeluar();
+  ok('power: terpasang di laptop (tanpa layar sentuh)', !!document.getElementById('lk-tombol-daya'));
+  ok('power: tampil di awal', power.tampil === true);
+
+  // Menekan tombol = menekan Esc. Aksi 'menu' dipakai bersama; kalau tombol ini
+  // memanggil jalur lain, dua jalan keluar bisa berperilaku berbeda.
+  const sumberDaya = readFileSync(`${AKAR}/src/ui/tombolKeluar.js`, 'utf8');
+  ok('power: memakai jalur aksi yang sama dengan Esc',
+    /pressAction\('menu'/.test(sumberDaya), 'tidak memanggil pressAction("menu")');
+  ok('power: tidak memanggil onQuit sendiri',
+    !/onQuit|location\.href/.test(sumberDaya), 'ada jalur keluar kedua di tombol power');
+
+  // Posisi dikirim pemanggil: di kiri panel gold.
+  power.aturPosisi({ goldBawah: 48, goldKiri: 166 });
+  ok('power: posisi dari panel gold', power.elemen.style.top === '48px' && power.elemen.style.right === '166px',
+    `${power.elemen.style.top} / ${power.elemen.style.right}`);
+
+  // Saat pertanyaan "Keluar?" tampil, tombol disembunyikan.
+  power.saatTanya(true);
+  ok('power: disembunyikan saat pertanyaan keluar', power.elemen.classList.contains('saat-tanya'));
+  power.saatTanya(false);
+  ok('power: muncul lagi setelah batal', !power.elemen.classList.contains('saat-tanya'));
+
+  // Bisa dimatikan dari Pengaturan, dan Esc tetap jadi jalan keluar.
+  power.aturTampil(false);
+  ok('power: bisa dimatikan', power.elemen.hidden === true);
+  power.aturTampil(true);
+  ok('power: bisa dinyalakan lagi', power.elemen.hidden === false);
+
+  // Tombol power TIDAK ikut lapisan sentuh: ia muncul juga saat tombol sentuh
+  // dimatikan. Tanpa ini, ia akan hilang di laptop.
+  const lapisanSentuh = [...document.querySelectorAll('.lk-touch')].pop();
+  ok('power: bukan bagian lapisan sentuh', !lapisanSentuh.contains(power.elemen));
+
+  // Baris Pengaturan untuk tombol power.
+  const m = new Menu({ audio, renderer, ilmu: null, sentuh, tombolKeluar: power });
+  const baris = m.settingsRows().find((r) => r.id === 'power');
+  ok('menu: ada baris "Tombol power"', !!baris, m.settingsRows().map((r) => r.id).join(','));
+  m.page = 'settings';
+  m.cursor = m.settingsRows().findIndex((r) => r.id === 'power');
+  m.key('interact');
+  ok('menu: E mematikan tombol power', power.tampil === false);
+  m.key('interact');
+  ok('menu: E menyalakan lagi', power.tampil === true);
+}
+
+// Tombol keluar di KANVAS harus tetap terhapus: dua jalan keluar yang terlihat
+// adalah persis hal yang mau dihindari.
+{
+  const hudSumber = readFileSync(`${AKAR}/src/ui/hud.js`, 'utf8');
+  ok('kanvas: tidak lagi menggambar tombol keluar', !/kotakTombolKeluar/.test(hudSumber));
+  const mainSumber = readFileSync(`${AKAR}/src/main.js`, 'utf8');
+  ok('main: tidak lagi memeriksa ketukan tombol keluar', !/kotakTombolKeluar/.test(mainSumber));
 }
 
 console.log(`\n${lulus} lulus, ${gagal} gagal`);

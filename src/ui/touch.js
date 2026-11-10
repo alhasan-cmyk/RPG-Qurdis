@@ -43,17 +43,13 @@ const GAYA = `
   grid-template-rows: repeat(3, clamp(38px, 11vw, 52px)); }
 
 /* ---------------------------------------------------------------- kiri atas
-   Kembar dengan sudut kanan atas panel gold di tengah layar (koordinatnya
-   dikirim ukuranHud() lewat --lk-gold-b dan --lk-gold-kiri). Isinya tombol
-   power (keluar) lalu inventori, berjajar ke kiri dengan JARAK — tidak
-   menempel di panel. */
-.lk-touch .matikan { right: var(--lk-gold-kiri); top: var(--lk-gold-b);
+   Duduk di sebelah KIRI tombol power (yang berupa elemen HTML tersendiri,
+   lihat ui/tombolKeluar.js). Jaraknya menyisakan tempat 40 px untuk power +
+   8 px celah, jadi keduanya berjajar rapi tanpa saling menempel.
+   Koordinatnya dikirim ukuranHud() lewat --lk-gold-b dan --lk-gold-kiri. */
+.lk-touch .matikan { right: calc(var(--lk-gold-kiri) + 48px); top: var(--lk-gold-b);
   grid-auto-flow: column; grid-auto-columns: 36px; grid-auto-rows: 36px; }
 .lk-touch .matikan .tombol { border-radius: 8px; }
-/* Power: lingkaran merah seperti tombol daya, bukan kotak seperti tombol lain —
-   supaya tidak tertukar dengan tombol biasa saat jempol mencari cepat. */
-.lk-touch .tombol.daya { border-radius: 50%; border-color: #8a2c1d;
-  background: rgba(248, 214, 206, .94); color: #8a2c1d; font-size: 20px; }
 
 /* --------------------------------------------------------------- kanan bawah
    E besar di pojok, dikelilingi tombol kecil. Bentuknya grid 3x3 dengan E di
@@ -102,7 +98,8 @@ const GAYA = `
   /* Ponsel mendatar tipis (390 px): E tetap paling besar, sisanya mengecil
      supaya kluster kanan tidak menutupi hotbar maupun dunia. */
   .lk-touch .kanan { grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 44px); gap: 4px; }
-  .lk-touch .matikan { grid-auto-columns: 30px; grid-auto-rows: 30px; }
+  .lk-touch .matikan { grid-auto-columns: 30px; grid-auto-rows: 30px;
+    right: calc(var(--lk-gold-kiri) + 42px); }
   .lk-touch .tombol { font-size: 17px; }
   .lk-touch .tombol.besar, .lk-touch .tombol.pilih { font-size: 12px; }
   .lk-touch .tombol.daya { font-size: 17px; }
@@ -144,12 +141,13 @@ const KANAN = [
 ];
 
 /**
- * Kluster kiri atas: power (keluar) lalu inventori, BERJAJAR KE KIRI dari tepi
- * kiri panel gold. Disebut "matikan" karena tulisan power di ponsel tidak
- * terbaca, dan tombol daya dengan ikon ⏻ lebih dikenal daripada tulisan.
+ * Kluster kiri atas: inventori saja, di kiri panel gold.
+ *
+ * Tombol power DULU di sini, tetapi ia dipindah ke ui/tombolKeluar.js karena
+ * harus muncul juga di komputer — sedangkan lapisan ini disembunyikan di
+ * komputer. Satu tombol keluar untuk semua perangkat.
  */
 const MATIKAN = [
-  ['⏻', 'menu', 'daya'],
   ['I', 'inventory', 'besar'],
 ];
 
