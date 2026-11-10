@@ -10,6 +10,23 @@ import { panel, text, wrap, fit, UI } from './draw.js';
 import { UPGRADE, NAMA_BAHAN } from '../systems/upgrade.js';
 
 export class UpgradeUI {
+  /**
+   * Ukuran tata letak, satu tempat.
+   *
+   * Diekspor supaya alat uji (tools/uji-tata-letak.mjs) memakai angka yang SAMA
+   * dengan yang digambar — bukan salinan yang cepat atau lambat jadi berbeda
+   * dan membuat uji "lulus" padahal layarnya sudah berubah.
+   */
+  static TATA = {
+    PAD: 18,          // tepi kiri/kanan isi panel
+    LEBAR_MAKS: 600,  // panel tidak pernah lebih lebar dari ini
+    HUD: 34,          // tinggi hotbar di atas; panel tidak boleh menimpanya
+    ROW: 32,          // tinggi satu baris daftar (dua baris teks di kolom kanan)
+    RINCI: 92,        // kotak rincian: bahan, guna, dan sampai tiga baris alasan
+    KEPALA: 40,       // judul "RAGAM USAHA DESA"
+    BARIS_MAKS: 4,    // baris yang digambar sekaligus
+  };
+
   constructor(upgrade, audio = null) {
     this.up = upgrade;
     this.audio = audio;
@@ -80,16 +97,12 @@ export class UpgradeUI {
     // peningkatan tidak muat di situ bersama rinciannya; karena itu daftarnya
     // memakai jendela gulir — pola yang sama dengan rak perpustakaan — dan baris
     // yang ditunjuk dirinci di kotak bawah.
-    const PAD = 18;
-    const W = Math.min(600, view.w - 24);
-    const HUD = 34;                     // hotbar: digambar paling atas, jangan ditimpa
-    const ROW = 30;                     // 26 terlalu rapat untuk dua baris kanan
-    const RINCI = 84;                   // kotak rincian (3 baris + 2 baris alasan)
-    const KEPALA = 40;
+    const { PAD, LEBAR_MAKS, HUD, ROW, RINCI, KEPALA } = UpgradeUI.TATA;
+    const W = Math.min(LEBAR_MAKS, view.w - 24);
     // Baris yang digambar dibatasi empat: dengan tujuh baris panelnya setinggi
     // layar dan kotak rincian tertutup hotbar. Empat baris + rincian terbaca
     // utuh, sisanya digapai dengan W/S (penanda "baris 1–4 dari 7" di kanan).
-    const lihat = Math.max(3, Math.min(4, UPGRADE.length));
+    const lihat = Math.max(3, Math.min(UpgradeUI.TATA.BARIS_MAKS, UPGRADE.length));
     const H = Math.min(view.h - HUD - 8, KEPALA + lihat * ROW + RINCI + 8);
     this.barisTerlihat = lihat;
     const x = Math.round((view.w - W) / 2);
@@ -105,7 +118,7 @@ export class UpgradeUI {
       const u = UPGRADE[i];
       const st = this.up.status(u.id, this.ctx);
       const on = i === this.cursor;
-      if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 8, cy - 13, W - 16, ROW - 2); }
+      if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 8, cy - 14, W - 16, ROW - 2); }
       const tingkat = st.penuh ? `${st.level}/${st.maks} penuh` : `${st.level}/${st.maks}`;
       // Nama alat hanya ditulis kalau alatnya memang ada di hotbar (`u.alat`).
       // Dulu semua baris punya "(Pena)", "(Lesung)", dst. — alat yang tidak ada
@@ -134,7 +147,7 @@ export class UpgradeUI {
         // Nama guru ditaruh di atas nomor bab: yang dicari murid lebih dulu
         // adalah orangnya, nomor bab menyusul.
         if (st.guru) {
-          text(ctx, st.guru.nama, x + W - PAD, cy - 5, { font: UI.font, align: 'right', color: warnaBab });
+          text(ctx, st.guru.nama, x + W - PAD, cy - 7, { font: UI.font, align: 'right', color: warnaBab });
         }
         text(ctx, `${st.labelBab} ✗`, x + W - PAD, cy + 7, { font: UI.font, align: 'right', color: warnaBab });
       }
@@ -162,8 +175,11 @@ export class UpgradeUI {
       { font: UI.font, color: st.uangKurang || st.bahanKurang.length ? '#b8432e' : '#4f7a2f' });
     // Guna peningkatan ditulis apa adanya, termasuk pada tingkat 0: pemain harus
     // tahu apa yang ia beli sebelum mengumpulkan 25 batu.
-    text(ctx, `Guna: ${st.def.efek(st.penuh ? st.level : st.level + 1) || '—'}`, x + PAD, ry + 34,
-      { font: UI.font, color: '#5a4230' });
+    // `fit` dipakai di sini, bukan hanya di baris bahan: "Guna: Makanan
+    // memulihkan +25% energi" kepanjangan di layar 390 px, dan dulu keluar dari
+    // kotak rincian tanpa dipotong sama sekali.
+    text(ctx, fit(ctx, `Guna: ${st.def.efek(st.penuh ? st.level : st.level + 1) || '—'}`, innerW - 8, UI.font),
+      x + PAD, ry + 34, { font: UI.font, color: '#5a4230' });
     // Baris terakhir: status di kiri, tombol di kanan. Petunjuk tombol sengaja di
     // sini, bukan di kaki panel — kaki panel berimpit dengan hotbar.
     //
@@ -214,7 +230,7 @@ export class UpgradeUI {
       baris.forEach((t, i) => {
         // Baris kedua naik 12 px saja: kotak rincian hanya 70 px, dan tombol
         // "Boleh dibeli" di y yang sama harus tetap terpisah jelas.
-        text(ctx, t, x + PAD, ry + 52 + (i ? 12 : 0), { font: UI.font, color: warna });
+        text(ctx, t, x + PAD, ry + 52 + i * 14, { font: UI.font, color: warna });
       });
     }
     text(ctx, 'E beli · Esc tutup', x + W - PAD, ry + 52,

@@ -45,7 +45,10 @@ function kanvasTiruan(w, h) {
     measureText(str) {
       const px = Number(/(\d+)px/.exec(this.font)?.[1] ?? 16);
       // "Press Start 2P" hampir persegi; VT323 kira-kira setengah lebar huruf.
-      const perHuruf = /Press Start/.test(this.font) ? px : px * 0.5;
+      // Untuk teks biasa dipakai 0,6 em — LEBIH LEBAR daripada VT323 — supaya
+      // kalimat yang lolos di sini juga lolos kalau font di perangkat pemain
+      // sedikit lebih lebar (mis. pengganti DejaVu Sans Mono di Android).
+      const perHuruf = /Press Start/.test(this.font) ? px : px * 0.6;
       return { width: str.length * perHuruf };
     },
     fillText(s, x, y) {
@@ -94,10 +97,12 @@ for (const kelas of ['X', 'XI', 'XII']) {
       const { ctx, tulisan } = kanvasTiruan(w, h);
       ui.draw(ctx);
 
-      // Batas panel — rumus yang sama dengan UpgradeUI.draw().
-      const PAD = 18, HUD = 34, ROW = 30, RINCI = 84, KEPALA = 40;
-      const PW = Math.min(600, w - 24);
-      const lihat = Math.max(3, Math.min(4, UPGRADE.length));
+      // Batas panel — angka dan rumus yang sama persis dengan UpgradeUI.draw(),
+      // diambil dari UpgradeUI.TATA supaya uji ini tidak bisa "lulus" hanya
+      // karena salinannya ikut basi.
+      const { LEBAR_MAKS, HUD, ROW, RINCI, KEPALA, BARIS_MAKS } = UpgradeUI.TATA;
+      const PW = Math.min(LEBAR_MAKS, w - 24);
+      const lihat = Math.max(3, Math.min(BARIS_MAKS, UPGRADE.length));
       const PH = Math.min(h - HUD - 8, KEPALA + lihat * ROW + RINCI + 8);
       const kiri = Math.round((w - PW) / 2), kanan = kiri + PW;
       const atas = Math.max(4, Math.min(Math.round((h - PH) / 2), h - PH - HUD));
