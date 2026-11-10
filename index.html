@@ -276,8 +276,8 @@
 </main>
 
 <script type="module">
-  import { setNewGame, writeSave, writeProfile, AVATARS, labelKelasPanjang, rombelHuruf } from './src/core/save.js';
-  import { validate, check, register, resume, currentUsername } from './src/core/account.js';
+  import { setNewGame, writeProfile, AVATARS, labelKelasPanjang, rombelHuruf } from './src/core/save.js';
+  import { validate, currentUsername } from './src/core/account.js';
   import { daftarMurid, masukMurid, muridAktif, periksaPin, labelKelasMurid } from './src/core/nilai-api.js';
 
   const tabs = [...document.querySelectorAll('nav a.tab')];
@@ -315,20 +315,30 @@
   const ROMBEL = 15;
   const tktEl = document.getElementById('tkt');
   const rombelEl = document.getElementById('rombel');
-  tktEl.innerHTML = TINGKAT.map((t, i) => `
-    <label><input type="radio" name="tingkat" value="${t}"${i === 0 ? ' checked' : ''}><span>Kelas ${t}</span></label>`).join('');
+  // Radio sengaja TIDAK dicentang lebih dulu. Dulu "X" dan "1" dipilih otomatis,
+  // dan murid XI/XII yang namanya sudah ada di peramban ini ikut terdaftar
+  // sebagai kelas X-1 karena pilihan bawaannya menang. Sekarang kelas diisi
+  // dari data murid kalau ada; kalau tidak ada, murid memilih sendiri.
+  tktEl.innerHTML = TINGKAT.map((t) => `
+    <label><input type="radio" name="tingkat" value="${t}"><span>Kelas ${t}</span></label>`).join('');
   rombelEl.innerHTML = Array.from({ length: ROMBEL }, (_, i) => i + 1).map((n) => `
-    <label><input type="radio" name="rombel" value="${n}"${n === 1 ? ' checked' : ''}><span>${rombelHuruf(n)} / ${n}</span></label>`).join('');
+    <label><input type="radio" name="rombel" value="${n}"><span>${rombelHuruf(n)} / ${n}</span></label>`).join('');
 
-  const kelasTerpilih = () => ({
-    tingkat: document.querySelector('input[name=tingkat]:checked').value,
-    rombel: Number(document.querySelector('input[name=rombel]:checked').value),
-  });
+  // Kelas yang sedang terpilih — atau null kalau radio-nya belum pernah
+  // dicentang. `null` dipakai saat murid lama masuk kembali: profilnya tidak
+  // boleh ditimpa kelas bawaan (X-1) yang tidak pernah ia pilih.
+  const kelasTerpilih = () => {
+    const t = document.querySelector('input[name=tingkat]:checked');
+    const r = document.querySelector('input[name=rombel]:checked');
+    if (!t || !r) return { tingkat: null, rombel: null };
+    return { tingkat: t.value, rombel: Number(r.value) };
+  };
   const segarkanHintKelas = () => {
     const { tingkat, rombel } = kelasTerpilih();
-    document.getElementById('kelashint').textContent =
-      `Kelasmu: ${labelKelasPanjang(tingkat, rombel)} \u2014 soal dan ujian memakai materi kelas ${tingkat}. `
-      + 'Bisa diganti nanti dari menu Rekap Belajar.';
+    document.getElementById('kelashint').textContent = tingkat
+      ? `Kelasmu: ${labelKelasPanjang(tingkat, rombel)} \u2014 soal dan ujian memakai materi kelas ${tingkat}. `
+        + 'Bisa diganti nanti dari menu Rekap Belajar.'
+      : 'Pilih kelasmu dulu: kelas menentukan soal yang muncul.';
   };
   tktEl.addEventListener('change', segarkanHintKelas);
   rombelEl.addEventListener('change', segarkanHintKelas);
@@ -352,9 +362,18 @@
         const r = document.querySelector(`input[name=rombel][value="${m[3]}"]`);
         if (t) t.checked = true;
         if (r) r.checked = true;
-        segarkanHintKelas();
       }
     }
+    if (!document.querySelector('input[name=tingkat]:checked')) {
+      // Kelasnya tidak tersimpan (mis. akun lama tanpa kelas): jatuh ke X-1,
+      // kelas yang sama dengan bawaan versi sebelumnya.
+      document.querySelector('input[name=tingkat][value="X"]').checked = true;
+      document.querySelector('input[name=rombel][value="1"]').checked = true;
+    }
+    // Radio di atas diubah setelah hint pertama digambar, jadi hint harus
+    // disegarkan lagi — tanpa ini hint tetap berbunyi "pilih kelasmu dulu"
+    // padahal kelasnya sudah terpilih.
+    segarkanHintKelas();
   }
 
   const say = (el, msg, good = false) => {
@@ -362,30 +381,32 @@
     el.classList.toggle('ok', good);
   };
 
-  // Cek ketersediaan sambil mengetik, supaya kesalahan ketahuan sebelum tombol
-  // ditekan. Diberi jeda agar tidak satu permintaan per huruf.
-  let checkTimer = 0;
-  // Diisi saat tombol MULAI menolak isian. Selama terisi, hasil pemeriksaan
-  // username yang datang terlambat TIDAK boleh menimpa pesan itu — dulu pesan
-  // "PIN dan ulangannya tidak sama" tertimpa "tersedia" sesaat setelahnya, dan
-  // murid mengira PIN-nya sudah benar.
-  let pesanTerkunci = false;
+  // Dipulangkan oleh game.html: murid membuka /game.html tanpa akun. Tanpa
+  // penjelasan di sini, halaman ini terlihat seperti biasa saja dan murid akan
+  // mencoba alamat yang sama lagi. Diletakkan SETELAH `say` didefinisikan —
+  // versi pertama menaruhnya di atas, dan seluruh halaman gagal jalan karena
+  // memanggil `const` sebelum deklarasinya.
+  if (new URLSearchParams(location.search).get('perluakun')) {
+    say(newErr, 'Buat akun dulu (username + PIN), lalu tombol MULAI BARU membawamu ke permainan.');
+    nameEl.focus();
+  }
+
+  // Pemeriksaan nama cukup di peramban. Dulu ada permintaan ke
+  // `/api/player/check` sambil mengetik, tetapi alamat itu tidak ada di GitHub
+  // Pages (halaman statis tidak bisa menjalankan server), jadi setiap murid
+  // melihat "Server tidak terhubung" sebelum sempat menekan apa pun. Apakah
+  // nama sudah dipakai baru diketahui saat MULAI ditekan, dari jawaban
+  // Apps Script (`sudahAda`), dan itu cukup: satu permintaan, bukan satu per
+  // huruf.
   nameEl.addEventListener('input', () => {
-    pesanTerkunci = false;
     const u = nameEl.value.trim();
-    clearTimeout(checkTimer);
     const err = validate(u);
     if (err) { say(newErr, u ? err : ''); return; }
-    say(newErr, 'Memeriksa...');
-    checkTimer = setTimeout(async () => {
-      const r = await check(u);
-      if (pesanTerkunci) return;
-      say(newErr, r.available ? `"${u}" tersedia.` : r.reason, r.available);
-    }, 350);
+    say(newErr, '');
   });
 
-  /** Tampilkan pesan yang tidak boleh ditimpa pemeriksaan username. */
-  const tolak = (msg) => { clearTimeout(checkTimer); pesanTerkunci = true; say(newErr, msg); };
+  /** Tampilkan pesan penolakan isian. */
+  const tolak = (msg) => say(newErr, msg);
 
   /**
    * Nama yang dipakai sebagai username.
@@ -415,28 +436,45 @@
     if (salahPin) return tolak(salahPin);
     if (pin !== pin2El.value.trim()) return tolak('PIN dan ulangannya tidak sama.');
 
+    // Kelas tidak lagi dicentang otomatis, jadi harus dipilih sendiri. Tanpa
+    // ini, murid XI/XII bisa terdaftar sebagai X-1 dan soalnya jadi salah.
+    const kelas = kelasTerpilih();
+    if (!kelas.tingkat || !kelas.rombel) return tolak('Pilih kelasmu dulu (mis. X / 1).');
+
     startBtn.disabled = true;
     say(newErr, 'Mendaftarkan...');
-    const kelas = kelasTerpilih();
     const profile = {
       name: username,
       farmName: document.getElementById('farm').value.trim() || 'Ladang Kenanga',
       avatar: document.querySelector('input[name=avatar]:checked').value,
-      // Kelas ikut dikirim ke akun: tanpa ini, pemain yang melanjutkan dari
-      // komputer lain akan kehilangan tingkatnya dan soalnya jadi acak.
+      // Kelas ikut disimpan di profil: tanpa ini, pemain yang membuka game di
+      // perangkat lain akan kehilangan tingkatnya dan soalnya jadi acak.
       tingkat: kelas.tingkat,
       rombel: kelas.rombel,
     };
-    const r = await register(username, profile);
-    startBtn.disabled = false;
-    if (!r.ok) return say(newErr, r.error ?? 'Gagal mendaftar.');
 
-    // Dua pencatatan, dua tujuan: `register` menyimpan simpanan permainan,
-    // `daftarMurid` menulis baris di tab Akun spreadsheet guru. Yang kedua
-    // boleh gagal tanpa membatalkan yang pertama — murid tetap bisa main,
-    // dan namanya didaftarkan otomatis saat nilai pertamanya dikirim.
+    // Satu-satunya pencatatan akun: tab `Akun` di spreadsheet guru, lewat Web
+    // App Apps Script. Dulu ada pencatatan kedua lewat `/api/player/register`,
+    // tetapi alamat itu tidak ada di GitHub Pages dan kegagalannya MENGHENTIKAN
+    // pendaftaran sebelum Apps Script sempat dipanggil — itulah pesan "Server
+    // tidak terhubung" yang memblokir murid.
     const dm = await daftarMurid(username, labelKelasMurid(kelas.tingkat, kelas.rombel), pin);
-    if (!dm.ok) say(newErr, dm.error ?? 'Pendaftaran murid gagal, tetapi permainan tetap bisa dimulai.');
+    startBtn.disabled = false;
+
+    if (!dm.ok) {
+      // Nama sudah dipakai orang lain dengan PIN berbeda: jangan diam-diam
+      // memakai akun itu, minta murid memilih nama lain.
+      if (!dm.offline) return say(newErr, dm.error ?? 'Pendaftaran gagal.');
+      // Spreadsheet tidak terjangkau. Memaksa murid menunggu berarti game tidak
+      // bisa dipakai saat jaringan sekolah bermasalah; identitasnya sudah
+      // disimpan di peramban oleh daftarMurid() dan akan didaftarkan otomatis
+      // saat nilai pertamanya terkirim.
+      say(newErr, 'Spreadsheet belum terjangkau. Kamu tetap bisa main; akunmu dicatat otomatis saat nilai pertama terkirim.', true);
+    }
+
+    // Berhasil: kosongkan pesan "Mendaftarkan..." supaya tidak tertinggal
+    // kalau perpindahan halaman tertahan (jaringan lambat, tab di latar).
+    else say(newErr, '');
 
     // Simpanan lama di peramban ini milik username lain; buang supaya tidak
     // terbawa ke permainan yang baru.
@@ -460,37 +498,30 @@
     resumeBtn.disabled = true;
     say(resumeErr, 'Memeriksa PIN...');
     const mm = await masukMurid(username, pin);
-    if (!mm.ok) {
-      resumeBtn.disabled = false;
-      // Kalau spreadsheet belum disambungkan, PIN tidak bisa diperiksa di
-      // server. Jangan kunci murid dari permainannya sendiri karena itu.
-      if (mm.offline) say(resumeErr, 'Spreadsheet belum tersambung; PIN belum bisa diperiksa. Melanjutkan sebagai murid peramban ini.');
-      else return say(resumeErr, mm.error ?? 'PIN tidak cocok.');
-    }
-
-    say(resumeErr, 'Mengambil simpanan...');
-    const r = await resume(username);
     resumeBtn.disabled = false;
-    if (!r.ok) {
-      // PIN sudah terbukti benar (mm.ok). Kalau simpanan di server tidak ada —
-      // mis. akunnya dibuat lewat spreadsheet, bukan lewat tombol MULAI — murid
-      // tetap boleh masuk dan memakai simpanan di peramban ini. Menahannya di
-      // halaman awal hanya karena server tidak punya salinan akan mengunci
-      // murid dari permainannya sendiri.
-      if (mm.ok) {
-        say(resumeErr, 'PIN benar. Belum ada simpanan di server; memakai simpanan di peramban ini.', true);
-        writeProfile({ name: username });
-        location.href = 'game.html';
-        return;
-      }
-      return say(resumeErr, r.error ?? 'Gagal melanjutkan.');
+
+    if (!mm.ok) {
+      // Kalau spreadsheet belum tersambung, PIN tidak bisa diperiksa di server.
+      // Jangan kunci murid dari permainannya sendiri karena itu — simpanan di
+      // peramban ini tetap miliknya, dan PIN-nya tetap diminta saat nilainya
+      // dikirim.
+      if (!mm.offline) return say(resumeErr, mm.error ?? 'PIN tidak cocok.');
+      say(resumeErr, 'Spreadsheet belum terjangkau; PIN belum bisa diperiksa. Melanjutkan dengan simpanan di peramban ini.', true);
+      writeProfile({ name: username });
+      location.href = 'game.html';
+      return;
     }
 
-    // Simpanan dari server ditulis ke localStorage lebih dulu, lalu game boot
-    // seperti biasa. Satu jalur muat, bukan dua.
-    if (r.save) writeSave(r.save, 0);
-    else { localStorage.removeItem('lk_save_0'); localStorage.removeItem('lk_save_0.bak'); }
-    writeProfile(r.profile ?? { name: r.username });
+    // Simpanan permainan hanya ada di peramban ini: GitHub Pages tidak punya
+    // tempat menyimpan, dan `player/save` di server tidak pernah dipasang.
+    // Profil (nama + kelas) ditulis ulang supaya game boot dengan identitas
+    // yang benar, bukan nama murid sebelumnya di perangkat ini.
+    say(resumeErr, '');
+    const kelas = kelasTerpilih();
+    writeProfile({
+      name: username,
+      ...(kelas.tingkat ? { tingkat: kelas.tingkat, rombel: kelas.rombel } : {}),
+    });
     location.href = 'game.html';
   });
 </script>

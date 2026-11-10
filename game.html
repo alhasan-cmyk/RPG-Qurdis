@@ -22,6 +22,36 @@
   <div id="loading">Memuat…</div>
   <canvas id="game" tabindex="0"></canvas>
   <a id="home" href="index.html">← Homepage</a>
+
+  <!-- Gerbang akun. Dijalankan SEBELUM src/main.js dimuat, jadi murid yang
+       membuka alamat ini langsung tidak pernah masuk sebagai "Petani" tanpa
+       akun. Tanpa akun, nilai ujiannya nanti ditolak server ("Murid belum
+       terdaftar di peramban ini") dan murid tidak tahu sebabnya.
+
+       Aturannya: harus ada identitas murid di peramban ini — nama di profil
+       ATAU data murid dari pendaftaran. Kalau tidak ada, kembalikan ke halaman
+       pendaftaran dan bawa alamat asal supaya pesannya bisa menjelaskan. -->
+  <script>
+    (function () {
+      var punyaProfil = false;
+      var punyaMurid = false;
+      try {
+        var p = JSON.parse(localStorage.getItem('lk_profile') || 'null');
+        punyaProfil = !!(p && p.name);
+      } catch (e) { /* localStorage rusak: anggap belum punya akun */ }
+      try {
+        var m = JSON.parse(localStorage.getItem('lk_murid') || 'null');
+        punyaMurid = !!(m && m.nama);
+      } catch (e) { /* idem */ }
+
+      if (punyaProfil || punyaMurid) return;   // sudah terdaftar: main seperti biasa
+
+      // Belum punya akun. Kembali ke halaman depan dengan penanda, bukan
+      // langsung menampilkan kanvas tanpa identitas.
+      location.replace('index.html?perluakun=1');
+    })();
+  </script>
+
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

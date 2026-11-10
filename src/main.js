@@ -7,7 +7,6 @@ import { input, mouse, bindMouse } from './core/input.js';
 import { on } from './core/events.js';
 import { GameTime, SEASON_NAMES } from './core/time.js';
 import { readSave, writeSave, takeNewGame, readProfile, writeProfile, avatarOf } from './core/save.js';
-import { push as pushSave } from './core/account.js';
 import { getArea, markRemoved, removalsToJSON, removalsFromJSON } from './world/areas.js';
 import { TILE } from './world/map.js';
 import { Character } from './entities/character.js';
@@ -412,12 +411,14 @@ function saveGame() {
       : state.animalState ?? [],
     area: state.areaId,
   };
-  // localStorage dulu, server belakangan. Kalau servernya mati, progres tetap
-  // aman di peramban ini; yang hilang cuma kemampuan melanjutkan dari komputer
-  // lain sampai penyimpanan berikutnya berhasil.
+  // Simpanan hanya di peramban ini. Dulu ada dorongan ke `/api/player/save`
+  // supaya simpanan bisa dibuka dari komputer lain, tetapi alamat itu tidak
+  // pernah ada di GitHub Pages (halaman statis tidak bisa menjalankan server),
+  // jadi setiap penyimpanan mengirim permintaan yang pasti gagal. Progres tidak
+  // pernah hilang karena itu — `writeSave` di bawah ini yang jadi sumber
+  // kebenaran — tetapi janji "lanjut dari komputer lain" tidak berlaku.
   writeSave(data, 0);
   writeProfile(state.profile);
-  pushSave(state.profile, data);
 }
 
 /**
