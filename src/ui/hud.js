@@ -6,31 +6,7 @@ import { itemDef } from '../systems/inventory.js';
 
 const SEASON_ICON = { spring: 4, summer: 5, autumn: 6, winter: 7 };
 
-/**
- * Tombol keluar di pojok kanan atas: { x, y, w, h } dalam koordinat kanvas.
- *
- * Satu tempat, dipakai tiga hal yang harus selalu setuju: menggambar tombolnya
- * (hud.js), memeriksa ketukan/sentuhan (main.js), dan uji tata letak. Dulu
- * geometri yang sama ditulis ulang di tiga berkas dan cepat atau lambat ada
- * yang ketinggalan.
- *
- * Kenapa di KANVAS, bukan DOM seperti tombol ⛶: kanvas diputar 90° oleh CSS di
- * ponsel tegak (ui/landscape.js). Tombol kanvas ikut berputar bersama HUD dan
- * selalu mendarat di pojok kanan atas GAMBAR; tombol DOM butuh aturan CSS
- * terpisah untuk itu, dan tombol yang tidak ikut berputar akan menutupi jam.
- *
- * Ukurannya 34x30 px logis: cukup kecil agar tidak menutupi apa pun, cukup
- * besar untuk jari (di ponsel zoom 1, satu piksel logis = satu piksel layar).
- */
-export function kotakTombolKeluar() {
-  const W = view.w;
-  // Panel uang: x = W-158 .. W-8, y = 8..48. Tombol diletakkan di BAWAH panel
-  // itu (y 52), bukan di sampingnya: di layar 390 px lebarnya tidak cukup untuk
-  // keduanya berdampingan dengan jarak yang aman.
-  return { x: W - 8 - 40, y: 52, w: 40, h: 32 };
-}
-
-export function drawHud(ctx, { time, player, inv, weather, tombolKeluar = true }) {
+export function drawHud(ctx, { time, player, inv, weather }) {
   const W = view.w, H = view.h;
 
   // --- clock / date / weather / energy, all in one panel
@@ -81,35 +57,6 @@ export function drawHud(ctx, { time, player, inv, weather, tombolKeluar = true }
     }
     text(ctx, String(i + 1), x + 4, y0 + 2, { font: '12px "VT323", monospace', color: '#6b5a3a' });
   }
-  // Tombol keluar. Digambar paling akhir supaya tidak mungkin tertimpa HUD lain.
-  //
-  // `tombolKeluar: false` dipakai saat layar modal terbuka (ujian, rak, papan
-  // usaha): di sana ketukan tidak diproses, dan tombol yang terlihat tetapi
-  // tidak bereaksi lebih membingungkan daripada tombol yang memang tidak ada.
-  // Ikonnya panah keluar, bukan huruf "X": "X" terbaca sebagai "tutup panel
-  // ini", sedangkan yang terjadi adalah meninggalkan permainan.
-  if (tombolKeluar) {
-    const t = kotakTombolKeluar();
-    ctx.fillStyle = 'rgba(245, 230, 200, .88)';
-    ctx.fillRect(t.x, t.y, t.w, t.h);
-    ctx.strokeStyle = '#7a4a22';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(t.x + 1, t.y + 1, t.w - 2, t.h - 2);
-    // Ikon: "keluar" = garis pintu + panah ke luar. Tiga versi sebelumnya
-    // (orang di depan pintu, pintu terbuka + panah, bingkai + panah siku)
-    // semuanya gagal di 34x30 px: terbaca sebagai titik dua, tanda plus, lalu
-    // kumpulan titik. Pelajarannya: di ukuran ini hanya boleh ada SATU bentuk
-    // yang jelas, jadi dipakai garis tegak (pintu) + panah tebal ke kanan.
-    ctx.fillStyle = '#7a4a22';
-    // Bendera/tiang pintu di kiri.
-    ctx.fillRect(t.x + 9, t.y + 8, 3, 16);
-    // Panah: tangkai, lalu kepala tiga baris yang menyempit.
-    ctx.fillRect(t.x + 13, t.y + 15, 9, 3);
-    ctx.fillRect(t.x + 20, t.y + 10, 3, 13);
-    ctx.fillRect(t.x + 23, t.y + 12, 3, 9);
-    ctx.fillRect(t.x + 26, t.y + 14, 3, 5);
-  }
-
   const held = inv.held;
   if (held) {
     const d = itemDef(held.id);
