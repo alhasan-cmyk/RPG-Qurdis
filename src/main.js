@@ -139,7 +139,7 @@ async function boot() {
   });
   // Pilihan pemain soal tombol sentuh disimpan per perangkat (lihat ui/touch.js),
   // jadi di sini tidak ada yang perlu dimuat: pasangSentuh sudah membacanya.
-  state.sentuh.ukuranHud?.({ w: view.w, h: view.h });
+  ukuranTombolSentuh();
 
   state.pilihanUI = new PilihanUI(state.audio);
   state.upgrade = new Upgrade();
@@ -290,7 +290,7 @@ async function boot() {
     // Tombol sentuh adalah elemen HTML, jadi ia tidak tahu apa-apa soal skala
     // pandangan. Ukuran kanvas (v.w/v.h) sudah dalam piksel layar, dan itulah
     // yang dipakai HUD — jadi tombol tidak pernah tertimpa hotbar.
-    state.sentuh?.ukuranHud?.({ w: v.w, h: v.h });
+    ukuranTombolSentuh();
   });
 
   loadingEl.remove();
@@ -459,6 +459,38 @@ function doSleep(passedOut) {
   if (earned) lines.push(`Penjualan G${earned.toLocaleString('id-ID')}`);
   lines.push(`${state.time.dateText} · ${state.weather.name}`);
   showToast(passedOut ? 'Kamu pingsan kelelahan... (energi 50%)' : lines.join(' · '), 4.5);
+}
+
+/**
+ * Beri tahu lapisan tombol sentuh di mana HUD berakhir.
+ *
+ * Tombol sentuh adalah elemen HTML, sedangkan panel gold dan hotbar digambar di
+ * kanvas. Tanpa angka ini, tombol hanya bisa menebak — dan tebakan yang sama
+ * tidak bisa benar untuk layar 390 px maupun desktop. Angka diambil dari
+ * geometri HUD yang SEBENARNYA (ui/hud.js), lalu dikalikan zoom karena tombol
+ * HTML memakai piksel layar, bukan piksel kanvas.
+ *
+ * Diukur dalam piksel layar: `1` piksel kanvas = `view.zoom` piksel layar.
+ */
+function ukuranTombolSentuh() {
+  if (!state.sentuh?.ukuranHud) return;
+  const z = view.zoom || 1;
+  const W = view.w, H = view.h;
+  // Hotbar: S=40, gap=2, 12 px dari bawah; panel pembungkusnya 8 px lebih tinggi.
+  const S = 40;
+  const hudBawah = (S + 12 + 4) * z;                 // tepi atas panel hotbar
+  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js).
+  const goldKiri = (158 + 8) * z;                    // tepi kiri panel + jarak
+  // Tombol power + inventori berjajar di KIRI panel gold. Di layar sempit
+  // (ponsel tegak, view 390 px) panel jam selebar 226 px + panel gold 150 px
+  // sudah memenuhi seluruh lebar — tidak ada sisa untuk dua tombol 36 px.
+  // Kalau begitu, tombolnya TURUN ke bawah panel jam: tetap di kiri panel gold,
+  // tetap tidak menempel, hanya tidak sebaris.
+  const lebarTombol = 36 * 2 + 6;                    // dua tombol + jarak
+  const jamKanan = 234 * z;
+  const sisa = (W * z) - goldKiri - jamKanan;
+  const goldBawah = (sisa >= lebarTombol + 12 ? 48 : 104) * z;
+  state.sentuh.ukuranHud({ w: W * z, h: H * z, hudBawah, goldBawah, goldKiri });
 }
 
 function saveGame() {

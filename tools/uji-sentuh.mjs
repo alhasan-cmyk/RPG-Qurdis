@@ -424,5 +424,74 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
   ok('ketuk: pojok layar (0,0) tidak', !dalam(0, 0));
 }
 
+// ------------------------------------------- Tata letak tombol sentuh (grid)
+//
+// Posisi tombol ditentukan oleh KELAS CSS (mis. `.kanan .tombol.e`), bukan oleh
+// urutan array. Uji ini membaca aturan CSS yang benar-benar dipasang dan
+// memastikan setiap tombol punya tempat di grid — kalau satu tombol lupa
+// diberi kelas posisi, ia akan menumpuk di sel pertama dan menutupi tombol lain
+// tanpa ada yang error.
+{
+  const css = document.getElementById('lk-gaya-sentuh')?.textContent
+    ?? [...document.querySelectorAll('style')].map((e) => e.textContent).join('\n');
+  const aturan = (sel) => {
+    const re = new RegExp(sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\{([^}]*)\\}');
+    return re.exec(css)?.[1] ?? '';
+  };
+  const posisi = (sel) => {
+    const isi = aturan(sel);
+    const kol = /grid-column:\s*([^;]+)/.exec(isi)?.[1]?.trim();
+    const bar = /grid-row:\s*([^;]+)/.exec(isi)?.[1]?.trim();
+    return kol && bar ? `${kol} / ${bar}` : null;
+  };
+
+  const wajib = ['e', 'lari', 'esc', 'nilai', 'ujian', 'alat-mundur', 'alat-maju'];
+  const terpakai = new Map();
+  for (const k of wajib) {
+    const p = posisi(`.lk-touch .kanan .tombol.${k}`);
+    ok(`grid: tombol "${k}" punya posisi`, !!p, p ?? '(tidak ada aturan grid)');
+    if (!p) continue;
+    const mulaiKol = parseInt(p.split('/')[0]);
+    const mulaiBar = parseInt(p.split('/')[1]);
+    // E membentang dua baris (row 2 / span 2) -> sel yang dipakai (3,2) dan (3,3)
+    const sel = k === 'e' ? [`${mulaiKol},${mulaiBar}`, `${mulaiKol},${mulaiBar + 1}`]
+      : [`${mulaiKol},${mulaiBar}`];
+    for (const sel1 of sel) {
+      ok(`grid: sel ${sel1} tidak dipakai dua tombol`, !terpakai.has(sel1),
+        terpakai.has(sel1) ? `dipakai "${terpakai.get(sel1)}" dan "${k}"` : '');
+      terpakai.set(sel1, k);
+    }
+  }
+
+  // Permintaan pemain: alat di baris paling ATAS, E di pojok kanan bawah.
+  ok('grid: alat (◀) di baris paling atas', /^1 \/ *1$/.test(posisi('.lk-touch .kanan .tombol.alat-mundur') ?? ''), posisi('.lk-touch .kanan .tombol.alat-mundur'));
+  ok('grid: alat (▶) di baris paling atas', /^2 \/ *1$/.test(posisi('.lk-touch .kanan .tombol.alat-maju') ?? ''), posisi('.lk-touch .kanan .tombol.alat-maju'));
+  ok('grid: E di kolom paling kanan', (posisi('.lk-touch .kanan .tombol.e') ?? '').startsWith('3 /'), posisi('.lk-touch .kanan .tombol.e'));
+  ok('grid: E paling besar', /font-size:\s*clamp/.test(aturan('.lk-touch .kanan .tombol.e')));
+
+  // Power + inventori di kiri atas, BERJAJAR dan tidak menempel panel gold.
+  const matikanPosisi = aturan('.lk-touch .matikan');
+  ok('kiri atas: memakai posisi dari --lk-gold-*', /--lk-gold-kiri/.test(matikanPosisi) && /--lk-gold-b/.test(matikanPosisi), matikanPosisi.trim());
+  ok('kiri atas: berjajar ke samping', /grid-auto-flow:\s*column/.test(matikanPosisi));
+  ok('power: bulat, bukan kotak', /border-radius:\s*50%/.test(aturan('.lk-touch .tombol.daya')));
+
+  // Inventori hanya di SATU tempat (kiri atas). Dulu ia muncul dua kali — di
+  // kluster kanan dan di kluster kiri atas — dan di layar 390 px itu memakan
+  // satu sel yang bisa dipakai tombol lain. Dihitung dari ELEMEN yang benar-
+  // benar dipasang, bukan dari teks CSS (kelasnya cuma `inv`, bukan "inventory").
+  // Uji sebelumnya memasang beberapa lapisan; DOM menyimpan semuanya. Yang
+  // benar adalah lapisan TERAKHIR (yang dipakai pemain sekarang).
+  const lapisan = [...document.querySelectorAll('.lk-touch')].pop();
+  const semuaLabel = [...lapisan.querySelectorAll('.tombol')]
+    .map((b) => b.textContent.trim())
+    .filter(Boolean);
+  const hitung = (l) => semuaLabel.filter((t) => t === l).length;
+  ok('inventori (I) muncul tepat satu kali', hitung('I') === 1, `"I" muncul ${hitung('I')} kali: ${semuaLabel.join(' ')}`);
+  ok('tombol Esc muncul tepat satu kali', hitung('Esc') === 1, String(hitung('Esc')));
+  ok('tombol E muncul tepat satu kali', hitung('E') === 1, String(hitung('E')));
+  const isiMatikan = [...lapisan.querySelectorAll('.matikan .tombol')].map((b) => b.textContent.trim()).join(',');
+  ok('kluster kiri atas berisi power + inventori', isiMatikan === '⏻,I', isiMatikan);
+}
+
 console.log(`\n${lulus} lulus, ${gagal} gagal`);
 process.exit(gagal ? 1 : 0);

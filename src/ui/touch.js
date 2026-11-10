@@ -30,6 +30,8 @@ const GAYA = `
      Dipakai supaya D-pad dan tombol aksi tidak pernah menimpa hotbar: hotbar
      setinggi 40 px + 12 px jarak bawah, dan tombol butuh ruang di atasnya. */
   --lk-hud-b: 88px; --lk-hud-r: 12px;
+  /* Diisi ukuranHud(): tepi bawah panel gold, dari ATAS layar. */
+  --lk-gold-b: 48px; --lk-gold-kiri: 100px;
   font-family: "VT323", monospace; -webkit-user-select: none; user-select: none;
   -webkit-tap-highlight-color: transparent; }
 .lk-touch[hidden] { display: none; }
@@ -37,20 +39,54 @@ const GAYA = `
 /* D-pad di kiri bawah — tempat jempol kiri beristirahat, di ATAS hotbar kanvas
    (hotbar itu bisa diketuk, jadi tidak boleh tertutup). */
 .lk-touch .kiri { left: 10px; bottom: 52px;
-  grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(3, 48px); }
-/* Tombol aksi di atas D-pad, bukan di kanan bawah: sudut kanan bawah kanvas
-   dipakai hotbar (9 slot alat), dan menaruh tombol di sana membuat alat tidak
-   bisa dilihat sama sekali. */
-.lk-touch .kanan { right: 10px; bottom: var(--lk-hud-b);
-  grid-template-columns: repeat(2, 54px); grid-auto-rows: 44px; }
+  grid-template-columns: repeat(3, clamp(38px, 11vw, 52px));
+  grid-template-rows: repeat(3, clamp(38px, 11vw, 52px)); }
+
+/* ---------------------------------------------------------------- kiri atas
+   Kembar dengan sudut kanan atas panel gold di tengah layar (koordinatnya
+   dikirim ukuranHud() lewat --lk-gold-b dan --lk-gold-kiri). Isinya tombol
+   power (keluar) lalu inventori, berjajar ke kiri dengan JARAK — tidak
+   menempel di panel. */
+.lk-touch .matikan { right: var(--lk-gold-kiri); top: var(--lk-gold-b);
+  grid-auto-flow: column; grid-auto-columns: 36px; grid-auto-rows: 36px; }
+.lk-touch .matikan .tombol { border-radius: 8px; }
+/* Power: lingkaran merah seperti tombol daya, bukan kotak seperti tombol lain —
+   supaya tidak tertukar dengan tombol biasa saat jempol mencari cepat. */
+.lk-touch .tombol.daya { border-radius: 50%; border-color: #8a2c1d;
+  background: rgba(248, 214, 206, .94); color: #8a2c1d; font-size: 20px; }
+
+/* --------------------------------------------------------------- kanan bawah
+   E besar di pojok, dikelilingi tombol kecil. Bentuknya grid 3x3 dengan E di
+   tengah-bawah (kolom 3, baris 2-3) supaya sudut kanan bawah tetap milik E.
+   Lari di atas E, Esc di kirinya, Nilai di pojok kiri-atas, Ujian di atas
+   Lari, dan alat maju/mundur di baris paling bawah. */
+.lk-touch .kanan {
+  right: 10px; bottom: calc(var(--lk-hud-b) + 4px);
+  grid-template-columns: repeat(3, clamp(42px, 12vw, 56px));
+  grid-template-rows: repeat(3, clamp(42px, 12vw, 56px));
+}
+.lk-touch .kanan .tombol.e { grid-column: 3; grid-row: 2 / span 2;
+  font-size: clamp(22px, 7vw, 30px); }
+/* Baris paling ATAS: tombol alat (◀ ▶) lalu Lari. Alat ditaruh di atas karena
+   itu yang paling sering dipakai; E besar di bawahnya, di pojok. */
+.lk-touch .kanan .tombol.alat-mundur { grid-column: 1; grid-row: 1; }
+.lk-touch .kanan .tombol.alat-maju { grid-column: 2; grid-row: 1; }
+.lk-touch .kanan .tombol.lari { grid-column: 3; grid-row: 1; }
+/* Baris tengah: Nilai dan Ujian (jarang dipakai, jadi paling jauh dari jempol). */
+.lk-touch .kanan .tombol.nilai { grid-column: 1; grid-row: 2; }
+.lk-touch .kanan .tombol.ujian { grid-column: 2; grid-row: 2; }
+/* Baris bawah: Esc melebar dua kolom — tombol yang perlu dicari cepat tapi
+   tidak boleh sebesar E. Inventori tidak ada di sini: ia sudah pindah ke
+   sebelah tombol power di kiri atas. */
+.lk-touch .kanan .tombol.esc { grid-column: 1 / span 2; grid-row: 3; }
 .lk-touch .tombol { pointer-events: auto; touch-action: none; border: 2px solid #7a4a22;
   background: rgba(245, 230, 200, .86); color: #3a2a2a; border-radius: 10px;
   font: 20px/1 "VT323", monospace; display: flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 0 rgba(58, 42, 42, .35); }
 .lk-touch .tombol:active, .lk-touch .tombol.aktif { background: rgba(255, 243, 214, .98); transform: translateY(1px); }
-.lk-touch .tombol.besar { font-size: 17px; }
-.lk-touch .tombol.e { background: rgba(255, 226, 168, .96); font-size: 24px; }
-.lk-touch .tombol.pilih { font-size: 15px; }
+.lk-touch .tombol.besar { font-size: clamp(13px, 3.6vw, 17px); }
+.lk-touch .tombol.e { background: rgba(255, 226, 168, .96); }
+.lk-touch .tombol.pilih { font-size: clamp(11px, 3vw, 15px); }
 .lk-touch .tombol.kosong { visibility: hidden; }
 .lk-touch .tombol.tersembunyi { display: none; }
 /* Hotbar kanvas sendiri bisa diketuk (lihat pilihAlatDariKetuk di main.js),
@@ -62,10 +98,14 @@ const GAYA = `
 /* Layar pendek (ponsel mendatar): tombol lebih kecil dan lebih rapat. Ambang
    tinggi memakai piksel LAYAR (bukan logis), jadi tetap benar walau skala
    pandangan berubah. */
-@media (max-height: 560px) {
-  .lk-touch .kiri { grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(3, 42px); }
-  .lk-touch .kanan { grid-template-columns: repeat(2, 46px); grid-auto-rows: 36px; }
-  .lk-touch .tombol { font-size: 18px; }
+@media (max-height: 470px) {
+  /* Ponsel mendatar tipis (390 px): E tetap paling besar, sisanya mengecil
+     supaya kluster kanan tidak menutupi hotbar maupun dunia. */
+  .lk-touch .kanan { grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 44px); gap: 4px; }
+  .lk-touch .matikan { grid-auto-columns: 30px; grid-auto-rows: 30px; }
+  .lk-touch .tombol { font-size: 17px; }
+  .lk-touch .tombol.besar, .lk-touch .tombol.pilih { font-size: 12px; }
+  .lk-touch .tombol.daya { font-size: 17px; }
 }
 `;
 
@@ -81,18 +121,36 @@ const KIRI = [
   ['▼', 'down', ''],
   ['', '', 'kosong'],
 ];
+/**
+ * Kluster kanan bawah: E besar di pojok, tombol kecil mengelilinginya.
+ *
+ * Kelas CSS `e`, `lari`, `esc`, `inv`, `nilai`, `ujian`, `alat-maju`,
+ * `alat-mundur` menentukan POSISI di grid 3x3 (lihat GAYA). Urutan array tidak
+ * menentukan tempat, hanya rumah bagi nama — jadi menambah tombol baru tidak
+ * akan menggeser E.
+ *
+ * Catatan: "Nilai" (V) dan "Ujian" (T) hanya ada di papan ketik. Tanpa
+ * tombolnya, guru yang membuka game dari ponsel tidak bisa melihat nilai yang
+ * terkirim sama sekali.
+ */
 const KANAN = [
-  ['E', 'interact', 'e besar'],
+  ['E', 'interact', 'e'],
+  ['Lari', 'run', 'besar lari'],
+  ['Esc', 'menu', 'besar esc'],
+  ['Nilai', 'KeyV', 'pilih nilai'],
+  ['Ujian', 'KeyT', 'pilih ujian'],
+  ['◀', 'prevTool', 'pilih alat-mundur'],
+  ['▶', 'nextTool', 'pilih alat-maju'],
+];
+
+/**
+ * Kluster kiri atas: power (keluar) lalu inventori, BERJAJAR KE KIRI dari tepi
+ * kiri panel gold. Disebut "matikan" karena tulisan power di ponsel tidak
+ * terbaca, dan tombol daya dengan ikon ⏻ lebih dikenal daripada tulisan.
+ */
+const MATIKAN = [
+  ['⏻', 'menu', 'daya'],
   ['I', 'inventory', 'besar'],
-  ['Lari', 'run', 'besar'],
-  ['Esc', 'menu', 'besar'],
-  ['◀ alat', 'prevTool', 'pilih'],
-  ['alat ▶', 'nextTool', 'pilih'],
-  // Dua tombol ini hanya ada di papan ketik (V = Nilai & Pengiriman, T = mulai
-  // ujian dari layar hasil latihan). Tanpa tombolnya, guru yang membuka game dari
-  // ponsel tidak bisa melihat nilai yang terkirim sama sekali.
-  ['Nilai', 'KeyV', 'besar'],
-  ['Ujian', 'KeyT', 'besar'],
 ];
 
 
@@ -134,6 +192,7 @@ export function pasangSentuh({ onPetunjuk } = {}) {
   const pilihan = bacaPreferensiSentuh();
   let aktif = pilihan === null ? terdeteksi : pilihan;
   const gaya = document.createElement('style');
+  gaya.id = 'lk-gaya-sentuh';   // dicari uji tata letak (tools/uji-sentuh.mjs)
   gaya.textContent = GAYA;
   document.head.append(gaya);
 
@@ -180,7 +239,10 @@ export function pasangSentuh({ onPetunjuk } = {}) {
   const kanan = document.createElement('div');
   kanan.className = 'kelompok kanan';
   KANAN.forEach((t) => buat(t, kanan));
-  akar.append(kiri, kanan);
+  const matikan = document.createElement('div');
+  matikan.className = 'kelompok matikan';
+  MATIKAN.forEach((t) => buat(t, matikan));
+  akar.append(kiri, kanan, matikan);
   document.body.append(akar);
 
   // Petunjuk TIDAK digambar sebagai elemen di sini: di layar 390 px ia menimpa
@@ -247,9 +309,27 @@ export function pasangSentuh({ onPetunjuk } = {}) {
      * hotbar. Tanpa ini, memperlebar pandangan bisa membuat hotbar bertabrakan
      * dengan tombol aksi — persis hal yang mau dihindari.
      */
-    ukuranHud({ w, h } = {}) {
-      if (h) akar.style.setProperty('--lk-hud-b', `${Math.round(h * 0.22 + 68)}px`);
-      if (w) akar.style.setProperty('--lk-hud-r', `${Math.round(w * 0.02)}px`);
+    /**
+     * Terima ukuran HUD yang terlihat (piksel layar) dan geser tombol.
+     *
+     * `hudBawah` = jarak dari bawah layar ke tepi ATAS panel hotbar.
+     * `goldBawah` = jarak dari atas layar ke tepi BAWAH panel gold.
+     * `goldKiri` = jarak dari tepi KANAN layar ke tepi KIRI panel gold.
+     *
+     * Panel gold digambar di kanvas, sedangkan tombol ini elemen HTML — jadi
+     * posisinya harus dikirim dari main.js. Kalau tidak, tombol "sebelah kiri
+     * panel gold" akan menebak-nebak dan meleset di layar yang berbeda.
+     */
+    ukuranHud({ w, h, hudBawah, goldBawah: gb, goldKiri: gk } = {}) {
+      if (h && hudBawah) akar.style.setProperty('--lk-hud-b', `${Math.round(hudBawah)}px`);
+      else if (h && !hudBawah) akar.style.setProperty('--lk-hud-b', `${Math.round(h * 0.22 + 68)}px`);
+      if (w) {
+        akar.style.setProperty('--lk-hud-r', `${Math.round(w * 0.02)}px`);
+        // Cadangan kalau pemanggil belum mengirim ukuran panel gold: 8 px tepi
+        // + 150 px panel + 8 px jarak, seperti HUD di layar sempit.
+        akar.style.setProperty('--lk-gold-kiri', `${Math.round(gk ?? (w - 158) + 8)}px`);
+      }
+      if (gb !== undefined) akar.style.setProperty('--lk-gold-b', `${Math.round(gb)}px`);
     },
 
     ringkas(on) {
