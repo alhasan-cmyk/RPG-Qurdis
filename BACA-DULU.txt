@@ -103,6 +103,10 @@ YANG PERLU DIKETAHUI
 - Akun murid dicatat LANGSUNG dari peramban ke Web App Apps Script (tab `Akun`
   di spreadsheet guru); nilai juga langsung ke Apps Script (tab `Nilai`).
   Tidak ada server perantara, jadi tidak ada yang perlu dinyalakan.
+- Keluar dari permainan: tekan Esc -> "Keluar ke menu utama". Progres disimpan
+  OTOMATIS tepat sebelum pertanyaan konfirmasi muncul, jadi membatalkan
+  pertanyaannya tidak membatalkan simpanan. Ada juga baris "Simpan sekarang"
+  di menu yang sama untuk yang ingin memastikan.
 - Simpanan permainan hanya tersimpan di peramban masing-masing (localStorage).
   Membuka game dari komputer lain akan mulai dari awal, tetapi akun dan nilai
   tetap dianggap sah karena PIN diperiksa Apps Script.

@@ -99,13 +99,19 @@ const s5 = pasangSentuh({ onPetunjuk: () => {} });
 ok('laptop: nyala itu diingat', s5.tampil === true);
 
 // --- Menu: baris "Tombol sentuh" muncul, nilai & aksi benar
-const { Menu } = await import(`${AKAR}/src/ui/menu.js`);
+const menuModul = await import(`${AKAR}/src/ui/menu.js`);
+const { Menu } = menuModul;
+// Daftar baris menu diekspor supaya uji memakai daftar yang SAMA dengan yang
+// digambar — bukan salinan yang bisa basi.
+const ROOT = menuModul.ROOT;
 const audio = {
   settings: { musicVolume: .5, sfxVolume: .5, muted: false },
   ui() {}, setVolume() {}, setSfxVolume() {}, toggleMute() {},
 };
 const renderer = { zoomOverride: 0, skalaNama: 'normal', stepZoom() {}, stepSkala() {}, skala: 1 };
 const menu = new Menu({ audio, renderer, onQuit() {}, ilmu: null, sentuh: s5 });
+/** Lapisan sentuh yang sedang hidup, dipakai blok-blok uji berikutnya. */
+const sentuh = s5;
 const baris = menu.settingsRows();
 const i = baris.findIndex((r) => r.id === 'sentuh');
 ok('menu: baris Tombol sentuh ada', i >= 0, baris.map((r) => r.id).join(','));
@@ -188,6 +194,140 @@ for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844], [1280, 720
   }
   ok(`${w}x${h}: baris Kembali terjangkau`, menu.settingsRows().length <= menu.barisPengaturanMu(40)
     || menu.barisPengaturanMu(40) >= 1);
+}
+
+// ------------------------------------------------ Keluar dari permainan (menu)
+//
+// Yang diuji bukan "apakah ada tombol Keluar" — tombolnya sudah ada sejak awal.
+// Yang diuji: apakah progres sudah tersimpan SEBELUM pertanyaan muncul, dan
+// apakah membatalkan pertanyaan benar-benar kembali ke permainan.
+{
+  const jejak = [];
+  const renderer2 = { zoomOverride: 0, skalaNama: 'normal', stepZoom() {}, stepSkala() {} };
+  let keluar = 0;
+  const menuKeluar = new Menu({
+    audio, renderer: renderer2, ilmu: null, sentuh,
+    onSimpan: () => { jejak.push('simpan'); return 'Tersimpan di peramban ini.'; },
+    onQuit: () => { jejak.push('keluar'); keluar++; },
+  });
+  menuKeluar.toggle();
+  const iKeluar = ROOT.findIndex((r) => r.id === 'quit');
+  ok('menu: baris "Keluar ke menu utama" ada', iKeluar >= 0, ROOT.map((r) => r.id).join(','));
+  ok('menu: baris "Simpan sekarang" ada', ROOT.some((r) => r.id === 'simpan'));
+
+  // Simpan sekarang
+  menuKeluar.cursor = ROOT.findIndex((r) => r.id === 'simpan');
+  menuKeluar.key('interact');
+  ok('simpan: menulis simpanan', jejak.includes('simpan'));
+  ok('simpan: pesan tampil di kaki panel', /Tersimpan/.test(menuKeluar.pesan), menuKeluar.pesan);
+  ok('simpan: tidak keluar dari permainan', keluar === 0);
+
+  // Keluar: simpan DULU, lalu bertanya
+  jejak.length = 0;
+  menuKeluar.cursor = iKeluar;
+  menuKeluar.key('interact');
+  ok('keluar: simpanan ditulis sebelum bertanya', jejak[0] === 'simpan', jejak.join(' -> '));
+  ok('keluar: belum benar-benar keluar', keluar === 0 && jejak.length === 1);
+  ok('keluar: meminta konfirmasi', menuKeluar.konfirmasiKeluar === true);
+  ok('keluar: menu masih terbuka di belakang', menuKeluar.open === true);
+
+  // Esc membatalkan -> kembali ke permainan, simpanan tetap ada
+  menuKeluar.key('menu');
+  ok('batal: pertanyaan hilang', menuKeluar.konfirmasiKeluar === false);
+  ok('batal: tidak keluar', keluar === 0);
+  ok('batal: simpanan tetap ditulis', jejak.filter((x) => x === 'simpan').length === 1);
+  ok('batal: menu tetap terbuka', menuKeluar.open === true);
+
+  // E setelah batal tidak boleh langsung keluar (bug lama: E kedua meneruskan)
+  menuKeluar.cursor = ROOT.findIndex((r) => r.id === 'resume');
+  menuKeluar.key('interact');
+  ok('batal: E berikutnya kembali ke permainan', menuKeluar.open === false && keluar === 0);
+
+  // Sekarang benar-benar keluar
+  menuKeluar.toggle();
+  menuKeluar.cursor = iKeluar;
+  menuKeluar.key('interact');
+  menuKeluar.key('interact');
+  ok('keluar: E kedua benar-benar keluar', keluar === 1);
+  ok('keluar: menu tertutup', menuKeluar.open === false);
+  ok('keluar: dua kali simpan (tanya + keluar)', jejak.filter((x) => x === 'simpan').length === 2,
+    jejak.join(' -> '));
+
+  // Tanpa onSimpan: jujur, bukan "Tersimpan"
+  const menuJujur = new Menu({ audio, renderer: renderer2, ilmu: null, sentuh });
+  menuJujur.toggle();
+  menuJujur.cursor = ROOT.findIndex((r) => r.id === 'simpan');
+  menuJujur.key('interact');
+  ok('tanpa simpanan: mengaku tidak tersedia', /tidak tersedia/i.test(menuJujur.pesan), menuJujur.pesan);
+}
+
+// Tata letak panel jeda (enam baris) di layar pendek.
+for (const [w, h] of [[844, 390], [568, 320], [640, 360], [390, 844]]) {
+  view.w = w; view.h = h;
+  const m = new Menu({ audio, renderer, ilmu: null, sentuh, onSimpan: () => 'Tersimpan.', onQuit() {} });
+  m.toggle();
+  for (let i = 0; i < ROOT.length; i++) {
+    m.cursor = i;
+    const tulis = [];
+    const ctx = {
+      fillStyle: '#000', textAlign: 'left', font: '16px x', canvas: {},
+      measureText(s) { const px = Number(/(\d+)px/.exec(this.font)?.[1] ?? 16); return { width: s.length * px * 0.6 }; },
+      fillText(s, x, y) {
+        const ww = this.measureText(s).width;
+        const kiri = this.textAlign === 'right' ? x - ww : this.textAlign === 'center' ? x - ww / 2 : x;
+        tulis.push({ s, x: kiri, y, w: ww, size: Number(/(\d+)px/.exec(this.font)?.[1] ?? 16) });
+      },
+      fillRect() {}, strokeRect() {}, clearRect() {}, drawImage() {}, save() {}, restore() {},
+      translate() {}, scale() {}, rotate() {}, beginPath() {}, closePath() {}, moveTo() {},
+      lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {}, quadraticCurveTo() {},
+      bezierCurveTo() {}, clip() {}, setTransform() {}, strokeText() {},
+    };
+    m.draw(ctx);
+    const BARIS = 40;
+    const lihat = Math.min(ROOT.length, m.barisJedaMu(BARIS));
+    const PW = Math.min(320, w - 32);
+    const PH = 76 + lihat * BARIS + 34;
+    const kiri = Math.round((w - PW) / 2), kanan = kiri + PW;
+    const atas = Math.max(8, Math.round((h - PH) / 2)), bawah = atas + PH;
+    for (const t of tulis) {
+      // Teks yang dipotong "…" berarti ada keterangan yang tidak terbaca utuh.
+      if (t.s.includes('…')) ok(`jeda ${w}x${h} baris ${i}: teks tidak terpotong`, false, t.s);
+      if (t.x < kiri + 4 || t.x + t.w > kanan - 4) ok(`jeda ${w}x${h} baris ${i}: di dalam panel (kiri/kanan)`, false, t.s);
+      if (t.y - t.size * 0.8 < atas - 2 || t.y + t.size * 0.2 > bawah + 2) {
+        ok(`jeda ${w}x${h} baris ${i}: di dalam panel (atas/bawah)`, false, `${t.s} (y ${Math.round(t.y)})`);
+      }
+    }
+    ok(`jeda ${w}x${h} baris ${i}: kursor terlihat`, m.cursor >= (m._geserJeda ?? 0)
+      && m.cursor < (m._geserJeda ?? 0) + lihat);
+  }
+
+  // Panel konfirmasi juga harus utuh.
+  m.konfirmasiKeluar = true;
+  const tulisKonf = [];
+  const ctxKonf = {
+    fillStyle: '#000', textAlign: 'left', font: '16px x', canvas: {},
+    measureText(s) { const px = Number(/(\d+)px/.exec(this.font)?.[1] ?? 16); return { width: s.length * px * 0.6 }; },
+    fillText(s, x, y) {
+      const ww = this.measureText(s).width;
+      const kiri2 = this.textAlign === 'right' ? x - ww : this.textAlign === 'center' ? x - ww / 2 : x;
+      tulisKonf.push({ s, x: kiri2, y, w: ww, size: Number(/(\d+)px/.exec(this.font)?.[1] ?? 16) });
+    },
+    fillRect() {}, strokeRect() {}, clearRect() {}, drawImage() {}, save() {}, restore() {},
+    translate() {}, scale() {}, rotate() {}, beginPath() {}, closePath() {}, moveTo() {},
+    lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {}, quadraticCurveTo() {},
+    bezierCurveTo() {}, clip() {}, setTransform() {}, strokeText() {},
+  };
+  m.draw(ctxKonf);
+  const KW = Math.min(360, w - 32), KH = 132;
+  const kx = Math.round((w - KW) / 2), ky = Math.max(8, Math.round((h - KH) / 2));
+  for (const t of tulisKonf) {
+    if (t.s.includes('…')) ok(`keluar ${w}x${h}: teks tidak terpotong`, false, t.s);
+    if (t.x < kx + 4 || t.x + t.w > kx + KW - 4) ok(`keluar ${w}x${h}: teks di dalam panel`, false, t.s);
+    if (t.y - t.size * 0.8 < ky - 2 || t.y + t.size * 0.2 > ky + KH + 2) {
+      ok(`keluar ${w}x${h}: teks di dalam panel (atas/bawah)`, false, `${t.s} (y ${Math.round(t.y)})`);
+    }
+  }
+  ok(`keluar ${w}x${h}: tidak ada teks keluar panel`, tulisKonf.length > 0);
 }
 
 console.log(`\n${lulus} lulus, ${gagal} gagal`);

@@ -8,12 +8,23 @@ import { panel, text, fit, UI } from './draw.js';
 import { labelKelasPanjang } from '../core/save.js';
 import { muridAktif, jumlahAntre } from '../core/nilai-api.js';
 
+export // Keterangan baris dijaga PENDEK (<= 30 huruf). Panel jeda paling lebar 320 px,
+// jadi kaki panel hanya memuat ~29 huruf: keterangan yang lebih panjang
+// dipotong "…" dan justru kehilangan bagian yang menjelaskan. Ini bukan
+// perkiraan — diukur oleh tools/uji-sentuh.mjs pada empat ukuran layar.
 const ROOT = [
-  { id: 'resume', label: 'Lanjut', hint: 'Tutup menu dan lanjutkan permainan' },
+  { id: 'resume', label: 'Lanjut', hint: 'Tutup menu, lanjut bermain' },
   { id: 'help', label: 'Petunjuk', hint: 'Kontrol dan cara bermain' },
-  { id: 'settings', label: 'Pengaturan', hint: 'Volume, luas pandangan, dan layar penuh' },
-  { id: 'ilmu', label: 'Rekap Belajar', hint: 'Kitab yang dibaca dan ketepatan jawaban' },
-  { id: 'quit', label: 'Keluar', hint: 'Kembali ke menu utama' },
+  { id: 'settings', label: 'Pengaturan', hint: 'Suara, tampilan, tombol' },
+  { id: 'ilmu', label: 'Rekap Belajar', hint: 'Kitab dibaca & nilai' },
+  // "Simpan sekarang" ada di sini karena pertanyaan yang paling sering muncul
+  // dari guru dan murid adalah "apakah progres saya hilang kalau saya tutup?".
+  // Simpanan memang otomatis, tetapi tombol ini membuat jawabannya terlihat,
+  // bukan hanya dijanjikan.
+  { id: 'simpan', label: 'Simpan sekarang', hint: 'Progres tersimpan otomatis' },
+  // Keterangan "Keluar" menyebut tujuan dan akibatnya: bukan sekadar menutup
+  // layar, tetapi kembali ke menu utama — dan progres sudah disimpan.
+  { id: 'quit', label: 'Keluar ke menu utama', hint: 'Kembali ke halaman depan' },
 ];
 
 const HELP = [
@@ -44,10 +55,14 @@ const HELP_TEXT = [
 ];
 
 export class Menu {
-  constructor({ audio, renderer, onQuit, ilmu = null, sentuh = null }) {
+  constructor({ audio, renderer, onQuit, onSimpan = null, ilmu = null, sentuh = null }) {
     this.audio = audio;
     this.renderer = renderer;
     this.onQuit = onQuit;
+    /** Dipanggil baris "Simpan sekarang". Boleh mengembalikan teks konfirmasi. */
+    this.onSimpan = onSimpan;
+    /** Pesan singkat di kaki panel sesudah menyimpan, mis. "Tersimpan." */
+    this.pesan = '';
     this.ilmu = ilmu;
     /** Lapisan tombol sentuh (ui/touch.js), atau null kalau tidak dipasang. */
     this.sentuh = sentuh;
@@ -61,9 +76,16 @@ export class Menu {
     this.open = !this.open;
     this.page = 'root';
     this.cursor = 0;
+    this.konfirmasiKeluar = false;
+    this.pesan = '';
   }
 
-  close() { this.open = false; this.page = 'root'; this.cursor = 0; }
+  close() {
+    this.open = false;
+    this.page = 'root';
+    this.cursor = 0;
+    this.konfirmasiKeluar = false;
+  }
 
   /** Settings rows are built fresh so they always show current values. */
   settingsRows() {
@@ -103,6 +125,11 @@ export class Menu {
   }
 
   key(action) {
+    // Pertanyaan "Keluar ke menu utama?" adalah lapisan tersendiri: selama ia
+    // tampil, W/S/E/Esc hanya berlaku untuknya. Tanpa ini, E kedua bisa
+    // "membatalkan" sambil diam-diam menjalankan baris menu di belakangnya.
+    if (this.konfirmasiKeluar) return this.jawabKeluar(action);
+
     const n = this.rowCount();
     if (action === 'up') { this.cursor = (this.cursor + n - 1) % n; this.audio.ui(); return; }
     if (action === 'down') { this.cursor = (this.cursor + 1) % n; this.audio.ui(); return; }
@@ -156,7 +183,58 @@ export class Menu {
     if (item.id === 'help') { this.page = 'help'; this.cursor = 0; }
     if (item.id === 'settings') { this.page = 'settings'; this.cursor = 0; }
     if (item.id === 'ilmu') { this.page = 'ilmu'; this.cursor = 0; }
-    if (item.id === 'quit') this.onQuit();
+    if (item.id === 'simpan') {
+      this.simpan();
+      return;
+    }
+    if (item.id === 'quit') {
+      // Dua langkah, DAN simpanan ditulis SEBELUM pertanyaan muncul.
+      //
+      // Dulu Keluar langsung berpindah halaman, dan yang menulis simpanan
+      // adalah pemanggilnya. Itu bekerja, tetapi pemain tidak punya cara tahu
+      // progresnya sudah aman — dan kalau satu hari pemanggilnya berubah,
+      // tidak ada yang menangkap. Sekarang simpanan ditulis lebih dulu, lalu
+      // baru bertanya; membatalkan pertanyaannya TIDAK membatalkan simpanan,
+      // dan itu memang tujuannya.
+      this.simpan();
+      this.audio.ui();
+      this.konfirmasiKeluar = true;
+      return;
+    }
+  }
+
+  /**
+   * Simpan sekarang, lalu tampilkan pesannya di kaki panel.
+   *
+   * Mengembalikan teks yang ditampilkan supaya bisa diperiksa uji. Kalau
+   * pemanggil tidak memasang `onSimpan` (mis. halaman tanpa simpanan), yang
+   * ditulis apa adanya — berbohong "Tersimpan" lebih buruk daripada jujur.
+   */
+  simpan() {
+    this.pesan = this.onSimpan?.() ?? 'Menyimpan tidak tersedia di halaman ini.';
+    return this.pesan;
+  }
+
+  /**
+   * Jawab pertanyaan keluar. `ya` = benar-benar keluar, selain itu kembali ke
+   * menu (dan progres tetap tersimpan — lihat `key()`).
+   */
+  jawabKeluar(action) {
+    if (action === 'interact' || action === 'ya') {
+      this.konfirmasiKeluar = false;
+      this.close();
+      this.onQuit();
+      return true;
+    }
+    if (action === 'menu' || action === 'down' || action === 'up') {
+      // Esc = batal. Arah juga membatalkan: pemain yang menekan panah jelas
+      // ingin memilih hal lain, bukan keluar.
+      if (action === 'menu') this.konfirmasiKeluar = false;
+      else if (action === 'up' || action === 'down') this.konfirmasiKeluar = false;
+      this.audio.ui();
+      return true;
+    }
+    return true;
   }
 
   /** Esc: back one level, or close from the root. */
@@ -170,6 +248,13 @@ export class Menu {
 
   draw(ctx) {
     if (!this.open) return;
+    if (this.konfirmasiKeluar) {
+      // Latar digelapkan dulu supaya panel di belakangnya jelas tidak aktif.
+      ctx.fillStyle = 'rgba(0,0,0,0.72)';
+      ctx.fillRect(0, 0, view.w, view.h);
+      this.drawKonfirmasiKeluar(ctx);
+      return;
+    }
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
     ctx.fillRect(0, 0, view.w, view.h);
     if (this.page === 'root') this.drawRoot(ctx);
@@ -178,20 +263,68 @@ export class Menu {
     else this.drawHelp(ctx);
   }
 
+  /**
+   * Berapa baris daftar jeda yang muat di layar sekarang.
+   *
+   * Panel ini dulu setinggi jumlah barisnya. Dengan enam baris (tambah "Simpan
+   * sekarang") tingginya 350 px, dan di layar 320 px judul serta baris
+   * terakhirnya terpotong. Sekarang tingginya dibatasi layar dan daftarnya
+   * bergulir — sama seperti layar Pengaturan.
+   */
+  barisJedaMu(at = 40) {
+    return Math.max(1, Math.floor((view.h - 24 - 76 - 34) / at));
+  }
+
   drawRoot(ctx) {
-    const w = Math.min(320, view.w - 32), h = 76 + ROOT.length * 40 + 34;
+    const BARIS = 40;
+    const lihat = Math.min(ROOT.length, this.barisJedaMu(BARIS));
+    const w = Math.min(320, view.w - 32), h = 76 + lihat * BARIS + 34;
     const x = Math.round((view.w - w) / 2), y = Math.max(8, Math.round((view.h - h) / 2));
     panel(ctx, x, y, w, h);
     text(ctx, 'JEDA', x + w / 2, y + 20, { font: UI.fontTitle, align: 'center', color: UI.red });
 
-    ROOT.forEach((item, i) => {
-      const ry = y + 58 + i * 40;
+    const atas = Math.max(0, Math.min(this.cursor - lihat + 1, ROOT.length - lihat));
+    this._geserJeda = atas;
+    ROOT.slice(atas, atas + lihat).forEach((item, j) => {
+      const i = atas + j;
+      const ry = y + 58 + j * BARIS;
       const on = i === this.cursor;
       if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 16, ry - 4, w - 32, 34); }
-      text(ctx, `${on ? '▶' : ' '} ${item.label}`, x + 34, ry, { font: UI.fontBig, color: UI.outline });
+      // "Keluar" digambar merah: satu-satunya baris yang meninggalkan permainan.
+      // Warna yang sama dipakai di seluruh game untuk hal yang perlu dihati-hati.
+      const merah = item.id === 'quit';
+      text(ctx, fit(ctx, `${on ? '▶' : ' '} ${item.label}`, w - 56, UI.fontBig), x + 34, ry,
+        { font: UI.fontBig, color: merah ? UI.red : UI.outline });
     });
+    // Penanda masih ada baris lain di atas/bawah (daftar bergulir di layar pendek).
+    if (atas > 0) text(ctx, '▲', x + w - 14, y + 46, { font: UI.font, align: 'right', color: '#8a7550' });
+    if (atas + lihat < ROOT.length) {
+      text(ctx, '▼', x + w - 14, y + 58 + lihat * BARIS - 8, { font: UI.font, align: 'right', color: '#8a7550' });
+    }
 
-    text(ctx, ROOT[this.cursor].hint, x + w / 2, y + h - 30, { font: UI.font, align: 'center', color: '#7a6647' });
+    // Kaki panel: pesan simpan (kalau ada) menggantikan keterangan baris, supaya
+    // "Tersimpan." benar-benar terbaca — bukan sekadar kedipan yang tak terlihat.
+    const kaki = this.pesan || ROOT[this.cursor].hint;
+    text(ctx, fit(ctx, kaki, w - 32, UI.font), x + w / 2, y + h - 30,
+      { font: UI.font, align: 'center', color: this.pesan ? '#4f7a2f' : '#7a6647' });
+  }
+
+  /**
+   * "Keluar ke menu utama?" — digambar DI ATAS panel jeda, bukan sebagai
+   * halaman baru. Alasannya: pemain harus tetap melihat pilihannya sendiri
+   * sambil menjawab, dan batal harus mengembalikan tepat ke tempat semula.
+   */
+  drawKonfirmasiKeluar(ctx) {
+    const w = Math.min(360, view.w - 32), h = 132;
+    const x = Math.round((view.w - w) / 2), y = Math.max(8, Math.round((view.h - h) / 2));
+    panel(ctx, x, y, w, h);
+    text(ctx, 'KELUAR?', x + w / 2, y + 26, { font: UI.fontTitle, align: 'center', color: UI.red });
+    // Dua baris, bukan satu kalimat panjang: yang pertama menjawab kekhawatiran
+    // yang sebenarnya ("progres hilang?"), yang kedua menyebut akibatnya.
+    text(ctx, 'Progres sudah tersimpan.', x + w / 2, y + 58, { font: UI.fontBig, align: 'center', color: '#4f7a2f' });
+    text(ctx, 'Kembali ke menu utama?', x + w / 2, y + 80, { font: UI.fontBig, align: 'center', color: UI.outline });
+    text(ctx, 'E keluar  ·  Esc batal', x + w / 2, y + h - 18,
+      { font: UI.font, align: 'center', color: '#7a6647' });
   }
 
   /**

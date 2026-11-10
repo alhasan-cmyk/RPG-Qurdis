@@ -257,6 +257,13 @@ async function boot() {
     // keadaannya dan mengubahnya. Tanpa ini, tombol yang muncul keliru di
     // laptop tidak bisa dimatikan sama sekali.
     sentuh: state.sentuh,
+    // Baris "Simpan sekarang" memakai saveGame yang sama dengan keluar dan
+    // tidur; tidak ada jalur simpan kedua yang bisa berbeda isinya.
+    onSimpan: () => (saveGame()
+      ? 'Tersimpan di peramban ini.'
+      // Mode privat dan kuota penuh membuat localStorage menolak. Berbohong
+      // "Tersimpan" di situ lebih buruk daripada mengakuinya.
+      : 'GAGAL menyimpan — peramban menolak. Coba tutup mode privat.'),
     onQuit: () => { saveGame(); location.href = 'index.html'; },
   });
   // V di Rekap Belajar membuka rincian nilai per bab tanpa menutup menu:
@@ -483,8 +490,11 @@ function saveGame() {
   // jadi setiap penyimpanan mengirim permintaan yang pasti gagal. Progres tidak
   // pernah hilang karena itu — `writeSave` di bawah ini yang jadi sumber
   // kebenaran — tetapi janji "lanjut dari komputer lain" tidak berlaku.
-  writeSave(data, 0);
+  // Nilai kembalian diteruskan: baris "Simpan sekarang" memakainya untuk
+  // membedakan "Tersimpan" dari "peramban menolak menyimpan".
+  const ok = writeSave(data, 0);
   writeProfile(state.profile);
+  return ok;
 }
 
 /**
