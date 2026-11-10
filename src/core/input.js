@@ -64,15 +64,85 @@ window.addEventListener('blur', () => { down.clear(); pressed.clear(); });
 
 export const mouse = { x: 0, y: 0, clicked: false, wheel: 0 };
 
+/**
+ * Kejadian sentuhan yang belum diterjemahkan ke koordinat kanvas.
+ *
+ * `mouse.x/y` hanya bisa berisi SATU titik; di ponsel, tombol D-pad dan hotbar
+ * bisa disentuh hampir bersamaan, dan sentuhan pada elemen HTML (tombol) tidak
+ * pernah sampai ke kanvas. Karena itu sentuhan dikumpulkan di sini dalam
+ * koordinat klien dan baru diubah saat dibaca — setelah kanvas, zoom, dan
+ * rotasinya diketahui.
+ */
+export const sentuhan = {
+  daftar: [],       // { x, y, jenis: 'mulai' } — koordinat klien
+  kosongkan() { this.daftar.length = 0; },
+};
+
+
+/**
+ * Terjemahkan titik layar (clientX/clientY) menjadi piksel di dalam kanvas.
+ *
+ * Rumus naif `(clientX - rect.left) * (canvas.width / rect.width)` hanya benar
+ * selama kanvas tidak diputar. Di ponsel tegak, kanvas diputar 90° dengan CSS
+ * (lihat ui/landscape.js), sehingga `getBoundingClientRect()` mengembalikan
+ * kotak yang SUDAH diputar: lebar dan tingginya tertukar, dan rumus naif
+ * menghasilkan posisi meleset — mengetuk hotbar memilih slot yang salah atau
+ * tidak memilih apa pun. Rotasinya dibaca dari kelas di <html>, sumber
+ * kebenaran yang sama dengan yang dipakai CSS-nya.
+ */
+export function keKanvas(el, clientX, clientY) {
+  const r = el.getBoundingClientRect();
+  const w = r.width || 1, h = r.height || 1;
+  let fx = (clientX - r.left) / w;          // 0..1 di dalam kotak terlihat
+  let fy = (clientY - r.top) / h;
+  if (document.documentElement.classList.contains('lk-landscape-putar')) {
+    // Kanvas berputar +90°: sisi atas kotak terlihat adalah sisi KIRI kanvas.
+    const fx2 = fy, fy2 = 1 - fx;
+    fx = fx2; fy = fy2;
+  }
+  return { x: fx * el.width, y: fy * el.height };
+}
+
+/**
+ * Pasang penanganan mouse pada kanvas.
+ *
+ * `preventDefault()` saat mousedown mencegah fokus keyboard berpindah keluar
+ * dari kanvas; tanpa itu, memakai mouse bisa membuat tombol papan ketik
+ * berhenti bekerja sampai pemain mengklik kanvas lagi.
+ */
 export function bindMouse(canvas, view) {
   const toLogical = (e) => {
-    const r = canvas.getBoundingClientRect();
-    mouse.x = (e.clientX - r.left) * (canvas.width / r.width);
-    mouse.y = (e.clientY - r.top) * (canvas.height / r.height);
+    const k = keKanvas(canvas, e.clientX, e.clientY);
+    mouse.x = k.x;
+    mouse.y = k.y;
   };
   canvas.addEventListener('mousemove', toLogical);
-  canvas.addEventListener('mousedown', (e) => { toLogical(e); mouse.clicked = true; });
+  canvas.addEventListener('mousedown', (e) => {
+    toLogical(e);
+    mouse.clicked = true;
+    // Jangan biarkan klik memindahkan fokus keluar dari kanvas: papan ketik
+    // berhenti bekerja kalau fokus hilang, dan di ponsel itu terasa seperti
+    // game "macet".
+    e.preventDefault();
+    canvas.focus();
+  });
   canvas.addEventListener('wheel', (e) => { mouse.wheel = Math.sign(e.deltaY); e.preventDefault(); }, { passive: false });
+
+  // Sentuhan: satu ketukan = satu klik di titik itu. Disimpan dulu (lihat
+  // `sentuhan`) karena kanvas mungkin sedang diputar 90°.
+  //
+  // SENGAJA TIDAK memanggil preventDefault(): peramban masih perlu mengirim
+  // `mousedown`/`mouseup` tiruan sesudah sentuhan, karena semua panel (tas,
+  // peti, toko, menu) dibaca dari `mouse.clicked`. Mematikannya membuat seluruh
+  // panel itu berhenti bisa diketuk di ponsel. Supaya layar tidak ikut tergulir
+  // atau ter-zoom saat disentuh, kanvas diberi `touch-action: none` di game.html.
+  const catat = (e) => {
+    const t = e.changedTouches?.[0];
+    if (!t) return;
+    sentuhan.daftar.push({ x: t.clientX, y: t.clientY, kanvas: canvas });
+  };
+  canvas.addEventListener('touchstart', catat, { passive: true });
+  canvas.addEventListener('touchend', catat, { passive: true });
 }
 
 export const input = {

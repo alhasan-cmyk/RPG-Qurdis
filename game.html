@@ -9,8 +9,13 @@
   <style>
     html, body { margin: 0; height: 100%; background: #1a1410; overflow: hidden; }
     body { display: flex; align-items: center; justify-content: center; font-family: "VT323", monospace; color: #f5e6c8; }
-    canvas { image-rendering: pixelated; image-rendering: crisp-edges; outline: none; display: block; }
-    #loading { position: absolute; font-size: 24px; letter-spacing: 1px; }
+    canvas { image-rendering: pixelated; image-rendering: crisp-edges; outline: none; display: block; touch-action: none; }
+    #loading { position: absolute; font-size: 24px; letter-spacing: 1px; z-index: 20; }
+    #home { z-index: 60; }
+    /* Layar tegak: permainan dipaksa mendatar (src/ui/landscape.js).
+       Kanvas diputar 90° dan petunjuk "putar ponsel" muncul di atasnya. */
+    html.lk-landscape-putar body { display: block; overflow: hidden; }
+    html.lk-landscape-putar #loading { max-width: 80vw; text-align: center; }
     #home { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #d9c39a; text-decoration: none; opacity: .6; }
     #home:hover { opacity: 1; }
     /* font warm-up so canvas measureText sees the loaded faces */

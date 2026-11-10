@@ -31,6 +31,17 @@ CARA TERCEPAT (tanpa terminal)
    lagi yang bermain sebagai "Petani" tanpa nama — dan nilai ujiannya tidak
    hilang karena akunnya tidak ada.
 
+TAMPILAN DI PONSEL — SELALU MENDATAR
+=====================================
+Game ini butuh layar lebar. Di ponsel yang masih tegak, layarnya otomatis
+disiapkan mendatar: kanvas diputar 90 derajat dan muncul ajakan "Putar ponselmu
+mendatar". Murid tinggal memiringkan ponselnya (atau menekan tombol
+"Putar otomatis" di Android) dan seluruh layar terpakai — hotbar, panel, dan
+petunjuknya jadi kelihatan semua.
+
+Murid yang membuka dari komputer tidak terpengaruh. Kalau jendela perambannya
+sempit dan tinggi, muncul ajakan memperlebarkan jendela, bukan memutar gambar.
+
 CARA LEWAT TERMINAL
 
    git init

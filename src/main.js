@@ -3,7 +3,7 @@ import { loadAssets, sprite, assets } from './render/assets.js';
 import { Renderer, view } from './render/renderer.js';
 import { Camera } from './render/camera.js';
 import { startLoop } from './core/loop.js';
-import { input, mouse, bindMouse } from './core/input.js';
+import { input, mouse, bindMouse, sentuhan, keKanvas } from './core/input.js';
 import { on } from './core/events.js';
 import { GameTime, SEASON_NAMES } from './core/time.js';
 import { readSave, writeSave, takeNewGame, readProfile, writeProfile, avatarOf } from './core/save.js';
@@ -30,6 +30,7 @@ import { Ilmu, POIN_JAWAB_TEPAT } from './systems/ilmu.js';
 import { IlmuUI } from './ui/ilmu-ui.js';
 import { PilihanUI } from './ui/pilihan.js';
 import { pasangSentuh } from './ui/touch.js';
+import { pasangLandscape } from './ui/landscape.js';
 import { UpgradeUI } from './ui/upgrade-ui.js';
 import { Upgrade, BENIH_HARIAN } from './systems/upgrade.js';
 import { kirimNilai, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
@@ -86,6 +87,28 @@ state.invUI = new InventoryUI(state.inv);
 state.chestUI = new ChestUI(state.inv, state.chest);
 
 // ---------------------------------------------------------------- bootstrap
+// Tampilan mendatar dipasang SEBELUM aset diunduh: petunjuk "putar ponsel"
+// harus muncul seketika, bukan setelah beberapa megabita sprite selesai dimuat.
+// Tanpa ini, murid di ponsel melihat layar pemuatan yang terpotong dan
+// menyimpulkan gamenya rusak.
+//
+// Modul ini hanya dijalankan di halaman permainan. Kalau `#game` tidak ada
+// (misalnya skrip ini tak sengaja dimuat di halaman lain), jangan pasang apa pun
+// — jangan sampai petunjuk "putar ponsel" muncul di tempat yang tidak ada
+// permainannya.
+if (document.getElementById('game')) {
+  state.landscape = pasangLandscape({
+    // Dipanggil setiap kali orientasi berubah. Saat ponsel tegak, renderer
+    // memakai ukuran layar yang sudah ditukar (lebar = tinggi layar) dan
+    // kanvasnya diputar 90° — jadi ukuran logisnya dihitung ulang, lalu kamera
+    // dipusatkan lagi supaya pemain tidak terlempar ke tepi layar.
+    onUbah: () => {
+      renderer.fit();
+      if (state.player) state.camera.snapTo(state.player.x, state.player.y - 16);
+    },
+  });
+}
+
 async function boot() {
   await document.fonts.ready;
   await loadAssets('assets/', (p) => { loadingEl.textContent = `Memuat aset ${Math.round(p * 100)}%`; });
@@ -242,9 +265,21 @@ async function boot() {
   });
 
   loadingEl.remove();
+  // Game sudah tergambar: petunjuk "putar ponsel" menyusut dari layar penuh
+  // menjadi kartu kecil, supaya murid bisa mengetuk layar untuk memulai
+  // sekaligus menekan tombol "Putar otomatis" (peramban hanya mau memutar
+  // orientasi dari gestur pengguna, bukan otomatis saat halaman dimuat).
+  state.landscape?.siap();
   canvas.focus();
   if (fresh) showToast(`Selamat datang di ${state.profile.farmName}, ${state.profile.name}!`, 4);
-  startLoop({ update, render });
+  startLoop({
+    update,
+    render,
+    // Ketukan yang tidak terpakai jangan dibawa ke frame berikutnya: satu
+    // sentuhan pada hotbar akan terhitung berkali-kali dan alat berpindah
+    // beberapa slot sekaligus.
+    akhirFrame: () => sentuhan.kosongkan(),
+  });
   window.__lk = state;
 }
 
@@ -1202,6 +1237,25 @@ function applySchedules() {
 }
 
 // ---------------------------------------------------------------- update
+/**
+ * Titik-titik ketuk frame ini, dalam koordinat kanvas (piksel logis).
+ *
+ * Di komputer isinya kosong dan seluruh permainan memakai `mouse` seperti
+ * biasa. Di ponsel, ketukan pada kanvas masuk ke `sentuhan.daftar`: itu satu-
+ * satunya cara mengetuk hotbar atau memilih di panel saat kanvas diputar,
+ * karena `mousedown` tidak selalu dikirim peramban setelah `touchstart`
+ * di-`preventDefault`.
+ */
+function titikKetuk() {
+  const hasil = [];
+  for (const s of sentuhan.daftar) {
+    // Kanvas bisa sedang diputar 90° (ponsel tegak) — keKanvas() yang tahu.
+    const k = keKanvas(s.kanvas, s.x, s.y);
+    hasil.push({ x: k.x, y: k.y, dipakai: false });
+  }
+  return hasil;
+}
+
 function update(dt) {
   const { player, map, time, dialog, invUI, chestUI } = state;
   state.juice.update(dt);
@@ -1333,15 +1387,20 @@ function update(dt) {
   // adalah tempat yang paling wajar diketuk — ia sudah menggambar sembilan slot
   // itu. Geometrinya HARUS sama dengan ui/hud.js (S=40, gap=2, di tengah bawah);
   // kalau salah satu berubah, ubah keduanya.
-  if (mouse.clicked && state.sentuh?.tampil) {
+  //
+  // Dipakai `titikKetuk()` (bukan mouse.x/y langsung) karena sentuhan datang
+  // sebagai daftar dan harus diterjemahkan dulu: kanvas bisa sedang diputar 90°
+  // di ponsel tegak, dan di ponsel zoom otomatisnya 1 sehingga ukuran kanvas
+  // tidak sama dengan ukuran layar.
+  for (const t of (state.sentuh?.tampil ? titikKetuk() : [])) {
     const S = 40, gap = 2, totalW = 9 * (S + gap) - gap;
     const x0 = Math.round((view.w - totalW) / 2), y0 = view.h - S - 12;
-    if (mouse.y >= y0 - 8 && mouse.y <= y0 + S + 8) {
-      const i = Math.floor((mouse.x - x0) / (S + gap));
-      if (i >= 0 && i < 9 && mouse.x <= x0 + totalW) {
+    if (t.y >= y0 - 8 && t.y <= y0 + S + 8) {
+      const i = Math.floor((t.x - x0) / (S + gap));
+      if (i >= 0 && i < 9 && t.x <= x0 + totalW) {
         state.inv.index = i;
         state.audio.ui();
-        mouse.clicked = false;      // jangan diteruskan ke penanganan lain
+        t.dipakai = true;
       }
     }
   }
