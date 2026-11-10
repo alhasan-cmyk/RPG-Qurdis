@@ -23,9 +23,13 @@
 // punya nilai 1/0 saat tidak punya kendaraan — jadi ladang, tas, dan kecepatan
 // tetap berjalan seperti biasa bagi pemain yang belum membeli apa pun.
 //
-// Yang TIDAK dilakukan di sini: menggambar kendaraan di dunia. Pemain tidak
-// berubah wujud; yang berubah angkanya. Menggambar sprite kendaraan berarti
-// aset baru untuk tiap arah dan tiap musim, dan itu pekerjaan yang berbeda.
+// TENTANG WUJUD DI DUNIA: pemain yang sedang memakai kendaraan benar-benar
+// berubah sprite — ia duduk di atas sepeda/motor/truk. Lembar sprite-nya dibuat
+// oleh tools/buat-sprite-kendaraan.mjs (bukan aset mati): 4 avatar x 3
+// kendaraan, bingkai 32x56 supaya ada ruang roda di bawah kaki tanpa memotong
+// kepala. Nama sprite-nya diturunkan di sini (`spriteId`), supaya Character
+// tidak perlu tahu apa pun tentang kendaraan, dan layar/tas/kecepatan tetap
+// membaca angka dari berkas ini juga.
 
 /**
  * Daftar kendaraan, dari yang paling murah.
@@ -126,6 +130,21 @@ export class Kendaraan {
 
   /** Tambahan slot tas dari kendaraan. 0 kalau jalan kaki. */
   slotTas() { return this.aktif?.slotTas ?? 0; }
+
+  /**
+   * Nama sprite untuk avatar yang sedang memakai kendaraan, atau null kalau
+   * jalan kaki.
+   *
+   * Null (bukan nama cadangan) kalau lembar sprite-nya tidak ada: pemain yang
+   * memakai avatar baru tanpa lembar kendaraan tetap bisa bermain sebagai
+   * pejalan kaki, bukan crash karena `sprite()` melempar galat. Pemanggil
+   * (Character) yang memutuskan memakai lembar mana.
+   */
+  spriteId(avatar, ada = () => false) {
+    if (!this.dipakai || !avatar) return null;
+    const nama = `${avatar}_${this.dipakai}`;
+    return ada(nama) ? nama : null;
+  }
 
   /** Baris ringkas untuk rekap/rapor. */
   ringkasan() {

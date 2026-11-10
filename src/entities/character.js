@@ -1,6 +1,11 @@
 // Shared walking-sprite logic for the player and NPCs.
-import { sprite } from '../render/assets.js';
+import { sprite, assets } from '../render/assets.js';
 import { drawFrame } from '../render/renderer.js';
+
+/** Apakah sprite dengan nama ini ada di manifest? (tanpa melempar galat) */
+function adaSprite(nama) {
+  return Boolean(nama && assets.manifest?.sprites?.[nama]);
+}
 
 const DIR_ROW = { down: 0, left: 1, right: 2, up: 3 };
 const WALK_SEQ = [1, 2, 3, 2];
@@ -8,6 +13,14 @@ const WALK_SEQ = [1, 2, 3, 2];
 export class Character {
   constructor(spriteName, x, y) {
     this.spriteName = spriteName;
+    /**
+     * Nama sprite PENGGANTI saat pemain memakai kendaraan (mis. `player_m_sepeda`).
+     *
+     * Dipisah dari `spriteName` supaya kembali ke pejalan kaki cukup dengan
+     * mengosongkannya — tidak ada yang perlu "mengingat" avatar aslinya. Null
+     * berarti jalan kaki. Hanya dipakai pemain; NPC tidak pernah menaikinya.
+     */
+    this.spriteKendaraan = null;
     this.x = x;          // feet position, world px
     this.y = y;
     this.dir = 'down';
@@ -47,7 +60,10 @@ export class Character {
   }
 
   draw(ctx, camX, camY) {
-    const { def, img } = sprite(this.spriteName);
+    const nama = this.spriteKendaraan && adaSprite(this.spriteKendaraan)
+      ? this.spriteKendaraan
+      : this.spriteName;
+    const { def, img } = sprite(nama);
     // baked contact shadow: characters have none in their sheets by design
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath();
