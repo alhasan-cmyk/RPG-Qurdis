@@ -1432,6 +1432,14 @@
       "rows": 1,
       "pivot": "bottom-center",
       "status": "generated"
+    },
+    "ui_diamond": {
+      "file": "sprites/ui/ui_diamond.png",
+      "frame": [
+        24,
+        24
+      ],
+      "status": "approved"
     }
   }
 }

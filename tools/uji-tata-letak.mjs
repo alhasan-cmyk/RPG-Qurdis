@@ -28,6 +28,17 @@ globalThis.document ??= { createElement: () => ({ getContext: () => null }), add
 const { view } = await import(join(AKAR, 'src/render/renderer.js'));
 const { UpgradeUI } = await import(join(AKAR, 'src/ui/upgrade-ui.js'));
 const { Upgrade, UPGRADE } = await import(join(AKAR, 'src/systems/upgrade.js'));
+const { Kendaraan } = await import(join(AKAR, 'src/systems/kendaraan.js'));
+const { Diamond } = await import(join(AKAR, 'src/systems/diamond.js'));
+// `icon()` membaca manifest sprite; di Node tidak ada yang dimuat, jadi manifest
+// tiruan dipasang. Ikon mana pun dianggap ada — yang diuji tata letaknya, bukan
+// gambarnya.
+const { assets } = await import(join(AKAR, 'src/render/assets.js'));
+assets.manifest = assets.manifest ?? { sprites: {} };
+assets.manifest.sprites = new Proxy(assets.manifest.sprites ?? {}, {
+  get: (t, k) => (k in t ? t[k] : { frame: [24, 24], cols: 1 }),
+});
+assets.images.set('ui_diamond', { width: 24, height: 24 });
 const { Ilmu } = await import(join(AKAR, 'src/systems/ilmu.js'));
 const { Inventory, setItemData } = await import(join(AKAR, 'src/systems/inventory.js'));
 
@@ -84,16 +95,34 @@ for (const kelas of ['X', 'XI', 'XII']) {
     ilmu.tingkat = kelas;
     ilmu.lulus = new Set();                       // semua bab syarat belum lulus
     const inv = new Inventory();
-    inv.add('stone', 25); inv.add('wood', 10);
+    // Bahan dipenuhi sampai 99 tiap jenis yang dipakai papan, supaya baris
+    // "Batu 25/25 · Kayu 30/30 …" benar-benar tergambar dan bisa diukur.
+    const bahanPapan = new Set(UPGRADE.flatMap((u) => Object.keys(u.bahan ?? {})));
+    for (const b of bahanPapan) inv.add(b, 99);
 
-    const up = new Upgrade();
+    // Papan menjual DUA jenis barang: bangunan (uang + bahan + bab) dan
+    // kendaraan (diamond). Saldo diamond dibuat 0 supaya baris "Kurang N
+    // diamond" — kalimat terpanjang — ikut diuji.
+    //
+    // Bahannya sengaja DIPENUHI: kalau kosong, kalimat pertama yang muncul
+    // adalah "Kurang N batu" dan baris bahan/harga tidak pernah diukur —
+    // tiga bahan sekaligus (dapur) baru terlihat sesudah syarat itu lewat.
+    const kendaraan = new Kendaraan();
+    const up = new Upgrade(kendaraan);
     const ui = new UpgradeUI(up, null);
-    ui.buka({ ilmu, inv, tingkatKelas: kelas, uang: () => 500, bayar: () => {} });
+    ui.buka({
+      ilmu, inv, tingkatKelas: kelas,
+      uang: () => 0, bayar: () => {},
+      diamond: () => 0, kendaraan,
+    });
 
-    // Setiap baris daftar digambar, jadi nama guru di ketujuh baris ikut diperiksa.
-    for (let i = 0; i < UPGRADE.length; i++) {
+    // Setiap baris daftar digambar, jadi nama guru di baris bangunan dan harga
+    // di baris kendaraan ikut diperiksa.
+    const semuaBaris = up.papan();
+    for (let i = 0; i < semuaBaris.length; i++) {
+      const barisIni = semuaBaris[i];
       ui.cursor = i;
-      ui.scroll = Math.max(0, Math.min(i, UPGRADE.length - (ui.barisTerlihat ?? 4)));
+      ui.scroll = Math.max(0, Math.min(i, semuaBaris.length - (ui.barisTerlihat ?? 4)));
       const { ctx, tulisan } = kanvasTiruan(w, h);
       ui.draw(ctx);
 
@@ -102,34 +131,92 @@ for (const kelas of ['X', 'XI', 'XII']) {
       // karena salinannya ikut basi.
       const { LEBAR_MAKS, HUD, ROW, RINCI, KEPALA, BARIS_MAKS } = UpgradeUI.TATA;
       const PW = Math.min(LEBAR_MAKS, w - 24);
-      const lihat = Math.max(3, Math.min(BARIS_MAKS, UPGRADE.length));
+      const lihat = Math.max(3, Math.min(BARIS_MAKS, semuaBaris.length));
       const PH = Math.min(h - HUD - 8, KEPALA + lihat * ROW + RINCI + 8);
       const kiri = Math.round((w - PW) / 2), kanan = kiri + PW;
       const atas = Math.max(4, Math.min(Math.round((h - PH) / 2), h - PH - HUD));
       const bawah = atas + PH;
-      const label = `${kelas} · ${nama} (${w}x${h}) · baris ${UPGRADE[i].judul}`;
+      const label = `${kelas} · ${nama} (${w}x${h}) · baris ${barisIni.judul}`;
 
       for (const t of tulisan) {
         if (t.x < kiri + 4 || t.x + t.w > kanan - 4) salah(`${label}: keluar panel kiri/kanan → "${t.s}"`);
         if (t.y - 14 < atas || t.y + 6 > bawah) salah(`${label}: keluar panel atas/bawah → "${t.s}"`);
       }
 
-      // Nama guru harus terbaca utuh di kolom kanan — bukan dipotong "...".
+      // Judul baris HARUS tergambar. Uji ini ditambahkan karena judul sempat
+      // hilang sama sekali saat layar ditulis ulang untuk dua jenis barang:
+      // satu-satunya tulisan di kiri baris itu nama guru, dan tidak ada uji lain
+      // yang sadar. Dicocokkan per kata pertama supaya pemotongan "…" pada
+      // tingkat ("· 2/4") tidak membuat uji gagal karena sebab yang salah.
+      const kataJudul = barisIni.judul.split(' ')[0];
+      if (!tulisan.some((t) => t.s.includes(kataJudul))) {
+        salah(`${label}: judul baris tidak tergambar ("${barisIni.judul}")`);
+      }
+
+      // Kolom kanan: harga diamond untuk kendaraan, nomor bab untuk bangunan.
+      // Keduanya satu-satunya petunjuk "apa yang masih kurang", jadi tidak
+      // boleh hilang atau terpotong "…".
       const st = ui.status(i);
-      if (st.kitab && !st.lulus && st.guru) {
-        const barisGuru = tulisan.find((t) => t.s === st.guru.nama);
-        if (!barisGuru) {
-          const dipotong = tulisan.find((t) => t.s.startsWith(st.guru.nama.slice(0, 6)) && t.s.includes('…'));
-          salah(`${label}: nama guru tidak utuh`
-            + (dipotong ? ` → "${dipotong.s}"` : ' (tidak tergambar sama sekali)'));
+      if (st.jenis === 'kendaraan') {
+        if (!st.punya) {
+          const barisHarga = tulisan.find((t) => t.s.startsWith(`${st.harga}`));
+          if (!barisHarga) salah(`${label}: harga ${st.harga} tidak tergambar`);
+          if (barisHarga && barisHarga.s.includes('…')) salah(`${label}: harga terpotong → "${barisHarga.s}"`);
+        }
+      } else {
+        if (!st.labelBab) salah(`${label}: nomor bab syarat kosong`);
+        if (st.labelBab && !tulisan.some((t) => t.s.startsWith(st.labelBab))) {
+          salah(`${label}: nomor bab "${st.labelBab}" tidak tergambar`);
+        } else {
+          const barisBab = tulisan.find((t) => t.s.startsWith(st.labelBab));
+          if (barisBab && barisBab.s.includes('…')) salah(`${label}: nomor bab terpotong → "${barisBab.s}"`);
+        }
+        // Baris pertama rincian: status bahan (kiri) + harga uang (kanan).
+        // Keduanya harus utuh — "G1.200" tidak boleh terpotong "…".
+        if (!tulisan.some((t) => /^Bahan \d+\/\d+$|^Bahan lengkap$|^Tanpa bahan$/.test(t.s))) {
+          salah(`${label}: status bahan tidak tergambar utuh`);
+        }
+        if (!tulisan.some((t) => /^G[\d.]+$/.test(t.s))) salah(`${label}: harga uang tidak tergambar utuh`);
+      }
+
+      // Kalimat alasan tidak boleh berakhir "…": di situlah angka kekurangan
+      // diamond ditulis, satu-satunya hal yang memberi tahu murid berapa ujian
+      // lagi yang harus ia lulus.
+      for (const t of tulisan) {
+        if (t.s.includes('…') && /Kurang|diamond|Sudah/.test(t.s)) {
+          salah(`${label}: alasan terpotong → "${t.s}"`);
         }
       }
 
-      // Kalimat alasan tidak boleh berakhir "…": akhir kalimat itulah yang
-      // menyebut nama guru atau nama alat.
+      // Guna kendaraan harus tertulis, bukan "—": pemain harus tahu apa yang
+      // dibelinya sebelum mengumpulkan 50 diamond.
+      const barisGuna = tulisan.find((t) => t.s.startsWith('Guna:'));
+      if (!barisGuna) salah(`${label}: baris Guna tidak ada`);
+      else if (/Guna: —$/.test(barisGuna.s)) salah(`${label}: guna kosong`);
+
+      // TIDAK BOLEH ADA DUA TULISAN YANG BERTUMPUK.
+      //
+      // Uji lama hanya memeriksa tulisan keluar panel. Itu tidak menangkap
+      // kalimat alasan yang memanjang sampai menimpa tombol "E beli · Esc
+      // tutup" di kanan — persis yang terlihat saat pratinjau digambar dengan
+      // huruf yang lebih lebar daripada VT323. Diukur per baris teks.
+      const perBaris = new Map();
       for (const t of tulisan) {
-        if (t.s.includes('…') && /Lulus|Ujian|Kurang|Uangnya|tertinggi/.test(t.s)) {
-          salah(`${label}: alasan terpotong → "${t.s}"`);
+        if (!t.s.trim()) continue;
+        const kunci = Math.round(t.y / 6);      // toleransi 6 px = satu baris
+        if (!perBaris.has(kunci)) perBaris.set(kunci, []);
+        perBaris.get(kunci).push(t);
+      }
+      for (const [, isi] of perBaris) {
+        // Urutkan berdasarkan tepi kiri, lalu pastikan tidak ada yang beririsan
+        // lebih dari 2 px (batas aman untuk spasi antar kolom).
+        const urut = isi.slice().sort((a, b) => a.x - b.x);
+        for (let j = 1; j < urut.length; j++) {
+          const kiri = urut[j - 1];
+          const kanan = urut[j];
+          if (kiri.x + kiri.w - 2 > kanan.x) {
+            salah(`${label}: tulisan bertumpuk → "${kiri.s}" × "${kanan.s}"`);
+          }
         }
       }
     }
@@ -141,4 +228,4 @@ if (masalah) {
   process.exit(1);
 }
 console.log('Tata letak layar Ragam Usaha aman di lima ukuran layar × tiga kelas:');
-console.log('  tidak ada tulisan keluar panel, nama guru utuh, kalimat alasan tidak terpotong.');
+console.log('  tidak ada tulisan keluar panel, harga utuh, guna tertulis, kalimat alasan tidak terpotong.');

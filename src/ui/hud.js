@@ -6,6 +6,12 @@ import { itemDef } from '../systems/inventory.js';
 
 const SEASON_ICON = { spring: 4, summer: 5, autumn: 6, winter: 7 };
 
+// Panel kanan atas (diamond + gold). Diekspor karena main.js harus menaruh
+// tombol power PERSIS di garis tengah panel ini — kalau angkanya ditulis dua
+// kali dan salah satunya berubah, tombolnya melorot lagi.
+export const GOLD_LEBAR = 150;
+export const GOLD_TINGGI = 56;
+
 export function drawHud(ctx, { time, player, inv, weather }) {
   const W = view.w, H = view.h;
 
@@ -31,10 +37,17 @@ export function drawHud(ctx, { time, player, inv, weather }) {
   ctx.fillRect(bx, by, Math.round(bw * ratio), 3);
   text(ctx, `${Math.ceil(player.energy)}`, bx + bw - 4, by - 3, { font: UI.font, align: 'right', color: '#fff', shadow: true });
 
-  // --- money
-  panel(ctx, W - 8 - 150, 8, 150, 40);
-  icon(ctx, 'ui_coin', 0, W - 146, 16);
-  text(ctx, player.money.toLocaleString('id-ID'), W - 22, 16, { font: UI.fontBig, align: 'right' });
+  // --- diamond (atas) + money (bawah), satu panel dua baris
+  //
+  // Dua baris, bukan dua panel: di layar 568 px dua panel bersebelahan sudah
+  // menabrak panel jam. Tinggi 56 px dipilih supaya baris kedua masih memberi
+  // jarak 4 px ke tepi bawah; main.js membaca angka yang sama (GOLD_TINGGI)
+  // untuk menaruh tombol power di garis tengahnya.
+  panel(ctx, W - 8 - GOLD_LEBAR, 8, GOLD_LEBAR, GOLD_TINGGI);
+  icon(ctx, 'ui_diamond', 0, W - 8 - GOLD_LEBAR + 6, 10);
+  text(ctx, String(player.diamond ?? 0), W - 22, 9, { font: UI.fontBig, align: 'right' });
+  icon(ctx, 'ui_coin', 0, W - 8 - GOLD_LEBAR + 6, 34);
+  text(ctx, player.money.toLocaleString('id-ID'), W - 22, 33, { font: UI.fontBig, align: 'right' });
 
   // --- hotbar
   const S = 40, gap = 2, n = 9;

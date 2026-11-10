@@ -1,6 +1,6 @@
 // Pemeriksa data pelajaran — dijalankan sebelum push, bukan saat bermain.
 //
-// Kenapa ada: hubungan "warga ↔ bab ↔ alat ↔ papan Ragam Usaha" dijaga di tiga
+// Kenapa ada: hubungan "warga ↔ bab ↔ alat ↔ papan usaha" dijaga di tiga
 // tempat berbeda (data/ilmu.json, systems/upgrade.js, world/valley.js). Kesalahan
 // di sana tidak membuat game error — ia hanya menampilkan keterangan yang salah,
 // dan itu paling sulit ditemukan. Contoh nyata yang ditangkap berkas ini:
@@ -93,55 +93,72 @@ for (const [k, guru] of Object.entries(ilmu.keahlian?.guru ?? {})) {
   if (!(nama[guru])) catat(`guru alat "${k}" menunjuk warga tak dikenal "${guru}"`);
 }
 
-// ------------------------------------------------------- 4. papan Ragam Usaha
-const papanPerKelas = new Map();
-const tumpangTindih = [];           // papan memakai bab yang sama dengan pembuka alat
-for (const u of UPGRADE) {
-  if (u.alat && !ALAT_SAH_KATA.has(String(u.alat).toLowerCase())) {
-    catat(`upgrade "${u.judul}": label alat "${u.alat}" bukan alat yang ada di permainan`);
-  }
-  for (const [k, id] of Object.entries(u.bab ?? {})) {
-    if (!ids.includes(id)) { catat(`upgrade "${u.judul}" (${k}): bab tak dikenal "${id}"`); continue; }
-    if (kelas[id] !== k) { catat(`upgrade "${u.judul}" (${k}): bab kelas ${kelas[id]} ("${id}")`); continue; }
-    if (!papanPerKelas.has(k)) papanPerKelas.set(k, new Map());
-    const peta = papanPerKelas.get(k);
-    if (peta.has(id)) catat(`upgrade ${k}: "${id}" dipakai "${peta.get(id)}" dan "${u.judul}"`);
-    else peta.set(id, u.judul);
-    if (pembukaAlat.has(id)) tumpangTindih.push({ k, id, judul: u.judul, alat: pembukaAlat.get(id) });
-  }
-  if (!Object.keys(u.bahan ?? {}).length) catat(`upgrade "${u.judul}": tanpa bahan`);
-  if (typeof u.efek !== 'function') catat(`upgrade "${u.judul}": tanpa efek`);
-}
+// ---------------------------------------- 4. papan usaha: dua jenis barang
+//
+// Papan menjual peningkatan BANGUNAN (uang + bahan + satu bab) dan KENDARAAN
+// (diamond). Yang diperiksa di sini bukan lagi "kendaraan saja", melainkan
+// kelengkapan keduanya: setiap baris punya syarat yang benar-benar diperiksa
+// kode, datanya satu sumber, dan tidak ada sisa syarat lama yang diam-diam
+// diabaikan.
+{
+  const { KENDARAAN } = await import(join(AKAR, 'src/systems/kendaraan.js'));
+  const { Upgrade } = await import(join(AKAR, 'src/systems/upgrade.js'));
 
-// Tumpang-tindih papan vs pembuka alat TIDAK selalu bisa dihindari: kelas X punya
-// 12 bab, sedangkan 6 alat + 7 papan meminta 13. Jadi aturannya bukan "dilarang",
-// melainkan "tidak boleh selama masih ada bab yang belum dipakai" — kalau ada,
-// berarti penempatannya bisa diperbaiki dan memang perlu diperbaiki.
-for (const k of ['X', 'XI', 'XII']) {
-  const babKelas = ids.filter((id) => kelas[id] === k);
-  const pembukaKelas = new Set(Object.values(syaratAlat[k] ?? {}));
-  const papanKelas = UPGRADE.filter((u) => u.bab?.[k]);
-  // Bab yang bukan pembuka alat = pilihan bebas. Kalau jumlahnya lebih sedikit
-  // daripada jumlah papan, sebagian papan PASTI berbagi bab dengan alat.
-  const bebasMurni = babKelas.filter((id) => !pembukaKelas.has(id));
-  const minimal = Math.max(0, papanKelas.length - bebasMurni.length);
-  const tabrakan = tumpangTindih.filter((t) => t.k === k);
-
-  if (tabrakan.length === minimal) {
-    console.log(`catatan: papan ${k}: ${tabrakan.length} papan berbagi bab dengan alat `
-      + `(minimal ${minimal} karena hanya ${bebasMurni.length} bab bebas untuk `
-      + `${papanKelas.length} papan) — tidak ada yang bisa diperbaiki.`);
-  } else if (tabrakan.length > minimal) {
-    const namaAlat = Object.fromEntries(Object.entries(syaratAlat[k] ?? {}).map(([a, id]) => [id, a]));
-    for (const t of tabrakan) {
-      const sisa = babKelas.filter((id) => !pembukaKelas.has(id)
-        && !UPGRADE.some((u) => u.id !== t.id && u.bab?.[k] === id));
-      catat(`papan ${k}: "${t.judul}" memakai ${t.id} yang juga pembuka alat ${namaAlat[t.id]}`
-        + (sisa.length ? `; bab bebas yang belum dipakai: ${sisa.join(', ')}` : '')
-        + ` — seharusnya cukup ${minimal} papan yang berbagi bab, sekarang ${tabrakan.length}`);
+  // --- peningkatan bangunan
+  if (UPGRADE.length !== 7) catat(`papan: ${UPGRADE.length} peningkatan bangunan, seharusnya 7`);
+  for (const u of UPGRADE) {
+    if (!u.judul) catat(`papan "${u.id}": tanpa judul`);
+    if (!Object.keys(u.bahan ?? {}).length) catat(`papan "${u.judul}": tanpa bahan`);
+    for (const b of Object.keys(u.bahan ?? {})) {
+      if (!itemData[b]) catat(`papan "${u.judul}": bahan "${b}" tidak ada di items.json`);
+    }
+    if (!(u.biaya > 0)) catat(`papan "${u.judul}": biaya bukan angka positif`);
+    if (typeof u.efek !== 'function') catat(`papan "${u.judul}": efek bukan fungsi`);
+    for (const k of ['X', 'XI', 'XII']) {
+      const id = u.bab?.[k];
+      if (!id) { catat(`papan "${u.judul}": tidak punya bab syarat kelas ${k}`); continue; }
+      if (!ids.includes(id)) catat(`papan "${u.judul}" (${k}): bab tak dikenal "${id}"`);
+      else if (kelas[id] !== k) catat(`papan "${u.judul}" (${k}): bab "${id}" milik kelas ${kelas[id]}`);
+      // Satu bab untuk satu papan — dulu Kebun Bibit menumpang bab pembuka alat
+      // penyiram, jadi satu bab ditagih dua kali.
+      const lain = UPGRADE.filter((v) => v.id !== u.id && v.bab?.[k] === id);
+      if (lain.length) catat(`papan "${u.judul}" (${k}): bab "${id}" juga dipakai ${lain.map((v) => v.judul).join(', ')}`);
     }
   }
+
+  // --- kendaraan
+  for (const k of KENDARAAN) {
+    if (!Number.isInteger(k.harga) || k.harga <= 0) catat(`kendaraan "${k.nama}": harga bukan bilangan bulat positif`);
+    if (typeof k.guna !== 'string' || k.guna.length < 10) catat(`kendaraan "${k.nama}": kalimat guna terlalu pendek`);
+    if (!(k.cepat > 1)) catat(`kendaraan "${k.nama}": tidak lebih cepat dari berjalan kaki`);
+    if (k.bab || k.bahan || k.biaya) {
+      catat(`kendaraan "${k.nama}": masih menyimpan syarat lama (bab/bahan/biaya) yang tidak dipakai lagi`);
+    }
+  }
+  if (new Set(KENDARAAN.map((k) => k.harga)).size !== KENDARAAN.length) {
+    catat('kendaraan: ada dua kendaraan berharga sama — tangganya jadi tidak jelas');
+  }
+
+  // --- keduanya benar-benar muncul di satu papan, dengan urutan yang dijanjikan
+  const semua = new Upgrade().papan();
+  if (semua.length !== UPGRADE.length + KENDARAAN.length) {
+    catat(`papan: ${semua.length} baris, seharusnya ${UPGRADE.length + KENDARAAN.length}`);
+  }
+  const bangunanPapan = semua.filter((u) => u.jenis === 'bangunan').map((u) => u.id).join(',');
+  const kendaraanPapan = semua.filter((u) => u.jenis === 'kendaraan').map((u) => u.id).join(',');
+  if (bangunanPapan !== UPGRADE.map((u) => u.id).join(',')) {
+    catat(`papan: baris bangunan bukan daftar UPGRADE — ${bangunanPapan}`);
+  }
+  if (kendaraanPapan !== KENDARAAN.map((k) => k.id).join(',')) {
+    catat(`papan: baris kendaraan bukan daftar KENDARAAN — ${kendaraanPapan}`);
+  }
+  if (semua.slice(0, UPGRADE.length).some((u) => u.jenis !== 'bangunan')) {
+    catat('papan: peningkatan bangunan harus tampil lebih dulu');
+  }
+
+  console.log(`papan usaha: ${UPGRADE.length} peningkatan bangunan (uang + bahan) · ${KENDARAAN.length} kendaraan (${KENDARAAN.map((k) => `${k.nama} ${k.harga}💎`).join(' · ')})`);
 }
+
 
 // --------------------------------------------- 5. soal latihan harian per warga
 const npcSoal = ilmu.npc ?? {};
@@ -166,7 +183,7 @@ const mainjs = baca('src/main.js');
 // saat E ditekan. Kalau salah satu hilang, papan tetap terlihat tapi bisu.
 const papanCek = [
   { nama: 'papan pengumuman', obj: /kind:\s*'notice'/, dekat: /o\.kind === 'notice'/, aksi: /case 'notice'/ },
-  { nama: 'Ragam Usaha', obj: /kind:\s*'usaha'/, dekat: /o\.kind === 'usaha'/, aksi: /case 'upgrade'/ },
+  { nama: 'Papan Usaha & Bengkel', obj: /kind:\s*'usaha'/, dekat: /o\.kind === 'usaha'/, aksi: /case 'upgrade'/ },
 ];
 for (const cek of papanCek) {
   if (!cek.obj.test(valley)) catat(`${cek.nama}: tidak ada objeknya di world/valley.js`);
@@ -183,4 +200,4 @@ if (masalah.length) {
 console.log('Data pelajaran konsisten:');
 console.log(`  ${ids.length} bab, ${ids.reduce((n, id) => n + (ilmu.ujian?.[id]?.length ?? 0), 0)} soal ujian`);
 console.log(`  ${Object.keys(nama).length} warga, ${Object.values(npcSoal).flat().length} soal latihan harian`);
-console.log(`  ${UPGRADE.length} peningkatan di papan Ragam Usaha, alat sah: ${[...ALAT_SAH].join(', ')}`);
+console.log(`  papan usaha: ${UPGRADE.length} peningkatan bangunan + ${(await import(join(AKAR, 'src/systems/kendaraan.js'))).KENDARAAN.length} kendaraan, alat sah: ${[...ALAT_SAH].join(', ')}`);

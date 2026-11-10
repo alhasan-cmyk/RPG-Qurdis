@@ -5,7 +5,7 @@
 // Teks Arab butuh perlakuan sendiri: arah kanan-ke-kiri, font yang lebih besar,
 // dan baris pendek — kalau tidak, harakatnya bertumpuk dan tak terbaca.
 import { view } from '../render/renderer.js';
-import { panel, text, wrap, fit, UI } from './draw.js';
+import { panel, text, wrap, fit, icon, UI } from './draw.js';
 import { UJIAN_MAKS, perluBenar } from '../systems/ilmu.js';
 
 const ARAB_FONT = '26px "Traditional Arabic", "Scheherazade New", "Amiri", "Noto Naskh Arabic", serif';
@@ -62,6 +62,8 @@ export class IlmuUI {
   constructor(ilmu, audio = null) {
     this.ilmu = ilmu;
     this.audio = audio;
+    /** Objek systems/diamond.js; diisi main.js. Boleh kosong (pengujian). */
+    this.diamond = null;
     this.open = false;
     this.mode = 'rak';        // rak | baca | tanya
     this.kitabIndex = 0;
@@ -283,16 +285,24 @@ export class IlmuUI {
     // memakai angka yang berbeda.
     const hasil = this.ilmu.catatNilai(u.kitab, u.benar, u.soal.length, u.hari);
     u.lulus = hasil.lulus;
+    // Hadiah diamond dibaca dari objek yang SAMA dengan yang dipakai main.js
+    // (state.diamond). Di sini hanya dicatat berapa yang baru didapat, supaya
+    // layar hasil bisa menulisnya; penambahan angkanya terjadi di main.js,
+    // sekali, di jalur onLulus.
+    u.diamond = null;
     u.perlu = hasil.perlu;
     u.nilai = hasil.nilai;
     this.mode = 'ujianHasil';
     this.onProgress?.();
+    // `onLulus` dipanggil SETELAH mode berpindah, jadi layar sudah bisa
+    // menampilkan u.diamond pada gambar berikutnya.
 
     // Nilai dikirim ke spreadsheet HANYA kalau lulus. Murid yang belum lulus
     // boleh mengulang kapan saja — yang tercatat di sekolah hanya bab yang
     // benar-benar sudah dituntaskan.
     if (u.lulus) {
       u.terkirim = 'mengirim';
+      u.diamond = this.diamond?.terakhir ?? null;
       Promise.resolve(this.onLulus?.({
         kitab: u.kitab,
         judul: u.judul,
@@ -556,6 +566,16 @@ export class IlmuUI {
       x + 28, cy, { font: UI.fontBig, color: u.lulus ? '#4f7a2f' : UI.red }); cy += 30;
 
     if (u.lulus) {
+      // Baris hadiah: "+1 diamond". Ditulis di sini, bukan hanya lewat toast,
+      // karena layar hasil inilah yang dibaca murid setelah ujian — toast
+      // hilang dalam 3 detik.
+      const dapat = u.diamond ?? 0;
+      if (dapat > 0) {
+        icon(ctx, 'ui_diamond', 0, x + 28, cy - 2);
+        text(ctx, `+${dapat} diamond`, x + 56, cy,
+          { font: UI.fontBig, color: '#2f6a8c' });
+        cy += 26;
+      }
       const alat = this.ilmu.alatNpc(this.tanya?.npcId)?.alat;
       const namaAlat = { hoe: 'mencangkul', water: 'menyiram', axe: 'menebang',
                          pickaxe: 'menambang', scythe: 'memanen rumput', fish: 'memancing' }[alat] ?? 'bekerja';

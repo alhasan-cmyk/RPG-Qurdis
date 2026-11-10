@@ -12,6 +12,10 @@
 //   - ditambah uang dan bahan yang memang dihasilkan ladang sendiri,
 //   - efeknya nyata dan langsung terasa (energi, tas, peti, bayaran, ternak).
 //
+// Papan ini juga menjual KENDARAAN dengan diamond (lihat bagian `papan()` di
+// bawah). Dua jenis barang, satu layar — dan peningkatan bangunan tetap ada,
+// karena efeknya (energi, tas, peti, ternak) bagian inti permainan.
+//
 // Yang TIDAK dilakukan di sini: menambah alat baru. Alat baru berarti animasi,
 // tombol, dan aturan main baru; peningkatan hanya mengubah angka yang sudah ada.
 //
@@ -23,6 +27,7 @@
 // Sekarang yang ditulis hanya alat yang memang ada di hotbar (`alat`), dan
 // peningkatan tanpa alat tidak menampilkan tanda kurung sama sekali.
 import { nomorRomawi } from './ilmu.js';
+import { KENDARAAN } from './kendaraan.js';
 
 /**
  * Daftar peningkatan, satu per "pekerjaan desa".
@@ -142,13 +147,52 @@ export const NAMA_BAHAN = {
 };
 
 export class Upgrade {
-  constructor() {
+  /**
+   * `kendaraan` = objek systems/kendaraan.js (boleh kosong di alat uji).
+   *
+   * Papan ini menjual DUA jenis barang, dan itu disengaja: peningkatan bangunan
+   * (uang + bahan + bab, seperti sebelumnya) DAN kendaraan (diamond). Peningkatan
+   * bangunan tidak boleh hilang hanya karena ada barang baru — rumah menambah
+   * energi harian, lemari menambah slot tas, kandang menambah ternak; itu
+   * bagian inti permainan.
+   */
+  constructor(kendaraan = null) {
     this.level = {};          // id -> tingkat yang sudah dibeli
     for (const u of UPGRADE) this.level[u.id] = 0;
+    this.kendaraan = kendaraan;
+    /** Pesan gagal terakhir dari beli(), untuk layar. */
+    this.pesanGagal = '';
   }
 
-  /** Peningkatan dengan id ini, atau null. */
-  def(id) { return UPGRADE.find((u) => u.id === id) ?? null; }
+  /**
+   * Seluruh baris papan, urut tampil: peningkatan bangunan lebih dulu (yang
+   * sudah ada sejak awal), kendaraan di bawahnya (barang baru, paling mahal).
+   * Setiap baris membawa `jenis` supaya layar tahu cara menggambar dan cara
+   * membelinya.
+   */
+  papan() {
+    return [
+      ...UPGRADE.map((u) => ({ ...u, jenis: 'bangunan' })),
+      ...KENDARAAN.map((k) => ({
+        ...k,
+        jenis: 'kendaraan',
+        nama: k.nama,
+        judul: k.judul,
+        ikon: `kendaraan_${k.id}`,
+      })),
+    ];
+  }
+
+  /** Satu baris papan (bangunan atau kendaraan) dengan id ini, atau null. */
+  def(id) {
+    const bangunan = UPGRADE.find((u) => u.id === id);
+    if (bangunan) return bangunan;
+    const k = KENDARAAN.find((x) => x.id === id);
+    return k ? { ...k, jenis: 'kendaraan' } : null;
+  }
+
+  /** Apakah id ini kendaraan (bukan peningkatan bangunan)? */
+  kendaraanId(id) { return KENDARAAN.some((k) => k.id === id); }
 
   tingkat(id) { return this.level[id] ?? 0; }
 
@@ -167,7 +211,42 @@ export class Upgrade {
    * pesan yang berubah-ubah — supaya layar bisa menampilkan daftar periksa:
    * "bahan ✓ · uang ✓ · bab IX ✗".
    */
-  status(id, { ilmu, inv, uang, tingkatKelas }) {
+  status(id, ctx = {}) {
+    return this.kendaraanId(id) ? this.statusKendaraan(id, ctx) : this.statusBangunan(id, ctx);
+  }
+
+  /** Status satu KENDARAAN: hanya diamond dan kepemilikan yang menentukan. */
+  statusKendaraan(id, { diamond = 0, kendaraan = null } = {}) {
+    const k = KENDARAAN.find((x) => x.id === id);
+    if (!k) return null;
+    // `diamond` boleh objek systems/diamond.js (yang dikirim main.js), fungsi,
+    // atau angka. Dibaca di satu tempat supaya angka di layar dan angka yang
+    // ditagih saat membeli tidak bisa berbeda.
+    const saldo = Math.max(0, Math.floor(Number(
+      typeof diamond === 'function' ? diamond()
+        : (diamond && typeof diamond === 'object' ? diamond.jumlah : diamond),
+    ) || 0));
+    const punya = Boolean(kendaraan?.punya?.(id));
+    const dipakai = kendaraan?.dipakai === id;
+    const kurang = Math.max(0, k.harga - saldo);
+    return {
+      id,
+      jenis: 'kendaraan',
+      def: { ...k, jenis: 'kendaraan' },
+      level: punya ? 1 : 0,
+      maks: 1,
+      penuh: punya,
+      punya,
+      dipakai,
+      harga: k.harga,
+      saldo,
+      kurang,
+      boleh: !punya && kurang === 0,
+    };
+  }
+
+  /** Status satu PENINGKATAN BANGUNAN — seperti sebelum ada kendaraan. */
+  statusBangunan(id, { ilmu, inv, uang, tingkatKelas }) {
     const u = this.def(id);
     if (!u) return null;
     // `uang` boleh berupa angka atau fungsi. Layar upgrade mengirim fungsi supaya
@@ -203,6 +282,7 @@ export class Upgrade {
     const alatBerbagi = kitab ? (ilmu?.alatUntukBab?.(kitab) ?? null) : null;
     return {
       id,
+      jenis: 'bangunan',
       def: u,
       level: lv,
       maks: this.maks(id),
@@ -235,7 +315,22 @@ export class Upgrade {
    */
   alasanTidakBoleh(st, { namaBahan = NAMA_BAHAN, ringkas = false } = {}) {
     if (!st) return '';
+    if (st.jenis === 'kendaraan') {
+      if (st.punya) return 'Sudah kau miliki.';
+      if (st.kurang > 0) {
+        return ringkas
+          ? `Kurang ${st.kurang} diamond.`
+          : `Kurang ${st.kurang} diamond — satu bab lulus = 1 diamond.`;
+      }
+      return `Tekan E untuk membeli dengan ${st.harga} diamond.`;
+    }
     if (st.penuh) return ringkas ? 'Sudah tertinggi.' : 'Sudah pada tingkat tertinggi.';
+    // Semua syarat sudah terpenuhi: TIDAK ADA alasan. Tanpa baris ini, kalimat
+    // terakhir di bawah berbunyi "Uangnya kurang G0." untuk peningkatan yang
+    // justru sedang bisa dibeli — terbaca persis seperti penolakan, padahal
+    // tombol E berhasil. Layar menampilkan "Boleh dibeli." saat jawabannya
+    // kosong.
+    if (st.boleh) return '';
     if (!st.lulus) {
       const guru = st.guru ? (ringkas ? `ke ${st.guru.nama}` : ` — ujian ke ${st.guru.nama}`) : '';
       if (ringkas) {
@@ -260,7 +355,18 @@ export class Upgrade {
   }
 
   /** Kurangi bahan dan uang, naikkan tingkat. Pemanggil yang memastikan boleh. */
-  beli(id, { inv, uang }) {
+  beli(id, ctx = {}) {
+    if (this.kendaraanId(id)) {
+      const r = ctx.kendaraan?.beli?.(id, { diamond: ctx.diamond }) ?? { gagal: 'Kendaraan tidak siap.' };
+      if (r.gagal) { this.pesanGagal = r.gagal; return null; }
+      this.pesanGagal = '';
+      return { id, harga: r.harga, jenis: 'kendaraan' };
+    }
+    return this.beliBangunan(id, ctx);
+  }
+
+  /** Beli peningkatan bangunan: kurangi bahan, catat harga untuk pemanggil. */
+  beliBangunan(id, { inv, uang }) {
     const u = this.def(id);
     const lv = this.tingkat(id);
     if (!u || lv >= this.maks(id)) return null;
@@ -297,10 +403,19 @@ export class Upgrade {
       .map((u) => `${u.nama} tingkat ${this.tingkat(u.id)} — ${u.efek(this.tingkat(u.id))}`);
   }
 
-  toJSON() { return { level: this.level }; }
+  toJSON() {
+    return { level: this.level, kendaraan: this.kendaraan ? this.kendaraan.toJSON() : undefined };
+  }
 
   load(d) {
-    if (!d?.level) return;
+    if (!d) return;
+    // `undefined` berarti "simpanan ini tidak membawa data kendaraan", BUKAN
+    // "pemain tidak punya kendaraan". Kendaraan.load(undefined) mengosongkan
+    // daftar, jadi memanggilnya sembarangan akan menghapus motor pemain yang
+    // datanya ada di kunci lain (`save.kendaraan`). Karena itu hanya dipanggil
+    // kalau datanya memang ada.
+    if (d.kendaraan !== undefined) this.kendaraan?.load?.(d.kendaraan);
+    if (!d.level) return;
     for (const u of UPGRADE) this.level[u.id] = Math.max(0, Math.min(this.maks(u.id), d.level[u.id] ?? 0));
   }
 }

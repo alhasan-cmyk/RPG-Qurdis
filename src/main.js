@@ -15,7 +15,7 @@ import { Animal } from './entities/animal.js';
 import { Inventory, setItemData, itemDef, HOTBAR } from './systems/inventory.js';
 import { Farming } from './systems/farming.js';
 import { Weather } from './systems/weather.js';
-import { drawHud, drawPrompt, drawToast } from './ui/hud.js';
+import { drawHud, drawPrompt, drawToast, GOLD_LEBAR } from './ui/hud.js';
 import { InventoryUI } from './ui/inventory-ui.js';
 import { ChestUI, CHEST_SLOTS } from './ui/chest-ui.js';
 import { ShopUI } from './ui/shop-ui.js';
@@ -27,6 +27,7 @@ import { Social, GIFT_REPLY, MAX_HEARTS } from './systems/social.js';
 import { Requests, requestText } from './systems/requests.js';
 import { Chat } from './systems/chat.js';
 import { Ilmu, POIN_JAWAB_TEPAT } from './systems/ilmu.js';
+import { Diamond } from './systems/diamond.js';
 import { IlmuUI } from './ui/ilmu-ui.js';
 import { PilihanUI } from './ui/pilihan.js';
 import { pasangSentuh } from './ui/touch.js';
@@ -35,6 +36,7 @@ import { pasangLandscape } from './ui/landscape.js';
 import { pasangTombolLayarPenuh, pasangAjakanPasang, pernahPenuh } from './ui/fullscreen.js';
 import { UpgradeUI } from './ui/upgrade-ui.js';
 import { Upgrade, BENIH_HARIAN } from './systems/upgrade.js';
+import { Kendaraan } from './systems/kendaraan.js';
 import { kirimNilai, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
 import { NilaiUI } from './ui/nilai-ui.js';
 import { ChatUI } from './ui/chat-ui.js';
@@ -70,9 +72,11 @@ const state = {
   menu: null,
   ilmu: null,
   ilmuUI: null,
+  diamond: new Diamond(),
   pilihanUI: null,
   upgradeUI: null,
   upgrade: null,
+  kendaraan: null,
   farming: null,
   shipping: [],
   npcData: [],
@@ -147,7 +151,10 @@ async function boot() {
   ukuranTombolSentuh();
 
   state.pilihanUI = new PilihanUI(state.audio);
-  state.upgrade = new Upgrade();
+  // Papan "Ragam Usaha Desa" menjual kendaraan; kepemilikannya disimpan di
+  // Kendaraan (systems/kendaraan.js), dan papan hanya membaca/menulisnya.
+  state.kendaraan = new Kendaraan();
+  state.upgrade = new Upgrade(state.kendaraan);
   state.upgradeUI = new UpgradeUI(state.upgrade, state.audio);
   state.upgradeUI.onBeli = () => { terapkanUpgrade(); saveGame(); };
   // Layar nilai dipakai dari dua arah: dari dalam game (Rekap Belajar → V)
@@ -156,23 +163,37 @@ async function boot() {
   // Progres belajar disimpan begitu terjadi, bukan menunggu pemain tidur: satu
   // pertemuan di kelas bisa berakhir tanpa pernah menyentuh kasur.
   state.ilmuUI.onProgress = saveGame;
+  // Layar hasil ujian perlu tahu berapa diamond yang baru didapat, jadi hadiahnya
+  // diambil dari objek yang sama — tidak ada penghitungan kedua di UI.
+  state.ilmuUI.diamond = state.diamond;
 
   // Setiap bab yang LULUS dikirim ke spreadsheet guru. Yang gagal tidak
   // dikirim sama sekali — keputusan sekolah, dan dijaga di dua tempat
   // (di sini dan di Code.gs) supaya tidak bisa dilangkahi.
-  state.ilmuUI.onLulus = (hasil) => kirimNilai({
-    kitab: hasil.kitab,
-    judul: hasil.judul,
-    benar: hasil.benar,
-    jumlah: hasil.jumlah,
-    nilai: hasil.nilai,
-    kelas: labelKelasMurid(state.ilmu.tingkat, state.ilmu.rombel) || muridAktif()?.kelas,
-  }).then((r) => {
-    // Nilai yang tertahan dari sesi sebelumnya ikut terkirim begitu satu
-    // pengiriman berhasil — bukan menunggu game dibuka ulang.
-    if (r?.ok) kirimAntre();
-    return r;
-  });
+  // Hadiah diamond diberikan DI SINI, di jalur yang sama dengan pengiriman nilai:
+  // satu ujian yang lulus = satu hadiah, sekali. Ditaruh sebelum `kirimNilai`
+  // supaya hadiahnya tidak bergantung pada jaringan — spreadsheet yang sedang
+  // mati tidak boleh membuat murid kehilangan diamond yang sudah ia usahakan.
+  state.ilmuUI.onLulus = (hasil) => {
+    const dapat = state.diamond.hadiahLulus(Boolean(hasil?.lulus ?? true));
+    if (dapat) {
+      saveGame();                 // langsung ditulis; jangan menunggu tidur
+      showToast(`+${dapat} diamond · ${hasil?.judul ?? 'bab lulus'}`, 3.5);
+    }
+    return kirimNilai({
+      kitab: hasil.kitab,
+      judul: hasil.judul,
+      benar: hasil.benar,
+      jumlah: hasil.jumlah,
+      nilai: hasil.nilai,
+      kelas: labelKelasMurid(state.ilmu.tingkat, state.ilmu.rombel) || muridAktif()?.kelas,
+    }).then((r) => {
+      // Nilai yang tertahan dari sesi sebelumnya ikut terkirim begitu satu
+      // pengiriman berhasil — bukan menunggu game dibuka ulang.
+      if (r?.ok) kirimAntre();
+      return r;
+    });
+  };
 
   state.farming = new Farming(crops);
   state.social = new Social(npcData);
@@ -202,6 +223,7 @@ async function boot() {
     state.time.load(save.time);
     state.weather.load(save.weather);
     state.inv.load(save.inv);
+    state.diamond.load(save.diamond);
     state.farming.load(save.soil);
     state.shipping = save.shipping ?? [];
     if (save.chest) save.chest.forEach((s, i) => { state.chest[i] = s; });
@@ -212,6 +234,8 @@ async function boot() {
     state.ilmu.load(save.ilmu);
     // Simpanan lama belum punya `upgrade`; bawaannya tingkat 0, jadi pemain lama
     // tidak kehilangan apa pun dan hanya perlu membelinya seperti pemain baru.
+    // Kendaraan dimuat SEBELUM papan: papan membaca kepemilikan dari sana.
+    state.kendaraan.load(save.kendaraan ?? save.upgrade?.kendaraan);
     state.upgrade.load(save.upgrade);
   }
 
@@ -233,9 +257,9 @@ async function boot() {
     state.weather.roll(state.time.season);
   }
 
-  // Efek peningkatan diterapkan sesudah pemain, tas, dan kandang ada — kalau
-  // dipanggil lebih awal, `state.player` belum lahir dan energi maksimum tidak
-  // ikut naik.
+  // Efek kendaraan (slot tas truk) diterapkan SESUDAH tas dimuat. Kalau
+  // dipanggil sebelum `state.inv.load(...)`, tas masih 24 slot dan barang
+  // simpanan yang ke-25 ke atas akan hilang tanpa pesan apa pun.
   terapkanUpgrade();
 
   // Public chat. The name and avatar are the ones chosen on the homepage, so
@@ -441,8 +465,8 @@ function doSleep(passedOut) {
   state.shipping = [];
   state.player.money += earned;
 
-  // Kebun bibit (peningkatan) membagikan benih tiap pagi. Ditaruh sebelum hari
-  // berganti supaya benihnya masuk ke tas hari yang baru, bukan hari yang lewat.
+  // Kebun bibit membagikan benih tiap pagi. Ditaruh sebelum hari berganti
+  // supaya benihnya masuk ke tas hari yang baru, bukan hari yang lewat.
   const benih = state.upgrade?.benihPagi() ?? 0;
   if (benih) state.inv.add(BENIH_HARIAN, benih);
   state.time.nextDay();
@@ -485,13 +509,12 @@ function ukuranTombolSentuh() {
   // Hotbar: S=40, gap=2, 12 px dari bawah; panel pembungkusnya 8 px lebih tinggi.
   const S = 40;
   const hudBawah = (S + 12 + 4) * z;                 // tepi atas panel hotbar
-  // Panel gold: x W-158..W-8, y 8..48 (ui/hud.js). Tombol power dan inventori
-  // digantung pada TITIK TENGAH OPTIK isi panel, bukan titik tengah kotaknya:
-  // ikon koin digambar di y 16..32 (ui/hud.js), dan angka gold mulai di y 16 —
-  // jadi mata membaca "tengah" di sekitar y=24, bukan 28 (tengah kotak 8..48).
-  // Memakai 28 membuat tombol terlihat melorot 4 px di sebelah angka gold.
-  const goldKiri = (158 + 8) * z;                    // tepi kiri panel + jarak
-  const goldTengah = 24 * z;                         // tengah OPTIK isi panel
+  // Panel kanan atas sekarang DUA baris (diamond di atas, gold di bawah); ukuran
+  // dan posisinya datang dari ui/hud.js supaya tidak ada dua angka yang bisa
+  // berbeda. Tombol power + inventori digantung pada garis tengah baris ATAS
+  // (baris diamond), karena di situlah mata pemain mendarat lebih dulu.
+  const goldKiri = (GOLD_LEBAR + 8) * z;             // tepi kiri panel + jarak
+  const goldTengah = (8 + 24 / 2) * z;               // tengah baris pertama
   // Di layar sempit (ponsel tegak, view 390 px) panel jam selebar 226 px +
   // panel gold 150 px sudah memenuhi seluruh lebar — tidak ada sisa untuk
   // tombol power + inventori. Kalau begitu, pasangan itu TURUN ke bawah panel
@@ -500,9 +523,9 @@ function ukuranTombolSentuh() {
   const jamKanan = 234 * z;
   const sisa = (W * z) - goldKiri - jamKanan;
   const sempit = sisa < lebarTombol + 12;
-  // Layar sempit: titik tengah digeser ke 124 supaya bibir ATAS tombol (40 px)
-  // berhenti 6 px di bawah panel jam yang berakhir di y=98.
-  const goldBawah = sempit ? 124 * z : goldTengah;
+  // Layar sempit: titik tengah digeser supaya bibir ATAS tombol (40 px) berhenti
+  // 6 px di bawah panel jam yang berakhir di y=98.
+  const goldBawah = sempit ? (98 + 6 + 40 / 2) * z : goldTengah;
   // Panel hotbar: 9 slot 40 px + jarak 2 px, dibungkus 10 px kiri-kanan, jadi
   // menempati x = W/2 ± 198 di kanvas. Dibulatkan ke 204 supaya ada sisa aman.
   const hotbarKanan = W / 2 + 204;
@@ -539,6 +562,7 @@ function saveGame() {
     weather: state.weather.toJSON(),
     player: { x: p.x, y: p.y, dir: p.dir, money: p.money, energy: p.energy, maxEnergy: p.maxEnergy },
     inv: state.inv.toJSON(),
+    diamond: state.diamond.toJSON(),
     chest: state.chest,
     soil: state.farming.toJSON(),
     shipping: state.shipping,
@@ -547,6 +571,7 @@ function saveGame() {
     requests: state.requests.toJSON(),
     ilmu: state.ilmu.toJSON(),
     upgrade: state.upgrade.toJSON(),
+    kendaraan: state.kendaraan.toJSON(),
     animals: state.areaId === 'valley' && state.animals.length
       ? state.animals.map((a) => ({ fed: a.fed, hasProduce: a.hasProduce, friendship: a.friendship }))
       : state.animalState ?? [],
@@ -672,11 +697,11 @@ function interactTarget() {
     }
   }
 
-  // Papan Ragam Usaha: diletakkan di rumah pemain, jadi peningkatan bisa dibeli
-  // tanpa berjalan jauh. Diperiksa sebelum rak supaya tidak tertutup objek lain
-  // yang berdiri di depannya.
+  // Papan Usaha & Bengkel: diletakkan di rumah pemain, jadi baik peningkatan
+  // bangunan maupun kendaraan bisa dibeli tanpa berjalan jauh. `kind` tetap
+  // 'usaha' supaya peta, simpanan, dan alat uji tidak perlu diubah.
   if (findObj(f.c, f.r, (o) => o.kind === 'usaha')) {
-    return { kind: 'upgrade', label: 'Ragam Usaha Desa' };
+    return { kind: 'upgrade', label: 'Papan Usaha & Bengkel' };
   }
 
   // Rak buku di dalam Perpustakaan Desa. Diperiksa sebelum warga dan sebelum
@@ -1009,11 +1034,16 @@ function bukaDialogSaja(npc) {
 /** Buka layar peningkatan dengan seluruh data yang dibutuhkannya. */
 function bukaUpgrade() {
   state.upgradeUI.buka({
+    // Papan menjual dua jenis barang, jadi dua syarat ikut dikirim:
+    //   bangunan  -> ilmu + inv + uang (bab lulus, bahan, dan biaya)
+    //   kendaraan -> diamond (objek, bukan fungsi: papan MEMOTONG saldonya)
     ilmu: state.ilmu,
     inv: state.inv,
     tingkatKelas: state.ilmu.tingkat ?? 'X',
     uang: () => state.player.money,
     bayar: (n) => { state.player.money = Math.max(0, state.player.money - n); },
+    diamond: state.diamond,
+    kendaraan: state.kendaraan,
   });
 }
 
@@ -1275,8 +1305,13 @@ function terapkanUpgrade() {
     p.maxEnergy = maks;
     if (selisih > 0) p.energy = Math.min(maks, (p.energy ?? 0) + selisih);
   }
-  // 2. ruang tas dan peti
-  state.inv?.setSlot(up.slotTas());
+  // 2. ruang tas dan peti.
+  //
+  // Slot tas = peningkatan lemari + tambahan kendaraan (truk +12). Dihitung di
+  // SATU tempat ini, lalu dipanggil lagi setiap kali peningkatan dibeli,
+  // kendaraan berganti, atau simpanan dimuat — supaya tas tidak "menyusut" saat
+  // pemain turun dari truk, dan tidak "berlipat" saat simpanan dibuka berulang.
+  state.inv?.setSlot(up.slotTas() + (state.kendaraan?.slotTas?.() ?? 0));
   if (state.chestUI) state.chestUI.slotPeti = up.slotPeti();
   // 3. kandang: tambahan ternak muncul sebagai sapi/ayam baru di kandang yang
   //    sama. Dibuat sekali per tingkat; kalau simpanan dimuat, jumlahnya
@@ -1545,7 +1580,10 @@ function update(dt) {
     // Hold Shift to run. No energy cost: the valley is 48 tiles across and the
     // walk between the farm and the shore is the one thing players repeat all
     // day — charging for it would just make them stop doing it.
-    player.speed = input.held('run') ? RUN_SPEED : WALK_SPEED;
+    // Kendaraan mengali kecepatan, bukan menggantinya: lari tetap mungkin, dan
+    // pemain yang belum punya kendaraan mendapat pengali 1 (tidak berubah).
+    player.speed = (input.held('run') ? RUN_SPEED : WALK_SPEED)
+      * (state.kendaraan?.pengaliCepat() ?? 1);
     player.move(map, a.x, a.y, dt);
     time.update(dt);
 
@@ -1885,7 +1923,10 @@ function render() {
   // Tombol keluar di kanvas sudah DIHAPUS. Jalan keluarnya satu saja: tombol
   // power di kiri atas (ui/tombolKeluar.js), yang mengirim aksi 'menu' yang
   // sama dengan Esc.
-  drawHud(ctx, { time, player, inv, weather });
+  // `player.diamond` dibaca HUD untuk baris atas panel kanan; objek pemain
+  // sendiri tidak menyimpannya (diamond milik progres belajar, bukan badan
+  // pemain), jadi digabungkan di sini, sekali, tanpa mengubah Character.
+  drawHud(ctx, { time, player: { ...player, diamond: state.diamond.jumlah }, inv, weather });
 
   // Tombol power disembunyikan selagi pertanyaan "Keluar?" tampil: ada dua jalan
   // keluar yang bisa ditekan bersamaan kalau tidak. Tombol ini elemen HTML,
