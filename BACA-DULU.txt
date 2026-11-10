@@ -126,8 +126,36 @@ YANG PERLU DIKETAHUI
   OTOMATIS tepat sebelum pertanyaan konfirmasi muncul, jadi membatalkan
   pertanyaannya tidak membatalkan simpanan. Ada juga baris "Simpan sekarang"
   di menu yang sama untuk yang ingin memastikan.
-- BENGKEL KENDARAAN (papan di samping pintu rumah): tiga kendaraan dibeli
-  dengan diamond — Sepeda 10, Sepeda motor 25, Truk pengangkut barang 50.
+- PAPAN RAGAM USAHA (papan di samping pintu rumah) menjual DUA jenis barang di
+  satu layar, dan keduanya penting:
+    1. PENINGKATAN BANGUNAN — rumah, lemari, peti, dapur, pasar, kandang, kebun
+       bibit. Dibayar dengan uang + bahan hasil ladang, dan masing-masing
+       dikunci satu bab: bab itu harus lulus dulu. Efeknya besar dan terasa tiap
+       hari, jadi jangan diabaikan. Harga di bawah adalah tingkat pertama;
+       tingkat berikutnya menagih kelipatannya (tingkat 2 = dua kali):
+         · Rumah        G1.200 · 25 batu · 30 kayu            (1 tingkat)
+                        energi maksimum +20 (dasar 100)
+         · Lemari       G400  · 20 kayu · 10 serat            (4 tingkat)
+                        slot tas +4 (dasar 24)
+         · Peti         G600  · 25 kayu · 10 batu             (3 tingkat)
+                        slot peti +8 (dasar 24)
+         · Dapur        G900  · 20 batu · 15 kayu · 4 telur   (1 tingkat)
+                        makanan memulihkan +25% energi
+         · Pasar        G800  · 10 lobak · 8 kentang · 8 tomat (3 tingkat)
+                        harga jual hasil ladang +10%
+         · Kandang      G1.400 · 40 kayu · 10 batu · 10 serat (1 tingkat)
+                        menambah ternak (sampai tiga)
+         · Kebun bibit  G500  · 12 kayu · 20 serat            (3 tingkat)
+                        membagi benih gratis tiap pagi
+       Papan menulis nomor bab dan nama gurunya di kolom kanan; kalau babnya
+       belum lulus, yang harus dicari adalah GURUNYA, bukan papan lainnya.
+       Satu bab hanya membuka SATU peningkatan, jadi tidak ada bab yang
+       ditagih dua kali. Tiap kelas (X, XI, XII) punya bab syarat sendiri.
+    2. BENGKEL KENDARAAN — bawah daftar yang sama, dibeli dengan diamond.
+  Tekan E pada baris untuk membeli. Baris yang sudah maksimum ditandai
+  "penuh".
+- KENDARAAN (bagian bawah papan yang sama): tiga kendaraan dibeli dengan
+  diamond — Sepeda 10, Sepeda motor 25, Truk pengangkut barang 50.
   Tidak ada syarat bab dan tidak ada bahan; diamond satu-satunya mata uangnya.
   Gunanya berbeda, bukan cuma "lebih cepat":
     · Sepeda        2x lebih cepat dari jalan kaki
@@ -142,7 +170,11 @@ YANG PERLU DIKETAHUI
   bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya
   tampil di baris atas panel kanan (di atas gold) dan langsung disimpan begitu
   didapat, jadi tidak hilang walau halaman ditutup sebelum sempat tidur.
-  Diamond dibelanjakan di Bengkel Kendaraan (lihat di atas).
+  Diamond dibelanjakan di bagian bawah papan Ragam Usaha — untuk kendaraan
+  (lihat di atas).
+- Slot tas = 24 + tingkat lemari (4 tiap tingkat) + tambahan truk (12 kalau truk
+  sedang dipakai). Dihitung ulang setiap kali papan dibeli atau kendaraan
+  berganti, jadi tas tidak "menyusut" saat turun dari truk.
 - Simpanan permainan hanya tersimpan di peramban masing-masing (localStorage).
   Membuka game dari komputer lain akan mulai dari awal, tetapi akun dan nilai
   tetap dianggap sah karena PIN diperiksa Apps Script.

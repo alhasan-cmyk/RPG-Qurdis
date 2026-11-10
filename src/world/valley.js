@@ -191,13 +191,14 @@ export function buildValley() {
 
   obj('props', house.c - 1, house.r + 2, { kind: 'decor', col: 0 });     // mailbox
 
-  // Papan Bengkel Kendaraan di samping pintu rumah: di sinilah sepeda, motor,
-  // dan truk dibeli dengan diamond hasil ujian.
+  // Papan Usaha & Bengkel di samping pintu rumah: di sini peningkatan bangunan
+  // (uang + bahan + satu bab) dan kendaraan (diamond hasil ujian) dibeli di
+  // layar yang sama.
   // Ditaruh di rumah, bukan di Balai Desa, karena yang ditingkatkan adalah
   // rumah dan ladang pemain sendiri — dan karena pemain lewat sini tiap hari.
   obj('notice_board', doorC - 2, house.r + 2, { kind: 'usaha' });
   map.block(doorC - 2, house.r + 2, 2, 1);
-  landmarks.push({ name: 'Papan Bengkel Kendaraan', at: { c: doorC - 2, r: house.r + 2 } });
+  landmarks.push({ name: 'Papan Usaha & Bengkel', at: { c: doorC - 2, r: house.r + 2 } });
   doorTiles.push([doorC - 2, house.r + 2]);
 
   // ---- 4c. Perpustakaan Desa ----------------------------------------------
