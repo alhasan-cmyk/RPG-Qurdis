@@ -14,6 +14,14 @@
 //
 // Yang TIDAK dilakukan di sini: menambah alat baru. Alat baru berarti animasi,
 // tombol, dan aturan main baru; peningkatan hanya mengubah angka yang sudah ada.
+//
+// Karena itu `alat` di setiap baris BUKAN alat yang dipakai pemain — game ini
+// hanya punya enam (cangkul, penyiram, kapak, beliung, sabit, pancing). Dulu di
+// sini tertulis "Pena", "Kunci", "Lesung", "Sekop", "Bakul & Keranjang", dan
+// "Benih"; label itu terbaca di papan sebagai "(Pena)" di samping nama alat yang
+// benar-benar bisa dipakai, dan membuat murid mengira ada alat yang hilang.
+// Sekarang yang ditulis hanya alat yang memang ada di hotbar (`alat`), dan
+// peningkatan tanpa alat tidak menampilkan tanda kurung sama sekali.
 import { nomorRomawi } from './ilmu.js';
 
 /**
@@ -29,7 +37,7 @@ export const UPGRADE = [
     id: 'rumah',
     nama: 'Rumah',
     judul: 'Memperluas rumah',
-    alat: 'Beliung',
+    alat: 'beliung',
     ikon: 'house_lv1',
     bahan: { stone: 25, wood: 30 },
     biaya: 1200,
@@ -42,12 +50,11 @@ export const UPGRADE = [
     id: 'lemari',
     nama: 'Lemari',
     judul: 'Membuat lemari pakaian',
-    alat: 'Pena',
     ikon: 'furniture',
     bahan: { wood: 20, fiber: 10 },
     biaya: 400,
     perTingkat: 4,
-    bab: { X: 'x-kandungan', XI: 'xi-toleransi', XII: 'musyawarah' },
+    bab: { X: 'x-fungsi-hadis', XI: 'xi-toleransi', XII: 'musyawarah' },
     // 24 -> 32 -> 36 -> 40 -> 44 slot tas.
     efek: (lv) => (lv ? `Tas ${24 + lv * 4} slot` : ''),
   },
@@ -55,7 +62,6 @@ export const UPGRADE = [
     id: 'peti',
     nama: 'Peti',
     judul: 'Memperbesar peti penyimpanan',
-    alat: 'Kunci',
     ikon: 'furniture',
     bahan: { wood: 25, stone: 10 },
     biaya: 600,
@@ -67,11 +73,10 @@ export const UPGRADE = [
     id: 'dapur',
     nama: 'Dapur',
     judul: 'Membangun dapur',
-    alat: 'Lesung',
     ikon: 'furniture',
     bahan: { stone: 20, wood: 15, egg: 4 },
     biaya: 900,
-    bab: { X: 'x-hadis-sunnah', XI: 'amanah', XII: 'iptek' },
+    bab: { X: 'x-hadis-sunnah', XI: 'xi-etos-kerja', XII: 'iptek' },
     // Tanpa dapur, memasak belum mungkin; dengan dapur, setiap makanan
     // memulihkan 25% lebih banyak energi.
     efek: (lv) => (lv ? 'Makanan memulihkan +25% energi' : ''),
@@ -80,7 +85,6 @@ export const UPGRADE = [
     id: 'pasar',
     nama: 'Pasar',
     judul: 'Ikut koperasi pasar desa',
-    alat: 'Bakul & Keranjang',
     ikon: 'shipping_bin',
     bahan: { turnip: 10, potato: 8, tomato: 8 },
     biaya: 800,
@@ -95,11 +99,13 @@ export const UPGRADE = [
     id: 'kandang',
     nama: 'Kandang',
     judul: 'Memperluas kandang ternak',
-    alat: 'Sekop',
     ikon: 'barn',
     bahan: { wood: 40, stone: 10, fiber: 10 },
     biaya: 1400,
-    bab: { X: 'x-tokoh', XI: 'xi-orangtua', XII: 'amar-makruf' },
+    // Dulu XI memakai xi-orangtua — sama dengan syarat "Memperluas rumah",
+    // sehingga satu bab menutup dua peningkatan sekaligus. Diganti bab XI lain
+    // yang belum dipakai papan ini.
+    bab: { X: 'x-tokoh', XI: 'xi-syukur', XII: 'amar-makruf' },
     // Satu ternak baru tiap tingkat (maksimum tiga, karena kandangnya juga
     // dibatasi pagar).
     efek: (lv) => (lv ? `Ternak +${Math.min(lv, 3)} ekor` : ''),
@@ -108,12 +114,18 @@ export const UPGRADE = [
     id: 'bibit',
     nama: 'Kebun Bibit',
     judul: 'Menyemai kebun bibit',
-    alat: 'Benih',
     ikon: 'furniture',
     bahan: { wood: 12, fiber: 20 },
     biaya: 500,
     perTingkat: 3,
-    bab: { X: 'x-otentik', XI: 'xi-pergaulan', XII: 'sederhana' },
+    // Dulu di sini tertulis x-otentik / xi-pergaulan / sederhana — dan di kelas X
+    // maupun XI bab itu JUGA bab pembuka alat penyiram (Dokter Ratna). Akibatnya
+    // "benih gratis tiap pagi" — hadiah untuk petani pemula — baru terbuka setelah
+    // alat penyiram sendiri terbuka, dan bab yang sama ditagih dua kali.
+    // Sekarang memakai bab lain di kelas yang sama: X Bab II, XI Bab I,
+    // XII Bab I — semuanya bab awal, sesuai hadiahnya yang memang untuk
+    // petani pemula.
+    bab: { X: 'x-nuzul', XI: 'xi-penciptaan', XII: 'sederhana' },
     // Bahan tidak perlu dibeli tiap hari; benih gratis mengubah awal hari tanpa
     // mengubah aturan menanam.
     efek: (lv) => (lv ? `Benih gratis ${lv * 5} tiap pagi` : ''),
@@ -169,9 +181,26 @@ export class Upgrade {
     const bab = kitab ? (ilmu?.nomorBab(kitab) ?? 0) : 0;
     const judul = kitab ? (ilmu?.kitab(kitab)?.judul ?? '') : '';
     const biaya = u.biaya * (lv + 1);
-    const bahanKurang = Object.entries(u.bahan)
-      .map(([b, n]) => ({ bahan: b, kurang: Math.max(0, n * (lv + 1) - (inv?.count(b) ?? 0)) }))
+    // Kebutuhan bahan per tingkat. `perlu` dipakai layar untuk menulis
+    // "batu 0/25" sekaligus untuk menghitung kekurangannya — satu sumber,
+    // supaya angka di layar tidak pernah berbeda dengan yang ditagih saat beli.
+    const perlu = Object.fromEntries(
+      Object.entries(u.bahan).map(([b, n]) => [b, n * (lv + 1)]),
+    );
+    const bahanKurang = Object.entries(perlu)
+      .map(([b, n]) => ({ bahan: b, kurang: Math.max(0, n - (inv?.count(b) ?? 0)) }))
       .filter((x) => x.kurang > 0);
+    // Guru bab syarat di kelas pemain. Diminta layar supaya murid tahu HARUS
+    // ke siapa; nomor bab saja tidak cukup untuk menemukan orangnya.
+    const guru = kitab ? (ilmu?.guruBab?.(kitab) ?? null) : null;
+    const judulBabInti = judul ? (judul.split(' — ')[1] ?? judul) : '';
+    // Alat seperti cangkul diberi bab pertama guru pemiliknya (lihat
+    // keahlian.syarat). Papan kadang harus memarkir syaratnya di bab yang sama,
+    // karena di kelas XII hanya ada 8 bab untuk 6 alat + 7 papan. Nomor bab yang
+    // sama berarti "keduanya terbuka setelah lulus bab itu" — bukan salah ketik.
+    // Penjelasan ini disusun di sini, bukan di layar, supaya tombol E dan layar
+    // tidak pernah berbeda pendapat.
+    const alatBerbagi = kitab ? (ilmu?.alatUntukBab?.(kitab) ?? null) : null;
     return {
       id,
       def: u,
@@ -182,12 +211,52 @@ export class Upgrade {
       bab,
       labelBab: bab ? `Bab ${nomorRomawi(bab)}` : '',
       judulBab: judul,
+      judulBabInti,
+      guru,
+      alatBerbagi,
       lulus,
       biaya,
+      perlu,
       bahanKurang,
       uangKurang: Math.max(0, biaya - duit),
       boleh: !penuh && lulus && !bahanKurang.length && biaya <= duit,
     };
+  }
+
+  /**
+   * Satu kalimat siap tampil yang menjelaskan MENGAPA peningkatan ini belum
+   * bisa dibeli — berurutan dari yang paling menentukan.
+   *
+   * Dipakai tombol E, dan dipakai juga oleh layar sebagai baris status bawah,
+   * jadi pemain tidak pernah membaca dua alasan berbeda di tempat berbeda.
+   *
+   * Nama bahan bawaannya NAMA_BAHAN, bukan id mentah: kalau pemanggil lupa
+   * mengirimkannya, kalimatnya masih "Kurang 25 batu", bukan "Kurang 25 stone".
+   */
+  alasanTidakBoleh(st, { namaBahan = NAMA_BAHAN, ringkas = false } = {}) {
+    if (!st) return '';
+    if (st.penuh) return ringkas ? 'Sudah tertinggi.' : 'Sudah pada tingkat tertinggi.';
+    if (!st.lulus) {
+      const guru = st.guru ? (ringkas ? `ke ${st.guru.nama}` : ` — ujian ke ${st.guru.nama}`) : '';
+      if (ringkas) {
+        // Versi pendek dipakai layar sempit: tetap menyebut nomor bab dan nama
+        // guru (dua hal yang dicari murid), membuang judul bab dan keterangan
+        // alat. Judul bab tetap terbaca di kolom kanan daftar.
+        // "Ujian Bab V ke Bang Jaka." — 26 huruf, paling pendek yang masih
+        // menyebut kedua hal yang dicari murid: bab mana, dan ke siapa.
+        return `Ujian ${st.labelBab} ${guru}.`;
+      }
+      const judul = st.judulBabInti ? `: ${st.judulBabInti}` : '';
+      // Kalau bab ini juga bab pembuka sebuah alat, sebutkan — supaya murid yang
+      // sudah mengincar cangkul tahu bahwa satu ujian membuka dua hal.
+      const juga = st.alatBerbagi ? ` Sekaligus membuka ${st.alatBerbagi}.` : '';
+      return `Lulus dulu ${st.labelBab}${judul}${guru}. Itu syaratnya.${juga}`;
+    }
+    if (st.bahanKurang.length) {
+      return `Kurang ${st.bahanKurang
+        .map((b) => `${b.kurang} ${namaBahan[b.bahan] ?? b.bahan}`).join(', ')}.`;
+    }
+    return `Uangnya kurang G${st.uangKurang.toLocaleString('id-ID')}.`;
   }
 
   /** Kurangi bahan dan uang, naikkan tingkat. Pemanggil yang memastikan boleh. */
