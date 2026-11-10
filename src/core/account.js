@@ -1,21 +1,26 @@
-// Akun pemain: satu username, tanpa kata sandi.
+// Akun pemain: satu username + PIN, dicatat di spreadsheet guru.
 //
-// Yang diberikan: keunikan dan cara masuk kembali. Simpanan permainan ikut
-// dititipkan ke server dengan kunci username, jadi pemain bisa melanjutkan dari
-// peramban atau komputer mana pun cukup dengan mengetik username-nya.
+// PENTING — berkas ini TIDAK LAGI dipakai untuk mendaftar atau masuk.
 //
-// Yang TIDAK diberikan: pembuktian. Tanpa kata sandi, siapa pun yang tahu
-// username orang lain bisa mengetiknya dan mengambil alih simpanannya. Itu
-// keputusan yang disengaja untuk MVP, bukan sesuatu yang lupa ditambal — dan
-// satu-satunya obatnya kata sandi, bukan pemeriksaan tambahan di sini.
+// Versi sebelumnya mengirim permintaan ke `api/player/check`, `api/player/
+// register`, dan `api/player/save`. Alamat itu hanya ada kalau game dijalankan
+// dengan server Python bawaan proyek (`tools/serve.py`); di GitHub Pages ia
+// selalu 404, dan karena `register()` gagal, pendaftaran berhenti sebelum
+// Apps Script sempat dipanggil. Akibatnya murid melihat "Server tidak
+// terhubung" dan tidak bisa membuat akun sama sekali.
 //
-// Server boleh mati tanpa membuat game ikut mati: setiap pemanggilan gagal
-// dengan sopan dan pemanggilnya jatuh kembali ke localStorage.
-
-import { apiUrl } from './api.js';
+// Sekarang pendaftaran, masuk, dan pengiriman nilai semuanya lewat satu pintu:
+// Web App Apps Script di `nilai-api.js`. Berkas ini tinggal menyimpan dua hal
+// yang masih dipakai permainan:
+//   - `validate()`   aturan bentuk username (dipakai halaman depan dan di sini)
+//   - `currentUsername()` nama terakhir di peramban ini, untuk mengisi kolom
+//                     LANJUTKAN.
+//
+// `check`/`register`/`resume`/`push` sengaja DIBIARKAN sebagai no-op yang
+// jujur: kalau ada kode lama yang masih memanggilnya, ia gagal dengan pesan
+// jelas alih-alih menembak alamat yang tidak ada.
 
 const KEY = 'lk_username';
-const SESSION = 'lk_userkey';
 
 export const RULE = 'Huruf dan angka saja, 3–16 karakter, tanpa spasi.';
 
@@ -38,61 +43,39 @@ export function setUsername(u) {
 }
 
 /**
- * Kunci sesi yang diterbitkan server saat mendaftar atau melanjutkan. Ia
- * dibutuhkan untuk MENULIS simpanan, dan itu satu-satunya tugasnya.
- *
- * Ia bukan bukti identitas: tanpa kata sandi, siapa pun yang mengetik username
- * orang lain akan mendapat kunci baru untuk username itu juga. Gunanya menutup
- * penulisan langsung ke API oleh yang sekadar menebak username, dan menjadi
- * tempat pemeriksaan kata sandi nanti dipasang.
+ * Sisa dari versi yang memakai server. Selalu null sekarang: tidak ada server
+ * yang menerbitkan kunci, dan simpanan tidak dikirim ke mana pun.
  */
 export function sessionKey() {
-  try { return localStorage.getItem(SESSION) || null; } catch { return null; }
+  // Dulu diterbitkan server; sekarang tidak ada server yang menerbitkannya.
+  return null;
 }
 
-function setSessionKey(k) {
-  try { if (k) localStorage.setItem(SESSION, k); else localStorage.removeItem(SESSION); } catch {}
-}
-
-async function post(path, payload) {
-  const res = await fetch(apiUrl(`player/${path}`), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  return res.json();
-}
-
-/** Apakah username masih bebas dipakai. */
+/**
+ * Tidak dipakai lagi. Keunikan nama diperiksa Apps Script saat MULAI ditekan
+ * (jawaban `sudahAda`), bukan sambil mengetik.
+ */
 export async function check(username) {
   const err = validate(username);
   if (err) return { available: false, reason: err };
-  try {
-    const d = await post('check', { username: username.trim() });
-    return { available: !!d.available, reason: d.reason ?? '' };
-  } catch {
-    return { available: false, reason: 'Server tidak terhubung — coba lagi.', offline: true };
-  }
+  return { available: true, reason: '', tidakDiperiksa: true };
 }
 
-export async function register(username, profile) {
-  try {
-    const d = await post('register', { username: username.trim(), profile });
-    if (d.ok) { setUsername(d.username); setSessionKey(d.key); }
-    return d;
-  } catch {
-    return { ok: false, error: 'Server tidak terhubung.', offline: true };
-  }
+/**
+ * Tidak dipakai lagi — lihat catatan di atas. Pendaftaran lewat
+ * `daftarMurid()` di nilai-api.js (tab `Akun`), bukan lewat server statis.
+ */
+export async function register(username) {
+  setUsername(username);
+  return { ok: false, tanpaServer: true, error: 'Pendaftaran dipindahkan ke spreadsheet guru (lihat daftarMurid).' };
 }
 
+/**
+ * Tidak dipakai lagi. Masuk sekarang = PIN diperiksa `masukMurid()`; simpanan
+ * permainan tinggal di peramban, tidak ada salinan di server untuk diambil.
+ */
 export async function resume(username) {
-  try {
-    const d = await post('resume', { username: (username ?? '').trim() });
-    if (d.ok) { setUsername(d.username); setSessionKey(d.key); }
-    return d;
-  } catch {
-    return { ok: false, error: 'Server tidak terhubung.', offline: true };
-  }
+  return { ok: false, tanpaServer: true, error: 'Simpanan server tidak tersedia di GitHub Pages.' };
 }
 
 /**
@@ -100,9 +83,8 @@ export async function resume(username) {
  * sudah menulis ke localStorage lebih dulu, jadi kegagalan di sini berarti
  * "belum tersinkron", bukan "progres hilang".
  */
-export function push(profile, save) {
-  const username = currentUsername();
-  const key = sessionKey();
-  if (!username || !key) return Promise.resolve({ ok: false });
-  return post('save', { username, key, profile, save }).catch(() => ({ ok: false, offline: true }));
+export function push() {
+  // Tidak ada tujuan: `player/save` tidak dipasang di GitHub Pages. Simpanan
+  // yang sebenarnya ada di localStorage (lihat save.js).
+  return Promise.resolve({ ok: false, tanpaServer: true });
 }

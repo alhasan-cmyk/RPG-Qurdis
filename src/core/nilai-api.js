@@ -103,7 +103,7 @@ async function panggil(payload) {
     try { return JSON.parse(teks); }
     catch { return { ok: false, error: 'Jawaban server tidak terbaca.' }; }
   } catch {
-    return { ok: false, offline: true, error: 'Jaringan tidak terjangkau.' };
+    return { ok: false, offline: true, error: 'Spreadsheet belum terjangkau dari perangkat ini. Periksa jaringan, lalu coba lagi.' };
   }
 }
 

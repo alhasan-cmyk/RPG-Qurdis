@@ -21,8 +21,26 @@ CARA TERCEPAT (tanpa terminal)
 
 4. Alamat situsmu:
      https://NAMA-AKUN.github.io/lembah-ilmu/
-   Permainan ada di:
-     https://NAMA-AKUN.github.io/lembah-ilmu/game.html
+
+   BAGIKAN ALAMAT INI SAJA ke murid. Halaman itu yang punya formulir
+   "Mulai Petualangan" (username + PIN). Tombol MULAI BARU membawa murid ke
+   permainan setelah akunnya tercatat.
+
+   JANGAN membagikan /game.html. Alamat itu memang masih bisa dibuka, tetapi
+   sekarang memulangkan murid tanpa akun ke halaman pendaftaran, jadi tidak ada
+   lagi yang bermain sebagai "Petani" tanpa nama — dan nilai ujiannya tidak
+   hilang karena akunnya tidak ada.
+
+TAMPILAN DI PONSEL — SELALU MENDATAR
+=====================================
+Game ini butuh layar lebar. Di ponsel yang masih tegak, layarnya otomatis
+disiapkan mendatar: kanvas diputar 90 derajat dan muncul ajakan "Putar ponselmu
+mendatar". Murid tinggal memiringkan ponselnya (atau menekan tombol
+"Putar otomatis" di Android) dan seluruh layar terpakai — hotbar, panel, dan
+petunjuknya jadi kelihatan semua.
+
+Murid yang membuka dari komputer tidak terpengaruh. Kalau jendela perambannya
+sempit dan tinggi, muncul ajakan memperlebarkan jendela, bukan memutar gambar.
 
 CARA LEWAT TERMINAL
 
@@ -54,10 +72,15 @@ Kalau repo berisi ISI SITUS (zip ini), pakai cara branch di atas.
 
 YANG PERLU DIKETAHUI
 
-- Obrolan desa dan akun TIDAK ADA di GitHub Pages. Halaman statis tidak bisa
-  menjalankan Python. Game, perpustakaan 30 bab, ujian, dan pengiriman nilai
-  ke Google Sheets tetap berjalan normal — nilai dikirim langsung dari
-  peramban murid ke Apps Script.
+- Akun murid dicatat LANGSUNG dari peramban ke Web App Apps Script (tab `Akun`
+  di spreadsheet guru); nilai juga langsung ke Apps Script (tab `Nilai`).
+  Tidak ada server perantara, jadi tidak ada yang perlu dinyalakan.
+- Simpanan permainan hanya tersimpan di peramban masing-masing (localStorage).
+  Membuka game dari komputer lain akan mulai dari awal, tetapi akun dan nilai
+  tetap dianggap sah karena PIN diperiksa Apps Script.
+- Obrolan desa TIDAK ADA di GitHub Pages: `api/chat` butuh server Python
+  (`tools/serve.py`). Di GitHub Pages fitur obrolan mati, dan itu tidak
+  memengaruhi pendaftaran, permainan, ujian, maupun nilai.
 - Kalau ingin obrolan hidup, jalankan `python3 tools/serve.py` di komputer
   atau VPS. Lihat JALANKAN.md bagian 7.
 - Nilai murid masuk ke spreadsheet guru; sambungannya diatur di

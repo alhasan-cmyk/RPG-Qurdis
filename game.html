@@ -9,8 +9,13 @@
   <style>
     html, body { margin: 0; height: 100%; background: #1a1410; overflow: hidden; }
     body { display: flex; align-items: center; justify-content: center; font-family: "VT323", monospace; color: #f5e6c8; }
-    canvas { image-rendering: pixelated; image-rendering: crisp-edges; outline: none; display: block; }
-    #loading { position: absolute; font-size: 24px; letter-spacing: 1px; }
+    canvas { image-rendering: pixelated; image-rendering: crisp-edges; outline: none; display: block; touch-action: none; }
+    #loading { position: absolute; font-size: 24px; letter-spacing: 1px; z-index: 20; }
+    #home { z-index: 60; }
+    /* Layar tegak: permainan dipaksa mendatar (src/ui/landscape.js).
+       Kanvas diputar 90° dan petunjuk "putar ponsel" muncul di atasnya. */
+    html.lk-landscape-putar body { display: block; overflow: hidden; }
+    html.lk-landscape-putar #loading { max-width: 80vw; text-align: center; }
     #home { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #d9c39a; text-decoration: none; opacity: .6; }
     #home:hover { opacity: 1; }
     /* font warm-up so canvas measureText sees the loaded faces */
@@ -22,6 +27,36 @@
   <div id="loading">Memuat…</div>
   <canvas id="game" tabindex="0"></canvas>
   <a id="home" href="index.html">← Homepage</a>
+
+  <!-- Gerbang akun. Dijalankan SEBELUM src/main.js dimuat, jadi murid yang
+       membuka alamat ini langsung tidak pernah masuk sebagai "Petani" tanpa
+       akun. Tanpa akun, nilai ujiannya nanti ditolak server ("Murid belum
+       terdaftar di peramban ini") dan murid tidak tahu sebabnya.
+
+       Aturannya: harus ada identitas murid di peramban ini — nama di profil
+       ATAU data murid dari pendaftaran. Kalau tidak ada, kembalikan ke halaman
+       pendaftaran dan bawa alamat asal supaya pesannya bisa menjelaskan. -->
+  <script>
+    (function () {
+      var punyaProfil = false;
+      var punyaMurid = false;
+      try {
+        var p = JSON.parse(localStorage.getItem('lk_profile') || 'null');
+        punyaProfil = !!(p && p.name);
+      } catch (e) { /* localStorage rusak: anggap belum punya akun */ }
+      try {
+        var m = JSON.parse(localStorage.getItem('lk_murid') || 'null');
+        punyaMurid = !!(m && m.nama);
+      } catch (e) { /* idem */ }
+
+      if (punyaProfil || punyaMurid) return;   // sudah terdaftar: main seperti biasa
+
+      // Belum punya akun. Kembali ke halaman depan dengan penanda, bukan
+      // langsung menampilkan kanvas tanpa identitas.
+      location.replace('index.html?perluakun=1');
+    })();
+  </script>
+
   <script type="module" src="src/main.js"></script>
 </body>
 </html>
