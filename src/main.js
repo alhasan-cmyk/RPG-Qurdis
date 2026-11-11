@@ -45,7 +45,9 @@ import { Menu } from './ui/menu.js';
 import { Dialog } from './ui/dialog.js';
 import { text, UI } from './ui/draw.js';
 import { CheatUI } from './ui/cheat-ui.js';
-import { pasangKodeDebug, KODE_DEBUG } from './core/cheat.js';
+import { CheatConsole } from './ui/cheat-console.js';
+import { pasangKodeDebug, PERINTAH_DEBUG } from './core/cheat.js';
+import { modeDebug } from './core/debug-mode.js';
 
 const canvas = document.getElementById('game');
 const loadingEl = document.getElementById('loading');
@@ -1978,6 +1980,7 @@ function render() {
   if (state.toast) drawToast(ctx, state.toast.msg);
 
   state.cheatUI?.draw(ctx, W, H);
+  state.cheatConsole?.draw(ctx, W, H);
   state.chatUI?.draw(ctx);
   state.menu?.draw(ctx);
 
@@ -1995,7 +1998,7 @@ function render() {
 // Kait debug: `game.html?debug=1` menaruh state permainan di window supaya
 // pengujian otomatis bisa memindahkan pemain tanpa menebak posisi. Tidak aktif
 // pada pemakaian biasa.
-if (location.search.includes('debug')) {
+if (modeDebug()) {
   window.__lk = state;
   // Kait uji: memanggil fungsi dalam yang tidak diekspor. Hanya ada di mode
   // debug, jadi tidak menambah permukaan apa pun di build biasa.
@@ -2016,15 +2019,52 @@ if (location.search.includes('debug')) {
     simpan: saveGame,
   });
   state.cheatUI = new CheatUI();
-  window.addEventListener('keydown', (e) => {
-    if (e.code !== 'F1') return;
-    e.preventDefault();
-    if (state.cheatUI.toggle()) state.cheatUI.draw(ctx, W, H);
+  // Baris perintah: F2 atau `/` membukanya. Ini jalan UTAMA, karena Ctrl+D dan
+  // Ctrl+G adalah pintasan peramban dan bisa ditelan Chrome sebelum halaman
+  // sempat mencegahnya.
+  state.cheatConsole = new CheatConsole({
+    onKetik: (baris) => {
+      const hasil = state.cheat.ketik(baris);
+      // `null` = baris tanpa garis miring. Baris ini SENGAJA tidak diteruskan ke
+      // obrolan desa: obrolan punya kotaknya sendiri (input DOM) dan mati di
+      // GitHub Pages, jadi meneruskan pesan ke sana hanya akan menghilangkannya.
+      // Yang dikatakan terang: perintah diawali garis miring.
+      return hasil ?? 'Awali dengan / — contoh: /gold 1000';
+    },
   });
-  // Kait uji: menjalankan satu kode tanpa menekan tombol, dan membaca riwayatnya.
+  window.addEventListener('keydown', (e) => {
+    // Jangan rampas tombol saat pemain mengetik di kolom isian (kotak obrolan).
+    // Tanpa ini, mengetik "/" di obrolan membuka baris perintah dan hurufnya
+    // tidak pernah sampai ke kotak obrolan.
+    const t = e.target;
+    const diKolom = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+
+    // Baris perintah lebih dulu: selama terbuka, SEMUA tombol miliknya — kalau
+    // tidak, huruf yang diketik ikut menggerakkan pemain atau membuka menu.
+    // stopImmediatePropagation (bukan stopPropagation): pendengar permainan ada
+    // di simpul yang SAMA (window), dan stopPropagation tidak menghentikan
+    // pendengar lain di simpul itu.
+    if (state.cheatConsole.terbuka) {
+      if (state.cheatConsole.key(e)) { e.preventDefault(); e.stopImmediatePropagation(); }
+      return;
+    }
+    if (diKolom) return;
+    const kunci = e.key ?? '';
+    if (e.code === 'F2' || (kunci === '/' && !e.ctrlKey && !e.metaKey && !e.altKey)) {
+      e.preventDefault();
+      state.cheatConsole.buka(kunci === '/' ? '/' : '');
+      return;
+    }
+    if (e.code === 'F1') {
+      e.preventDefault();
+      state.cheatUI.toggle();
+    }
+  }, { capture: true });
+  // Kait uji: menjalankan satu perintah tanpa mengetik, dan membaca riwayatnya.
   window.__lkCheat = state.cheat;
+  window.__lkKetik = (baris) => state.cheat.ketik(baris);
   setTimeout(() => {
-    showToast(`Mode debug: Ctrl+G gold · Ctrl+D diamond · F1 daftar ${KODE_DEBUG.length} kode`, 6);
+    showToast('Mode debug: F2 atau / untuk perintah · F1 daftar · Ctrl+G/Ctrl+D bisa ditelan peramban', 8);
   }, 1500);
 }
 
