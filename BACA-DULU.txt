@@ -193,6 +193,51 @@ YANG PERLU DIKETAHUI
 - Nilai murid masuk ke spreadsheet guru; sambungannya diatur di
   src/core/nilai-api.js dan JALANKAN.md bagian 6.
 
+KODE DEBUG (HANYA UNTUK MENGUJI)
+
+Kode ini untuk pengetes dan guru, supaya tidak perlu mengumpulkan gold dan
+diamond dengan bermain dulu. TIDAK AKTIF pada pemakaian biasa: harus dibuka
+dengan menambahkan ?debug=1 di alamat halaman, misalnya
+
+  game.html?debug=1
+
+Di GitHub Pages: .../RPG-Qurdis/game.html?debug=1 . Tanpa ?debug=1 tidak ada
+satu pun kode di bawah yang bekerja, jadi murid yang membuka halaman biasa
+tidak bisa menembus ekonomi permainan. Alasannya nilai: dengan 1.000 diamond
+semua kendaraan bisa dibeli, dan nilai ujian yang dibelanjakan dari hasil itu
+tidak sah.
+
+  Ctrl + G   gold +1.000
+  Ctrl + D   diamond +1.000
+  Ctrl + B   bahan +50 tiap jenis (batu, kayu, serat, telur, lobak, kentang,
+             tomat, susu) — untuk mencoba peningkatan bangunan
+  Ctrl + K   bab berikutnya yang belum lulus dianggap lulus (1 bab)
+  Ctrl + L   semua bab kelas yang sedang dipakai dianggap lulus
+  Ctrl + J   semua peningkatan bangunan naik 1 tingkat, tanpa bahan dan tanpa
+             uang; efeknya langsung berlaku (energi maks, slot tas, slot peti,
+             ternak) karena pembeliannya lewat jalur yang sama dengan papan
+  Ctrl + H   energi penuh
+  Ctrl + M   sepeda, motor, dan truk diberikan tanpa memakai diamond
+  Ctrl + U   waktu maju 1 jam (jadwal warga dan lampu malam ikut jalan)
+  Ctrl + P   ganti musim
+  Ctrl + Y   simpan sekarang, tanpa menunggu tidur
+  F1         tampilkan/sembunyikan daftar kode di layar
+
+Yang perlu diketahui saat menguji:
+- Ctrl + R, W, T, N, Q sengaja TIDAK dipakai: itu tombol peramban (muat ulang,
+  tutup tab, buka tab, jendela baru, keluar). Ctrl + S juga dihindari karena
+  berarti "simpan halaman"; simpan permainan ada di Ctrl + Y.
+- Cheat TIDAK menulis keadaan secara langsung. Ctrl + J memakai bahan yang
+  diberikan cheat lalu membelinya seperti pemain menekan E di papan, Ctrl + M
+  memakai jalur pembelian kendaraan, Ctrl + D memakai penambah diamond yang
+  sama dengan hadiah ujian. Jadi keadaan yang dihasilkan selalu keadaan yang
+  bisa dicapai dengan bermain, dan bug yang sedang dicari tetap muncul.
+- Ctrl + B melaporkan berapa bahan yang TIDAK muat kalau tas penuh; kalau
+  semuanya muat, pesannya menyebut jumlah yang masuk.
+- Kode debug hanya ada di berkas src/core/cheat.js dan hanya dipasang di dalam
+  blok ?debug di src/main.js. tests/uji.mjs memeriksa dua arah: kode harus
+  terpasang di dalam blok itu, dan tidak boleh ada pemanggilan di luarnya.
+
 MEMERIKSA DATA SEBELUM MENDORONG
 
 Alat-alat ini tidak memerlukan peramban. Tiga yang pertama cukup Node.js saja;
@@ -206,7 +251,7 @@ jsdom belum terpasang:
                                      # alat, dan isi papan Ragam Usaha
   node tools/uji-tata-letak.mjs      # layar Ragam Usaha di lima ukuran layar:
                                      # nama guru utuh, kalimat tidak terpotong
-  node tests/uji.mjs                 # seluruh uji sistem (±2.900 pemeriksaan)
+  node tests/uji.mjs                 # seluruh uji sistem (±3.100 pemeriksaan)
   node tools/uji-sentuh.mjs          # baris "Tombol sentuh" di Pengaturan
                                      # (butuh DOM: npm i jsdom)
 

@@ -62,6 +62,45 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => down.delete(e.code));
 window.addEventListener('blur', () => { down.clear(); pressed.clear(); });
 
+/**
+ * Pintasan Ctrl+<tombol> — dipakai kode debug (core/cheat.js).
+ *
+ * Didaftarkan di sini, bukan di modul pemakainya, karena dua hal:
+ *  1. `preventDefault` harus dipasang SEBELUM peramban memproses tombolnya.
+ *     Ctrl+D di Chrome adalah "tandai halaman"; listener yang dipasang belakangan
+ *     masih bisa mencegahnya, tetapi urutan modul jadi taruhan.
+ *  2. Tombol yang memang milik peramban TIDAK boleh dirampas: menutup tab
+ *     (Ctrl+W), memuat ulang (Ctrl+R), buka tab (Ctrl+T), jendela baru (Ctrl+N),
+ *     dan keluar (Ctrl+Q). Kalau permainan mencegatnya, pemain yang ingin
+ *     menutup tab malah mendapat 1.000 gold.
+ *
+ * Tombol yang sudah dipakai permainan (lihat BINDINGS) juga dibiarkan: Ctrl+G
+ * sebenarnya aksi 'gift' (KeyG), Ctrl+D aksi 'right' (KeyD). Keduanya di sini
+ * hanya bereaksi bila Ctrl/Command ikut ditahan, jadi bermain biasa tidak
+ * berubah — dan saat Ctrl ditahan, tombolnya tetap dicatat di `down`/`pressed`
+ * seperti sebelumnya.
+ */
+const TERLARANG = ['KeyR', 'KeyW', 'KeyT', 'KeyN', 'KeyQ'];
+const pendengarPintas = new Set();
+
+/** Daftarkan `fn(kodeTombol)` untuk pintasan Ctrl. Mengembalikan fungsi lepas. */
+export function onPintas(fn) {
+  if (typeof fn !== 'function') return () => {};
+  pendengarPintas.add(fn);
+  return () => pendengarPintas.delete(fn);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  if (TERLARANG.includes(e.code)) return;     // milik peramban
+  if (e.repeat) return;                       // tahan tombol = satu kali
+  if (!pendengarPintas.size) return;
+  e.preventDefault();
+  for (const fn of pendengarPintas) {
+    try { fn(e.code); } catch (err) { console.error('[pintas]', err); }
+  }
+}, { capture: true });
+
 export const mouse = { x: 0, y: 0, clicked: false, wheel: 0 };
 
 /**
