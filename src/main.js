@@ -44,6 +44,8 @@ import { AudioSystem } from './systems/audio.js';
 import { Menu } from './ui/menu.js';
 import { Dialog } from './ui/dialog.js';
 import { text, UI } from './ui/draw.js';
+import { CheatUI } from './ui/cheat-ui.js';
+import { pasangKodeDebug, KODE_DEBUG } from './core/cheat.js';
 
 const canvas = document.getElementById('game');
 const loadingEl = document.getElementById('loading');
@@ -1975,6 +1977,7 @@ function render() {
   state.nilaiUI?.draw(ctx);
   if (state.toast) drawToast(ctx, state.toast.msg);
 
+  state.cheatUI?.draw(ctx, W, H);
   state.chatUI?.draw(ctx);
   state.menu?.draw(ctx);
 
@@ -2000,6 +2003,29 @@ if (location.search.includes('debug')) {
     __lkTerapkan: () => { terapkanUpgrade(); saveGame(); },
     __lkSleep: () => doSleep(false),
   });
+
+  // Kode debug (Ctrl+G gold, Ctrl+D diamond, …). Dipasang DI SINI, di dalam
+  // blok ?debug, dan bukan di badan permainan: 1.000 diamond cukup untuk
+  // menembus seluruh ekonomi, dan nilai ujian yang dibelanjakan dari hasil itu
+  // tidak sah. tests/uji.mjs mengunci dua arah — harus ada di dalam blok ini,
+  // dan tidak boleh ada pemanggilan di luarnya.
+  state.cheat = pasangKodeDebug({
+    state,
+    toast: (msg) => showToast(msg, 4),
+    terapkan: terapkanUpgrade,
+    simpan: saveGame,
+  });
+  state.cheatUI = new CheatUI();
+  window.addEventListener('keydown', (e) => {
+    if (e.code !== 'F1') return;
+    e.preventDefault();
+    if (state.cheatUI.toggle()) state.cheatUI.draw(ctx, W, H);
+  });
+  // Kait uji: menjalankan satu kode tanpa menekan tombol, dan membaca riwayatnya.
+  window.__lkCheat = state.cheat;
+  setTimeout(() => {
+    showToast(`Mode debug: Ctrl+G gold · Ctrl+D diamond · F1 daftar ${KODE_DEBUG.length} kode`, 6);
+  }, 1500);
 }
 
 boot().catch((e) => { loadingEl.textContent = `Gagal memuat: ${e.message}`; console.error(e); });
