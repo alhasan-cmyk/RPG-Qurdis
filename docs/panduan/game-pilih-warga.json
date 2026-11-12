@@ -1,0 +1,142 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "KANG DADANG",
+   "x": 370,
+   "y": 224,
+   "lebar": 105,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 370,
+    "y": 225,
+    "w": 105,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 527
+  },
+  {
+   "teks": "Apa yang ingin kau lakukan?  (0/2 bab sudah lulus)",
+   "x": 246,
+   "y": 242,
+   "lebar": 352,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 246,
+    "y": 243,
+    "w": 352,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 774
+  },
+  {
+   "teks": "▸ Halo. Aku cuma mau menyapa.",
+   "x": 190,
+   "y": 266,
+   "lebar": 255,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 190,
+    "y": 267,
+    "w": 255,
+    "h": 15
+   },
+   "tengah": 190,
+   "align": "left",
+   "kanan": 445
+  },
+  {
+   "teks": "Aku ingin belajar mencangkul (Bab I).",
+   "x": 190,
+   "y": 300,
+   "lebar": 326,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 190,
+    "y": 301,
+    "w": 326,
+    "h": 15
+   },
+   "tengah": 190,
+   "align": "left",
+   "kanan": 516
+  },
+  {
+   "teks": "× Aku ingin belajar Bab II: Kebenaran Penurunan",
+   "x": 190,
+   "y": 334,
+   "lebar": 414,
+   "ukuran": 20,
+   "warna": "#a08a6a",
+   "pita": {
+    "x": 190,
+    "y": 335,
+    "w": 414,
+    "h": 15
+   },
+   "tengah": 190,
+   "align": "left",
+   "kanan": 604
+  },
+  {
+   "teks": "Al-Qur'an.",
+   "x": 190,
+   "y": 356,
+   "lebar": 88,
+   "ukuran": 20,
+   "warna": "#a08a6a",
+   "pita": {
+    "x": 190,
+    "y": 357,
+    "w": 88,
+    "h": 15
+   },
+   "tengah": 190,
+   "align": "left",
+   "kanan": 278
+  },
+  {
+   "teks": "Lulus dulu Bab I — bab dibuka berurutan, tidak boleh melompat.",
+   "x": 208,
+   "y": 378,
+   "lebar": 436,
+   "ukuran": 16,
+   "warna": "#8a7455",
+   "pita": {
+    "x": 208,
+    "y": 379,
+    "w": 436,
+    "h": 12
+   },
+   "tengah": 208,
+   "align": "left",
+   "kanan": 644
+  },
+  {
+   "teks": "W/S pilih · E tentukan · Esc batal",
+   "x": 302,
+   "y": 438,
+   "lebar": 239,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 302,
+    "y": 439,
+    "w": 239,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 661
+  }
+ ]
+}

@@ -1,0 +1,261 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "BELUM LULUS",
+   "x": 370,
+   "y": 76,
+   "lebar": 105,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 370,
+    "y": 77,
+    "w": 105,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 527
+  },
+  {
+   "teks": "Bab I · benar 23 dari 30 (perlu 24)",
+   "x": 140,
+   "y": 108,
+   "lebar": 308,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 109,
+    "w": 308,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 448
+  },
+  {
+   "teks": "Nilai 77% · batas lulus 80%",
+   "x": 140,
+   "y": 134,
+   "lebar": 238,
+   "ukuran": 20,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 140,
+    "y": 135,
+    "w": 238,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 378
+  },
+  {
+   "teks": "Baca lagi bagian yang belum kau kuasai, lalu datang lagi. Kali ini tidak perlu",
+   "x": 140,
+   "y": 164,
+   "lebar": 549,
+   "ukuran": 16,
+   "warna": "#5a4230",
+   "pita": {
+    "x": 140,
+    "y": 165,
+    "w": 549,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 689
+  },
+  {
+   "teks": "menunggu besok — dan nilai yang gagal tidak dikirim ke guru.",
+   "x": 140,
+   "y": 182,
+   "lebar": 422,
+   "ukuran": 16,
+   "warna": "#5a4230",
+   "pita": {
+    "x": 140,
+    "y": 183,
+    "w": 422,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 562
+  },
+  {
+   "teks": "• Perbedaan gaya tulisan perlu",
+   "x": 140,
+   "y": 206,
+   "lebar": 211,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 207,
+    "w": 211,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 351
+  },
+  {
+   "teks": "diperiksa ahli. Mushaf lama kerap",
+   "x": 140,
+   "y": 224,
+   "lebar": 232,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 225,
+    "w": 232,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 372
+  },
+  {
+   "teks": "memakai rasm yang berbeda dari",
+   "x": 140,
+   "y": 242,
+   "lebar": 211,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 243,
+    "w": 211,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 351
+  },
+  {
+   "teks": "cetakan modern.",
+   "x": 140,
+   "y": 260,
+   "lebar": 106,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 261,
+    "w": 106,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 246
+  },
+  {
+   "teks": "• Al-Farra' memakai kata qara'in,",
+   "x": 422,
+   "y": 206,
+   "lebar": 232,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 422,
+    "y": 207,
+    "w": 232,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "left",
+   "kanan": 654
+  },
+  {
+   "teks": "bentuk jamak qarinah, karena ayat",
+   "x": 422,
+   "y": 224,
+   "lebar": 232,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 422,
+    "y": 225,
+    "w": 232,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "left",
+   "kanan": 654
+  },
+  {
+   "teks": "saling menguatkan. QS Ali Imran 3",
+   "x": 422,
+   "y": 242,
+   "lebar": 232,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 422,
+    "y": 243,
+    "w": 232,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "left",
+   "kanan": 654
+  },
+  {
+   "teks": "menyebut al-Qur'an membenarkan kitab",
+   "x": 422,
+   "y": 260,
+   "lebar": 253,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 422,
+    "y": 261,
+    "w": 253,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "left",
+   "kanan": 675
+  },
+  {
+   "teks": "sebelumnya.",
+   "x": 422,
+   "y": 278,
+   "lebar": 77,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 422,
+    "y": 279,
+    "w": 77,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "left",
+   "kanan": 499
+  },
+  {
+   "teks": "E  tutup · bicara lagi dengan warga ini untuk mengulang",
+   "x": 228,
+   "y": 474,
+   "lebar": 387,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 228,
+    "y": 475,
+    "w": 387,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 809
+  }
+ ]
+}

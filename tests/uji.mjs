@@ -939,6 +939,35 @@ for (const k of ['X', 'XI', 'XII']) {
     /sessionStorage\.setItem\('lk_debug', '1'\)/.test(indexSumber));
 }
 
+// ------------------------------------------------------------------ panduan
+// Panduan siswa (docs/Panduan-Siswa-Lembah-Kenanga.pdf) memuat tangkapan layar
+// dari kode permainan. Dua hal yang mudah membuat panduan menjadi BOHONG dan
+// tidak ketahuan sampai siswa bingung: angka lulus di panduan tidak sama dengan
+// BATAS_LULUS, dan jumlah soal per bab tidak lagi 30 (tabel "24 dari 30" jadi
+// salah). Keduanya diperiksa di sini, bukan dengan mata.
+{
+  const panduan = join(ROOT, 'docs', 'Panduan-Siswa-Lembah-Kenanga.pdf');
+  ok('panduan: PDF ada', existsSync(panduan), 'docs/Panduan-Siswa-Lembah-Kenanga.pdf');
+  if (existsSync(panduan)) {
+    const isi = readFileSync(panduan).subarray(0, 5).toString('latin1');
+    ok('panduan: berkasnya benar-benar PDF', isi === '%PDF-', isi);
+  }
+  const skrip = baca('tools/panduan/buat-panduan.py');
+  ok('panduan: skrip pembuat panduan ada', skrip.length > 1000);
+  ok('panduan: daftar bab dibaca dari ilmu.json, bukan disalin', /ilmu\.json/.test(skrip));
+  const tangkap = baca('tools/panduan/tangkap-layar.mjs');
+  ok('panduan: tangkapan layar memakai UI permainan', /ui', 'ilmu-ui\.js/.test(tangkap));
+  ok('panduan: tangkapan layar memakai manifest sprite asli', /assets', 'manifest\.json/.test(tangkap));
+
+  const { BATAS_LULUS, perluBenar } = await import(join(ROOT, 'src/systems/ilmu.js'));
+  sama('panduan: batas lulus 80%', BATAS_LULUS, 0.8);
+  sama('panduan: 30 soal butuh 24 benar', perluBenar(30), 24);
+  const bankSoal = Object.values(ilmu.ujian ?? {}).map((b) => b.length);
+  ok('panduan: semua bab berbank 30 soal (angka 24/30 di panduan sah)',
+    bankSoal.length > 0 && bankSoal.every((n) => n === 30),
+    `bank: ${[...new Set(bankSoal)].join(',')}`);
+}
+
 // ------------------------------------------------------------------ laporan
 console.log(`\n${lulus} lulus, ${gagal} gagal`);
 process.exit(gagal ? 1 : 0);

@@ -1,0 +1,329 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "PERPUSTAKAAN DESA",
+   "x": 341,
+   "y": 78,
+   "lebar": 162,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 341,
+    "y": 79,
+    "w": 162,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 584
+  },
+  {
+   "teks": "Terbaca 0 dari 12 kitab (0%)",
+   "x": 323,
+   "y": 98,
+   "lebar": 197,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 323,
+    "y": 99,
+    "w": 197,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 619
+  },
+  {
+   "teks": "Bab I — Al-Qur'an adalah Wahyu Allah",
+   "x": 140,
+   "y": 130,
+   "lebar": 317,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 131,
+    "w": 317,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 457
+  },
+  {
+   "teks": "belum dibaca · 30 soal · 1/12",
+   "x": 140,
+   "y": 154,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 155,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 344
+  },
+  {
+   "teks": "",
+   "x": 704,
+   "y": 154,
+   "lebar": 0,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 704,
+    "y": 155,
+    "w": 1,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab II — Kebenaran Penurunan Al-Qur'an",
+   "x": 140,
+   "y": 192,
+   "lebar": 334,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 193,
+    "w": 334,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 474
+  },
+  {
+   "teks": "belum dibaca · 30 soal · 2/12",
+   "x": 140,
+   "y": 216,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 217,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 344
+  },
+  {
+   "teks": "",
+   "x": 704,
+   "y": 216,
+   "lebar": 0,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 704,
+    "y": 217,
+    "w": 1,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab III — Menghayati Keotentikan Al-Qur'an",
+   "x": 140,
+   "y": 254,
+   "lebar": 370,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 255,
+    "w": 370,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 510
+  },
+  {
+   "teks": "belum dibaca · 30 soal · 3/12",
+   "x": 140,
+   "y": 278,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 279,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 344
+  },
+  {
+   "teks": "",
+   "x": 704,
+   "y": 278,
+   "lebar": 0,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 704,
+    "y": 279,
+    "w": 1,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab IV — Al-Qur'an Mukjizat Nabiku",
+   "x": 140,
+   "y": 316,
+   "lebar": 299,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 317,
+    "w": 299,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 439
+  },
+  {
+   "teks": "belum dibaca · 30 soal · 4/12",
+   "x": 140,
+   "y": 340,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 341,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 344
+  },
+  {
+   "teks": "",
+   "x": 704,
+   "y": 340,
+   "lebar": 0,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 704,
+    "y": 341,
+    "w": 1,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab V — Kebenaran Al-Qur'an pada Semua Aspek Kehidup…",
+   "x": 140,
+   "y": 378,
+   "lebar": 466,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 379,
+    "w": 466,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 606
+  },
+  {
+   "teks": "belum dibaca · 30 soal · 5/12",
+   "x": 140,
+   "y": 402,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 403,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 344
+  },
+  {
+   "teks": "",
+   "x": 704,
+   "y": 402,
+   "lebar": 0,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 704,
+    "y": 403,
+    "w": 1,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "▲▼  1–5 dari 12  (bagian 1/3)",
+   "x": 500,
+   "y": 98,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 500,
+    "y": 99,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Pengajar: Kang Dadang",
+   "x": 348,
+   "y": 470,
+   "lebar": 148,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 348,
+    "y": 471,
+    "w": 148,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 570
+  }
+ ]
+}

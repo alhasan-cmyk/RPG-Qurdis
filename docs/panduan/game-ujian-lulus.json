@@ -1,0 +1,142 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "LULUS UJIAN",
+   "x": 370,
+   "y": 76,
+   "lebar": 105,
+   "ukuran": 10,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 370,
+    "y": 77,
+    "w": 105,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 527
+  },
+  {
+   "teks": "Bab I · benar 30 dari 30 (perlu 24)",
+   "x": 140,
+   "y": 108,
+   "lebar": 308,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 109,
+    "w": 308,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 448
+  },
+  {
+   "teks": "Nilai 100% · batas lulus 80%",
+   "x": 140,
+   "y": 134,
+   "lebar": 246,
+   "ukuran": 20,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 140,
+    "y": 135,
+    "w": 246,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 386
+  },
+  {
+   "teks": "+1 diamond",
+   "x": 168,
+   "y": 164,
+   "lebar": 88,
+   "ukuran": 20,
+   "warna": "#2f6a8c",
+   "pita": {
+    "x": 168,
+    "y": 165,
+    "w": 88,
+    "h": 15
+   },
+   "tengah": 168,
+   "align": "left",
+   "kanan": 256
+  },
+  {
+   "teks": "Kau lulus. Mulai sekarang kau boleh mencangkul sendiri — alatmu",
+   "x": 140,
+   "y": 190,
+   "lebar": 554,
+   "ukuran": 20,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 140,
+    "y": 191,
+    "w": 554,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 694
+  },
+  {
+   "teks": "tidak lagi sia-sia di tangan.",
+   "x": 140,
+   "y": 212,
+   "lebar": 255,
+   "ukuran": 20,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 140,
+    "y": 213,
+    "w": 255,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 395
+  },
+  {
+   "teks": "Nilai dikirim ke spreadsheet guru...",
+   "x": 140,
+   "y": 434,
+   "lebar": 253,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 140,
+    "y": 435,
+    "w": 253,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 393
+  },
+  {
+   "teks": "E  tutup",
+   "x": 394,
+   "y": 474,
+   "lebar": 56,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 394,
+    "y": 475,
+    "w": 56,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 478
+  }
+ ]
+}

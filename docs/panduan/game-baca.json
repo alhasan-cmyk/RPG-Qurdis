@@ -1,0 +1,244 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "BAB I — AL-QUR'AN ADALAH WAHYU ALLAH",
+   "x": 251,
+   "y": 76,
+   "lebar": 342,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 251,
+    "y": 77,
+    "w": 342,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 764
+  },
+  {
+   "teks": "Halaman 1 / 2  ·  bagian 1/2",
+   "x": 323,
+   "y": 94,
+   "lebar": 197,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 323,
+    "y": 95,
+    "w": 197,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 619
+  },
+  {
+   "teks": "Al-Qur'an diturunkan sebagai petunjuk, bukan sebagai kitab yang",
+   "x": 140,
+   "y": 118,
+   "lebar": 554,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 119,
+    "w": 554,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 694
+  },
+  {
+   "teks": "tertutup. Ayat ini menyebut dua fungsi sekaligus: memberi",
+   "x": 140,
+   "y": 140,
+   "lebar": 502,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 141,
+    "w": 502,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 642
+  },
+  {
+   "teks": "petunjuk dan memberi kabar gembira. Dari sini para ulama",
+   "x": 140,
+   "y": 162,
+   "lebar": 493,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 163,
+    "w": 493,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 633
+  },
+  {
+   "teks": "merumuskan bahwa wahyu selalu berisi ajaran yang membimbing,",
+   "x": 140,
+   "y": 184,
+   "lebar": 528,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 185,
+    "w": 528,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 668
+  },
+  {
+   "teks": "bukan sekadar informasi.",
+   "x": 140,
+   "y": 206,
+   "lebar": 211,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 207,
+    "w": 211,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 351
+  },
+  {
+   "teks": "وَكَذٰلِكَ اَوْحَيْنَآ اِلَيْكَ رُوْحًا مِّنْ",
+   "x": 178,
+   "y": 234,
+   "lebar": 526,
+   "ukuran": 26,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 178,
+    "y": 236,
+    "w": 526,
+    "h": 20
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "اَمْرِنَا ۗمَا كُنْتَ تَدْرِيْ مَا الْكِتٰبُ",
+   "x": 201,
+   "y": 268,
+   "lebar": 503,
+   "ukuran": 26,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 201,
+    "y": 270,
+    "w": 503,
+    "h": 20
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "وَلَا الْاِيْمَانُ وَلٰكِنْ جَعَلْنٰهُ نُوْرًا",
+   "x": 178,
+   "y": 302,
+   "lebar": 526,
+   "ukuran": 26,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 178,
+    "y": 304,
+    "w": 526,
+    "h": 20
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "نَّهْدِيْ بِهٖ مَنْ نَّشَاۤءُ مِنْ عِبَادِنَا",
+   "x": 189,
+   "y": 336,
+   "lebar": 515,
+   "ukuran": 26,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 189,
+    "y": 338,
+    "w": 515,
+    "h": 20
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "ۗوَاِنَّكَ لَتَهْدِيْٓ اِلٰى صِرَاطٍ",
+   "x": 292,
+   "y": 370,
+   "lebar": 412,
+   "ukuran": 26,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 292,
+    "y": 372,
+    "w": 412,
+    "h": 20
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "QS Asy-Syura 42:52",
+   "x": 577,
+   "y": 444,
+   "lebar": 127,
+   "ukuran": 16,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 577,
+    "y": 445,
+    "w": 127,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "E lanjut bagian berikutnya · A kembali · Esc tutup",
+   "x": 246,
+   "y": 474,
+   "lebar": 352,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 246,
+    "y": 475,
+    "w": 352,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 774
+  }
+ ]
+}

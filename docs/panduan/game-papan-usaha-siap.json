@@ -1,0 +1,329 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "RAGAM USAHA",
+   "x": 370,
+   "y": 163,
+   "lebar": 105,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 370,
+    "y": 164,
+    "w": 105,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 527
+  },
+  {
+   "teks": "▸ Memperluas rumah · 0/1",
+   "x": 140,
+   "y": 185,
+   "lebar": 169,
+   "ukuran": 16,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 186,
+    "w": 169,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 309
+  },
+  {
+   "teks": "Dokter Ratna",
+   "x": 620,
+   "y": 177,
+   "lebar": 84,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 620,
+    "y": 178,
+    "w": 84,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab IV ✗",
+   "x": 648,
+   "y": 191,
+   "lebar": 56,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 648,
+    "y": 192,
+    "w": 56,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "  Membuat lemari pakaian · 0/4",
+   "x": 140,
+   "y": 219,
+   "lebar": 211,
+   "ukuran": 16,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 220,
+    "w": 211,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 351
+  },
+  {
+   "teks": "Bu Sari",
+   "x": 655,
+   "y": 211,
+   "lebar": 49,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 655,
+    "y": 212,
+    "w": 49,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab X ✗",
+   "x": 655,
+   "y": 225,
+   "lebar": 49,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 655,
+    "y": 226,
+    "w": 49,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "  Memperbesar peti penyimpanan · 0/3",
+   "x": 140,
+   "y": 253,
+   "lebar": 253,
+   "ukuran": 16,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 254,
+    "w": 253,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 393
+  },
+  {
+   "teks": "Bang Jaka",
+   "x": 641,
+   "y": 245,
+   "lebar": 63,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 641,
+    "y": 246,
+    "w": 63,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab VI ✗",
+   "x": 648,
+   "y": 259,
+   "lebar": 56,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 648,
+    "y": 260,
+    "w": 56,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "  Membangun dapur · 0/1",
+   "x": 140,
+   "y": 287,
+   "lebar": 162,
+   "ukuran": 16,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 288,
+    "w": 162,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 302
+  },
+  {
+   "teks": "Nenek Wulan",
+   "x": 627,
+   "y": 279,
+   "lebar": 77,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 627,
+    "y": 280,
+    "w": 77,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bab VII ✗",
+   "x": 641,
+   "y": 293,
+   "lebar": 63,
+   "ukuran": 16,
+   "warna": "#b8432e",
+   "pita": {
+    "x": 641,
+    "y": 294,
+    "w": 63,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "baris 1–4/10",
+   "x": 620,
+   "y": 155,
+   "lebar": 84,
+   "ukuran": 16,
+   "warna": "#8a7550",
+   "pita": {
+    "x": 620,
+    "y": 156,
+    "w": 84,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "G1.200",
+   "x": 662,
+   "y": 341,
+   "lebar": 42,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 662,
+    "y": 342,
+    "w": 42,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  },
+  {
+   "teks": "Bahan lengkap",
+   "x": 140,
+   "y": 341,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 140,
+    "y": 342,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 232
+  },
+  {
+   "teks": "Guna: Energi maksimum +20",
+   "x": 140,
+   "y": 361,
+   "lebar": 176,
+   "ukuran": 16,
+   "warna": "#5a4230",
+   "pita": {
+    "x": 140,
+    "y": 362,
+    "w": 176,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 316
+  },
+  {
+   "teks": "Ujian Bab IV ke Dokter Ratna.",
+   "x": 140,
+   "y": 379,
+   "lebar": 204,
+   "ukuran": 16,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 140,
+    "y": 380,
+    "w": 204,
+    "h": 12
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 344
+  },
+  {
+   "teks": "E beli · Esc tutup",
+   "x": 577,
+   "y": 379,
+   "lebar": 127,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 577,
+    "y": 380,
+    "w": 127,
+    "h": 12
+   },
+   "tengah": 704,
+   "align": "right",
+   "kanan": 704
+  }
+ ]
+}

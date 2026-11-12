@@ -1,0 +1,482 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "NILAI & PENGIRIMAN",
+   "x": 337,
+   "y": 48,
+   "lebar": 171,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 337,
+    "y": 49,
+    "w": 171,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 593
+  },
+  {
+   "teks": "Belum terdaftar di peramban ini — nilai hanya tersimpan di sini",
+   "x": 200,
+   "y": 68,
+   "lebar": 444,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 200,
+    "y": 69,
+    "w": 444,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 866
+  },
+  {
+   "teks": "01. Al-Qur'an adalah Wahyu Allah",
+   "x": 130,
+   "y": 92,
+   "lebar": 282,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 93,
+    "w": 282,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 412
+  },
+  {
+   "teks": "LULUS 90%",
+   "x": 651,
+   "y": 92,
+   "lebar": 63,
+   "ukuran": 16,
+   "warna": "#4f7a2f",
+   "pita": {
+    "x": 651,
+    "y": 93,
+    "w": 63,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "02. Kebenaran Penurunan Al-Qur'an",
+   "x": 130,
+   "y": 116,
+   "lebar": 290,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 117,
+    "w": 290,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 420
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 116,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 117,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "03. Menghayati Keotentikan Al-Qur'an",
+   "x": 130,
+   "y": 140,
+   "lebar": 317,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 141,
+    "w": 317,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 447
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 140,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 141,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "04. Al-Qur'an Mukjizat Nabiku",
+   "x": 130,
+   "y": 164,
+   "lebar": 255,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 165,
+    "w": 255,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 385
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 164,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 165,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "05. Kebenaran Al-Qur'an pada Semua Aspek Kehidu…",
+   "x": 130,
+   "y": 188,
+   "lebar": 422,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 189,
+    "w": 422,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 552
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 188,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 189,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "06. Al-Qur'an Kebenaran Sepanjang Zaman",
+   "x": 130,
+   "y": 212,
+   "lebar": 343,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 213,
+    "w": 343,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 473
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 212,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 213,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "07. Hadis, Sunnah, Khabar, dan Atsar",
+   "x": 130,
+   "y": 236,
+   "lebar": 317,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 237,
+    "w": 317,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 447
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 236,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 237,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "08. Hadis Sumber Ajaran Islam",
+   "x": 130,
+   "y": 260,
+   "lebar": 255,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 261,
+    "w": 255,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 385
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 260,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 261,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "09. Analisis Unsur-unsur Hadis",
+   "x": 130,
+   "y": 284,
+   "lebar": 264,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 285,
+    "w": 264,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 394
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 284,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 285,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "10. Fungsi Hadis terhadap Al-Qur'an",
+   "x": 130,
+   "y": 308,
+   "lebar": 308,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 309,
+    "w": 308,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 438
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 308,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 309,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "11. Hadis Shahih sebagai Dasar Hukum",
+   "x": 130,
+   "y": 332,
+   "lebar": 317,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 333,
+    "w": 317,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 447
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 332,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 333,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "12. Biografi Tokoh-tokoh Ilmu Hadis",
+   "x": 130,
+   "y": 356,
+   "lebar": 308,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 130,
+    "y": 357,
+    "w": 308,
+    "h": 15
+   },
+   "tengah": 130,
+   "align": "left",
+   "kanan": 438
+  },
+  {
+   "teks": "siap diujikan",
+   "x": 622,
+   "y": 356,
+   "lebar": 92,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 622,
+    "y": 357,
+    "w": 92,
+    "h": 12
+   },
+   "tengah": 714,
+   "align": "right",
+   "kanan": 714
+  },
+  {
+   "teks": "Semua nilai yang lulus sudah terkirim ke spreadsheet guru",
+   "x": 221,
+   "y": 484,
+   "lebar": 401,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 221,
+    "y": 485,
+    "w": 401,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 823
+  },
+  {
+   "teks": "W/S pilih · E kirim ulang nilai tertahan · Esc tutup",
+   "x": 239,
+   "y": 506,
+   "lebar": 366,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 239,
+    "y": 507,
+    "w": 366,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 788
+  }
+ ]
+}
