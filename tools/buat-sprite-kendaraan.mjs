@@ -11,13 +11,21 @@
 //
 // Keluaran: assets/sprites/characters/<avatar>/<avatar>_<kendaraan>.png
 //
-// Bingkai 32x48 — SAMA dengan karakter biasa, dan itu keputusan yang diukur,
-// bukan warisan. Percobaan dengan bingkai 56 (supaya roda dapat ruang di bawah
-// kaki) membuat kepala pemain duduk 8 px lebih tinggi daripada saat berjalan,
-// jadi pemain terlihat "melonjak" setiap kali menaiki sepeda. Karena kaki
-// pengendara dibuang dan digambar ulang dalam posisi duduk, kepalanya tetap di
-// y 1..30 seperti semula DAN roda tetap mendapat tempat: roda bawah di y 47,
-// sepeda hanya setinggi y 30..47.
+// BINGKAI PER KENDARAAN: sepeda & motor 48x64, truk 64x64. Bingkai karakter
+// tetap 32x48; yang membesar hanya kendaraannya.
+//
+// Kenapa tidak lagi 32x48 untuk semuanya: kepala pemain sudah memakai 30 dari
+// 48 px, dan topinya selebar 25 px dari bingkai 32 — jadi kabin truk MUSTAHIL
+// lebih lebar dari topi pengemudinya, dan roda sepeda tidak dapat lebih dari
+// 7 px. Itu geometri, bukan selera.
+//
+// Kenapa bingkai lebih tinggi TIDAK lagi membuat kepala "melonjak" seperti
+// percobaan bingkai 56 dulu: dulu penunggangnya ikut digeser. Sekarang karakter
+// ditempel UTUH pada offset yang membuat kepalanya mendarat di ketinggian yang
+// sama seperti saat berjalan kaki (lihat TEMPEL/POTONG), dan karena pivot sprite
+// `bottom-center` bingkai yang lebih tinggi tumbuh ke ATAS — jadi tidak ada
+// lompatan saat naik/turun kendaraan. Truk sengaja menurunkan pengemudinya
+// sedikit (duduk di kabin), tidak pernah menaikkannya.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { deflateSync, inflateSync } from 'node:zlib';
@@ -30,9 +38,26 @@ const AKAR = process.argv[2] ?? join(dirname(fileURLToPath(import.meta.url)), '.
 const AVATAR = ['player_m', 'player_f', 'player_m2', 'player_f2'];
 const KENDARAAN = ['sepeda', 'motor', 'truk'];
 
-const FW = 32, FH = 48;          // bingkai lembar kendaraan (sama dengan karakter)
 const SW = 32, SH = 48;          // bingkai lembar karakter asli
-const RODA_Y = 44;   // pusat roda: 41..47, dasar bingkai
+// Bingkai per kendaraan. Tinggi 64 = 48 (karakter) + 16 px ruang kendaraan;
+// lebar 64 hanya untuk truk, yang memang kendaraan paling besar.
+const UKURAN = { sepeda: [48, 64], motor: [48, 64], truk: [64, 64] };
+// Offset tempel karakter (dx, dy) dan baris terakhir yang dipakai (potong).
+// - sepeda & motor: dy = FH - SH = 16, jadi kepala persis di ketinggian jalan kaki.
+// - truk dari samping: dy = 16 juga (kabinnya dinaikkan sampai atap y 12 supaya
+//   topi 17 px + wajah muat di jendela).
+// - truk dari depan: dy = 20, pengemudi duduk 4 px lebih rendah di kabin.
+// Tidak ada satu pun yang MENAIKKAN kepala di atas posisi jalan kaki.
+const TEMPEL = {
+  sepeda: { down: [8, 16], up: [8, 16], right: [8, 16], left: [8, 16] },
+  motor: { down: [8, 16], up: [8, 16], right: [8, 16], left: [8, 16] },
+  truk: { down: [16, 20], up: [16, 20], right: [23, 16], left: [23, 16] },
+};
+const POTONG = {
+  sepeda: { down: 42, up: 42, right: 40, left: 40 },
+  motor: { down: 42, up: 42, right: 40, left: 40 },
+  truk: { down: 36, up: 36, right: 32, left: 32 },
+};
 
 /* --------------------------------------------------------------- warna */
 const C = {
@@ -205,216 +230,314 @@ function tulisPNG(path, g) {
 }
 
 /* -------------------------------------------------------- kendaraan */
-// Semua koordinat y di bawah ini FINAL untuk bingkai 48 px: tanah di y 47,
-// roda 6 px (y 41..47), tinggi kepala pemain tidak disentuh (y 1..30).
-function roda(g, cx, cy, r = 3) {
+// Semua koordinat DI BAWAH INI dalam bingkai masing-masing (lihat UKURAN) dan
+// sudah final: dasar roda selalu di y 63 (motor/sepeda) atau y 63 (truk), jadi
+// tidak ada kendaraan yang "tenggelam" atau "melayang" di atas bayangan kontak.
+//
+// Pembagian lapis: `bodi` digambar SEBELUM karakter, `atas` SESUDAH karakter.
+// Itu yang membuat pemain terlihat duduk DI DALAM kendaraan: setang, lampu, dan
+// pintu kabin ada di depannya. Tanpa lapis `atas`, pemain tampak mengambang di
+// depan kendaraannya (bug yang terlihat di lembar 32x48 lama).
+function roda(g, cx, cy, r) {
   g.lingkaran(cx, cy, r, C.banT);
   g.lingkaran(cx, cy, r - 1, C.ban);
-  for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) g.set(cx + dx, cy + dy, C.logamT);
-  g.set(cx, cy, C.logam);
+  const j = r - 2;
+  g.set(cx, cy - j, C.logamT); g.set(cx, cy + j, C.logamT);
+  g.set(cx - j, cy, C.logamT); g.set(cx + j, cy, C.logamT);
+  g.lingkaran(cx, cy, 1, C.logam);
 }
 
-const RY = 44;      // pusat roda kendaraan beroda dua
+/* ================================================================ SEPEDA */
+// Roda 13 px (r=6) — dua kali diameter roda lama. Rangka berlian penuh
+// menghubungkan sadel, bottom bracket, dan kepala garpu supaya terbaca sebagai
+// sepeda yang dinaiki, bukan roda yang mengapung.
+function sepedaSamping(g) {
+  roda(g, 10, 57, 6); roda(g, 38, 57, 6);
+  g.garis(23, 60, 16, 57, C.rangka, 2);       // tabung sadel
+  g.garis(16, 56, 35, 55, C.rangka, 2);       // tabung atas
+  g.garis(23, 60, 35, 55, C.rangka, 2);       // tabung bawah
+  g.garis(10, 57, 23, 60, C.rangkaT, 1);      // rantai bawah
+  g.garis(10, 57, 16, 57, C.rangkaT, 1);      // penopang sadel
+  g.garis(38, 57, 35, 55, C.rangkaT, 2);      // garpu depan
+  g.rect(13, 56, 24, 57, C.sadel);            // sadel: tepat di bawah pinggang
+  g.rect(13, 58, 24, 58, C.rangkaT);
+  g.garis(35, 54, 36, 53, C.logamT, 1);       // batang setang
+  g.rect(32, 52, 41, 53, C.logam);            // setang
+  g.rect(39, 53, 41, 55, C.logamT);
+  g.lingkaran(23, 60, 2, C.logamT); g.set(23, 60, C.logam);   // engkol
+  g.rect(25, 61, 28, 61, C.logam);            // pedal
+  g.rect(2, 47, 8, 52, C.keranjang);          // keranjang belakang, di atas roda
+  g.rect(2, 47, 8, 47, C.logamT);
+  g.rect(2, 49, 8, 49, C.kayuT);
+  g.garis(8, 52, 12, 56, C.logamT, 1);        // penopang keranjang ke sadel
+}
+// Tampak DEPAN. Batas penting: badan pemain selebar 25 px (x 11..36), jadi
+// kendaraan depan-belakang hanya terbaca kalau bodinya MELEBAR melewati batas
+// itu, dan bagian yang paling khas (lampu / keranjang) ditaruh DI BAWAH badan
+// (y >= 58) — di situlah bingkai benar-benar kosong.
+// Tampak DEPAN / BELAKANG (sepeda & motor).
+//
+// Aturan yang ditentukan oleh ukuran sprite: pada arah ini badan pemain menutupi
+// x 11..36, y 47..58. Jadi semua bagian kendaraan yang khas (setang, keranjang,
+// lampu, apron) digambar di lapis `bodi`?? TIDAK — lapis `bodi` ada di BELAKANG
+// pemain dan akan tertutup badannya. Karena itu pada arah ini hampir semuanya
+// masuk lapis `atas`, dan lapis `bodi` hanya menyisakan roda di bawah badan.
+function sepedaDepan(g) {
+  roda(g, 24, 62, 4);
+  g.rect(23, 57, 25, 61, C.rangkaT);          // garpu di bawah badan
+}
+function sepedaBelakang(g) {
+  roda(g, 24, 62, 4);
+  g.rect(22, 59, 26, 61, C.rangkaT);
+}
+
+function motorSamping(g) {
+  // Urutan: bodi dulu, RODA di atasnya. Roda skuter harus terlihat bulat penuh;
+  // kalau roda digambar lebih dulu, panel bodi yang lebar menutupinya dan motor
+  // terbaca seperti kereta salju.
+  g.rect(9, 57, 24, 61, C.bodi);              // bodi belakang
+  g.rect(9, 57, 24, 57, C.bodiT);
+  g.rect(19, 61, 36, 62, C.bodiT);            // dek pijak rata
+  g.rect(19, 61, 36, 61, C.bodi);
+  g.rect(23, 58, 31, 60, C.bodiT);            // sambungan bodi ke dek
+  g.rect(31, 46, 38, 62, C.bodi);             // apron / perisai kaki
+  g.rect(31, 46, 31, 62, C.bodiT);
+  g.rect(30, 44, 39, 49, C.bodi);             // cowl setang
+  g.rect(30, 44, 39, 44, C.bodiT);
+  g.rect(34, 50, 37, 54, C.lampu);            // lampu depan
+  g.garis(31, 44, 33, 41, C.logamT, 1); g.rect(31, 40, 35, 41, C.kaca);  // spion
+  g.rect(32, 41, 36, 44, C.kaca);             // kaca depan kecil
+  g.rect(32, 41, 36, 41, C.bodiT);
+  g.rect(5, 60, 12, 61, C.logamT);            // knalpot
+  g.rect(5, 60, 7, 61, C.logam);
+  // roda + spakbor
+  roda(g, 12, 57, 5); roda(g, 39, 57, 5);
+  g.rect(7, 53, 17, 53, C.bodiT);             // spakbor belakang
+  g.rect(34, 53, 44, 53, C.bodiT);            // spakbor depan
+  g.rect(9, 52, 15, 52, C.bodi);
+  g.rect(36, 52, 42, 52, C.bodi);
+}
+function motorDepan(g) {
+  roda(g, 24, 62, 3);
+  g.rect(6, 48, 42, 62, C.bodi);              // perisai depan lebar
+  g.rect(6, 48, 7, 62, C.bodiT); g.rect(41, 48, 42, 62, C.bodiT);
+  g.rect(6, 48, 42, 49, C.bodiT);
+  g.rect(14, 58, 34, 61, C.lampu);            // lampu depan besar, di bawah badan
+  g.rect(14, 58, 34, 58, C.bodiT);
+  g.rect(20, 55, 28, 56, C.bodiT);            // bibir apron
+  g.rect(10, 54, 38, 55, C.logam);            // setang lebar
+}
+function motorBelakang(g) {
+  roda(g, 24, 62, 3);
+  g.rect(8, 49, 40, 62, C.bodi);              // bodi belakang lebar
+  g.rect(8, 49, 9, 62, C.bodiT); g.rect(39, 49, 40, 62, C.bodiT);
+  g.rect(12, 57, 36, 61, C.rangka);           // lampu belakang
+  g.rect(12, 57, 36, 57, C.rangkaT);
+  g.rect(10, 54, 38, 55, C.logam);            // setang
+}
+
+/* ------------------------------------------- lapis depan (di atas pemain) */
+// Depan/belakang: setang, lampu, bibir keranjang, dan tepi sadel berada DI DEPAN
+// badan pemain. Digambar sesudah karakter supaya pemain terbaca "duduk di".
+function sepedaDepanAtas(g) {
+  g.rect(9, 50, 13, 52, C.logamT); g.rect(35, 50, 39, 52, C.logamT);   // grip
+  g.rect(13, 51, 35, 52, C.logam);                                     // setang
+  g.rect(12, 51, 16, 52, C.kulit); g.rect(32, 51, 36, 52, C.kulit);    // tangan di grip
+  g.rect(23, 52, 25, 54, C.logamT);                                    // batang setang
+  g.rect(12, 54, 36, 59, C.keranjang);                                 // keranjang depan
+  g.rect(12, 54, 36, 54, C.logamT);
+  g.rect(12, 56, 36, 56, C.kayuT);
+  g.rect(12, 58, 36, 58, C.kayuT);
+  g.rect(12, 54, 12, 59, C.kayuT); g.rect(36, 54, 36, 59, C.kayuT);
+  g.rect(20, 60, 28, 61, C.lampu);                                     // lampu
+  g.rect(20, 60, 28, 60, C.logamT);
+}
+function sepedaBelakangAtas(g) {
+  g.rect(9, 50, 13, 52, C.logamT); g.rect(35, 50, 39, 52, C.logamT);
+  g.rect(13, 51, 35, 52, C.logam);
+  g.rect(12, 51, 16, 52, C.kulit); g.rect(32, 51, 36, 52, C.kulit);
+  g.rect(15, 54, 33, 56, C.sadel);                                     // sadel belakang
+  g.rect(15, 57, 33, 58, C.logamT);                                    // rak
+  g.rect(20, 60, 28, 61, C.rangka);                                    // lampu belakang
+}
+function motorDepanAtas(g) {
+  g.rect(8, 50, 12, 52, C.logamT); g.rect(36, 50, 40, 52, C.logamT);   // grip
+  g.rect(12, 51, 36, 52, C.logam);                                     // setang
+  g.rect(11, 51, 15, 52, C.kulit); g.rect(33, 51, 37, 52, C.kulit);    // tangan
+  g.rect(13, 53, 35, 61, C.bodi);                                      // apron skuter
+  g.rect(13, 53, 35, 53, C.bodiT);
+  g.rect(13, 53, 14, 61, C.bodiT); g.rect(34, 53, 35, 61, C.bodiT);
+  g.rect(18, 55, 30, 59, C.lampu);                                     // lampu depan besar
+  g.rect(18, 55, 30, 55, C.bodiT);
+  g.rect(20, 60, 28, 61, C.bodiT);                                     // bibir bawah
+}
+function motorBelakangAtas(g) {
+  g.rect(8, 50, 12, 52, C.logamT); g.rect(36, 50, 40, 52, C.logamT);
+  g.rect(12, 51, 36, 52, C.logam);
+  g.rect(11, 51, 15, 52, C.kulit); g.rect(33, 51, 37, 52, C.kulit);
+  g.rect(11, 54, 37, 61, C.bodi);                                      // ekor bodi lebar
+  g.rect(11, 54, 37, 54, C.bodiT);
+  g.rect(14, 55, 34, 58, C.rangka);                                    // lampu belakang
+  g.rect(17, 59, 31, 61, C.banT);                                      // plat
+}
+
+/* ============================================================ TRUK (64x64) */
+// Samping: bak kayu (x1..20) + kabin besar berjendela (x20..62). Pengendara
+// duduk DI BALIK kaca samping; lapis `atas` menutup badan & kakinya dengan
+// panel pintu, jadi yang terlihat hanya kepala + bahu — seperti naik truk.
+function trukSamping(g) {
+  roda(g, 14, 56, 7); roda(g, 46, 56, 7);
+  g.rect(1, 57, 62, 60, C.kabinT);            // sasis
+  g.rect(1, 30, 21, 56, C.kayu);              // bak di belakang
+  for (const y of [34, 38, 42, 46, 50, 54]) g.rect(1, y, 21, y, C.kayuT);
+  g.rect(1, 30, 21, 30, C.kayuT); g.rect(1, 30, 1, 56, C.kayuT);
+  g.rect(22, 12, 62, 56, C.kabin);            // kabin tinggi (atap y12)
+  g.rect(22, 12, 62, 15, C.kabinT);           // atap
+  g.rect(24, 16, 56, 46, C.kaca);             // kaca samping: 1 px lebih tinggi dari topi
+  g.rect(57, 16, 62, 46, C.kabin);            // moncong depan
+  g.rect(22, 47, 62, 56, C.kabin);            // panel pintu
+  g.rect(22, 47, 62, 47, C.kabinT);
+  g.rect(57, 22, 62, 28, C.lampu);            // lampu depan
+  g.rect(54, 53, 62, 55, C.logamT);           // bemper
+}
+function trukSampingAtas(g) {
+  g.rect(22, 12, 62, 16, C.kabinT);           // atap + bibir kaca
+  g.rect(22, 16, 24, 46, C.kabinT);           // pilar belakang
+  g.rect(56, 16, 57, 46, C.kabinT);           // pilar depan
+  g.rect(24, 46, 56, 47, C.kabinT);           // ambang kaca
+  g.rect(22, 48, 62, 56, C.kabin);            // pintu menutup badan
+  g.rect(22, 48, 62, 48, C.kabinT);
+  g.rect(26, 50, 52, 53, C.kabinT);           // cekung pintu
+  g.rect(26, 54, 52, 56, C.kabin);
+  g.rect(52, 50, 54, 51, C.logamT);           // gagang pintu
+  g.rect(24, 57, 40, 58, C.kabinT);           // spakbor
+}
+
+// Depan: kabin + kaca depan besar. Kepala pengemudi terlihat lewat kaca, badan
+// dan tangannya ditutup dasbor + setir.
+function trukDepan(g) {
+  roda(g, 14, 58, 6); roda(g, 50, 58, 6);
+  g.rect(7, 16, 57, 57, C.kabin);
+  g.rect(7, 16, 57, 19, C.kabinT);            // atap
+  g.rect(11, 21, 53, 47, C.kaca);             // kaca depan
+}
+function trukDepanAtas(g) {
+  g.rect(7, 16, 57, 21, C.kabinT);            // atap
+  g.rect(7, 21, 11, 47, C.kabinT); g.rect(53, 21, 57, 47, C.kabinT); // pilar A
+  g.rect(11, 21, 53, 22, C.kabinT);
+  g.rect(11, 46, 53, 47, C.kabinT);
+  g.rect(7, 48, 57, 50, C.kabin);             // dasbor
+  g.rect(7, 48, 57, 48, C.kabinT);
+  g.lingkaran(32, 50, 4, C.banT); g.lingkaran(32, 50, 3, C.ban);       // setir
+  g.rect(31, 49, 33, 49, C.logamT);
+  g.rect(7, 51, 57, 57, C.kabin);             // kap mesin
+  g.rect(7, 51, 57, 51, C.kabinT);
+  g.rect(13, 52, 51, 56, C.kabinT);           // kisi udara
+  for (const x of [17, 22, 27, 32, 37, 42, 47]) g.rect(x, 53, x, 56, C.kabin);
+  g.rect(8, 52, 12, 57, C.lampu); g.rect(52, 52, 56, 57, C.lampu);
+  g.rect(9, 59, 55, 60, C.logamT);            // bemper
+}
+// Belakang: HANYA truk. Pengendara tidak pernah ditempel di baris ini, jadi yang
+// terlihat dari belakang cuma pintu bak + atap kabin yang mengintip di atasnya.
+function trukBelakang(g) {
+  roda(g, 14, 56, 7); roda(g, 50, 56, 7);
+  g.rect(16, 13, 48, 17, C.kabinT);           // atap kabin mengintip
+  g.rect(7, 18, 57, 54, C.kayu);              // pintu bak
+  for (let y = 22; y < 54; y += 5) g.rect(7, y, 57, y, C.kayuT);
+  g.rect(7, 18, 57, 19, C.kayuT);
+  g.rect(31, 20, 33, 53, C.kayuT);            // daun pintu
+  g.rect(9, 22, 12, 33, C.kayuT); g.rect(52, 22, 55, 33, C.kayuT);   // engsel
+  g.rect(8, 42, 14, 48, C.lampu); g.rect(50, 42, 56, 48, C.rangka);
+  g.rect(7, 55, 57, 58, C.logamT);            // bemper belakang
+  g.rect(7, 55, 57, 55, C.kabinT);
+  g.rect(28, 56, 36, 57, C.kabinT);           // plat nomor
+  g.rect(47, 30, 51, 32, C.logamT);           // gagang pintu
+}
 
 function kendaraanJenis(jenis, arah, lapis = 'bodi') {
-  const g = new Gambar(FW, FH);
+  const [fw, fh] = UKURAN[jenis];
+  const g = new Gambar(fw, fh);
   const samping = arah === 'right' || arah === 'left';
-  const balik = () => (arah === 'left' ? g.cermin() : g);
-
+  const atas = lapis === 'atas';
   if (jenis === 'sepeda') {
-    if (samping) {
-      roda(g, 6, RY); roda(g, 25, RY);
-      g.garis(6, 44, 16, 43, C.rangka, 1);        // rantai bawah
-      g.garis(16, 43, 14, 39, C.rangkaT, 2);      // tabung sadel
-      g.garis(14, 38, 24, 38, C.rangka, 2);       // tabung atas
-      g.garis(16, 43, 24, 38, C.rangka, 1);       // tabung bawah
-      g.garis(25, 44, 24, 38, C.rangkaT, 2);      // garpu depan
-      g.garis(24, 37, 25, 35, C.logamT, 1);       // batang setang
-      g.rect(24, 34, 29, 35, C.logam);            // setang
-      g.rect(9, 37, 15, 38, C.sadel);             // sadel
-      g.rect(14, 42, 18, 43, C.logamT);           // engkol + pedal
-      g.rect(1, 39, 4, 42, C.keranjang);          // keranjang belakang
-      g.rect(1, 39, 4, 39, C.logamT);
-      return balik();
-    }
-    // DEPAN / BELAKANG: roda di bawah, garpu, setang melebar sepanjang dada.
-    roda(g, 16, 45);
-    g.garis(16, 45, 16, 39, C.rangka, 2);
-    g.rect(6, 37, 25, 38, C.logam);
-    g.rect(4, 37, 6, 40, C.logamT); g.rect(25, 37, 27, 40, C.logamT);
-    if (arah === 'up') {
-      g.rect(11, 39, 20, 40, C.sadel);            // tampak belakang
-      g.rect(2, 34, 8, 40, C.keranjang);
-      g.rect(2, 34, 8, 34, C.logamT);
-    } else {
-      g.rect(14, 40, 18, 41, C.lampu);
-    }
-    return g;
+    if (samping) sepedaSamping(g);
+    else if (arah === 'down') (atas ? sepedaDepanAtas : sepedaDepan)(g);
+    else (atas ? sepedaBelakangAtas : sepedaBelakang)(g);
+  } else if (jenis === 'motor') {
+    if (samping) motorSamping(g);
+    else if (arah === 'down') (atas ? motorDepanAtas : motorDepan)(g);
+    else (atas ? motorBelakangAtas : motorBelakang)(g);
+  } else if (samping) {
+    (atas ? trukSampingAtas : trukSamping)(g);
+  } else if (arah === 'down') {
+    (atas ? trukDepanAtas : trukDepan)(g);
+  } else {
+    trukBelakang(g);   // dari belakang: tidak ada lapis `atas` yang menutupi apa pun
   }
-
-  if (jenis === 'motor') {
-    if (samping) {
-      roda(g, 6, RY); roda(g, 26, RY);
-      g.rect(9, 39, 23, 42, C.bodi);
-      g.rect(10, 37, 22, 38, C.tangki);
-      g.rect(6, 37, 10, 39, C.ban);
-      g.rect(12, 42, 18, 44, C.bodiT);
-      g.garis(5, 42, 1, 41, C.logamT, 2);         // knalpot
-      g.garis(26, 44, 25, 38, C.bodiT, 2);        // garpu depan
-      g.garis(25, 37, 26, 34, C.logamT, 1);
-      g.rect(22, 33, 29, 34, C.logam);            // setang
-      g.rect(27, 31, 29, 32, C.kaca);             // spion
-      g.rect(21, 36, 23, 37, C.lampu);
-      return balik();
-    }
-    roda(g, 16, 45);
-    g.garis(16, 45, 16, 40, C.bodiT, 2);
-    g.rect(5, 38, 26, 39, C.logam);               // setang lebar
-    g.rect(3, 38, 5, 41, C.logamT); g.rect(26, 38, 28, 41, C.logamT);
-    g.rect(13, 40, 19, 42, C.lampu);              // lampu depan
-    g.rect(10, 43, 21, 45, C.bodi);
-    if (arah === 'up') g.rect(11, 40, 21, 41, C.tangki);
-    return g;
-  }
-
-  // ---------------------------------------------------------------- truk
-  // Pengendara duduk di belakang PANEL DEPAN: kepala & bahu terlihat, tangan di
-  // setir. Atap tidak digambar — kepala harus tetap di y 1..30.
-  if (samping) {
-    if (lapis === 'bodi') {
-      roda(g, 5, 44); roda(g, 24, 44);
-      g.rect(1, 28, 15, 44, C.kayu);              // bak belakang
-      for (const y of [31, 34, 37, 40, 43]) g.rect(1, y, 15, y, C.kayuT);
-      g.rect(15, 28, 15, 44, C.kayuT);
-      g.rect(16, 34, 30, 45, C.kabin);            // dinding kabin bawah
-      g.rect(16, 34, 30, 34, C.kabinT);
-      return balik();
-    }
-    g.rect(22, 32, 30, 45, C.kabin);              // panel depan
-    g.rect(22, 32, 22, 45, C.kabinT);
-    g.rect(23, 32, 29, 34, C.kabinT);             // bibir kaca depan
-    g.rect(24, 38, 29, 40, C.kaca);               // kaca depan (rendah)
-    g.rect(24, 41, 28, 42, C.logamT);             // setir
-    g.rect(30, 38, 30, 40, C.lampu);
-    return balik();
-  }
-  if (arah === 'down') {
-    if (lapis === 'bodi') {
-      roda(g, 6, 44); roda(g, 26, 44);
-      g.rect(2, 34, 29, 45, C.kabin);
-      g.rect(2, 34, 29, 34, C.kabinT);
-      return g;
-    }
-    g.rect(2, 38, 29, 45, C.kabin);               // panel depan
-    g.rect(6, 38, 25, 40, C.kaca);
-    g.rect(11, 41, 20, 42, C.logamT);             // setir
-    g.rect(3, 35, 4, 37, C.kabinT); g.rect(27, 35, 28, 37, C.kabinT);
-    g.rect(3, 42, 6, 44, C.lampu); g.rect(25, 42, 28, 44, C.lampu);
-    return g;
-  }
-  if (lapis === 'bodi') {                          // tampak belakang: bak kayu
-    roda(g, 6, 44); roda(g, 26, 44);
-    g.rect(1, 30, 30, 45, C.kayu);
-    for (const y of [33, 36, 39, 42, 45]) g.rect(1, y, 30, y, C.kayuT);
-    return g;
-  }
-  g.rect(1, 30, 30, 31, C.kayuT);
-  return g;
+  return arah === 'left' ? g.cermin() : g;
 }
 
 /* ------------------------------------------------------- pengendara */
-// Posisi duduk. `potong` = baris pertama kaki asli (di atasnya dipakai).
-// Semuanya untuk bingkai 48: kepala tidak digeser sama sekali.
-const GEO = {
-  sepeda: {
-    potong: { down: 42, up: 42, left: 39, right: 39 },
-    sadel: { down: [16, 40], up: [16, 40], right: [17, 39], left: [14, 39] },
-    pedal: { down: [13, 47], up: [13, 47], right: [19, 45], left: [12, 45] },
-    bahu: { down: [[11, 32], [19, 32]], up: [[11, 32], [19, 32]],
-            right: [[13, 32], [13, 33]], left: [[17, 32], [17, 33]] },
-    tangan: { down: [[6, 38], [25, 38]], up: [[6, 38], [25, 38]],
-              right: [[27, 35], [26, 36]], left: [[4, 35], [5, 36]] },
-    kaki: { down: false, up: false },
-  },
-  motor: {
-    potong: { down: 42, up: 42, left: 39, right: 39 },
-    sadel: { down: [16, 40], up: [16, 40], right: [17, 39], left: [14, 39] },
-    pedal: { down: [13, 47], up: [13, 47], right: [19, 45], left: [12, 45] },
-    bahu: { down: [[11, 32], [19, 32]], up: [[11, 32], [19, 32]],
-            right: [[13, 32], [13, 33]], left: [[17, 32], [17, 33]] },
-    tangan: { down: [[4, 39], [27, 39]], up: [[4, 39], [27, 39]],
-              right: [[28, 34], [27, 35]], left: [[3, 34], [4, 35]] },
-    kaki: { down: false, up: false },
-  },
-  truk: {
-    // Duduk di belakang panel depan: tangan di setir, kaki tidak terlihat.
-    kaki: false,
-    potong: { down: 40, up: 36, left: 41, right: 41 },
-    sadel: { down: [16, 42], up: [16, 42], right: [16, 42], left: [15, 42] },
-    pedal: { down: [14, 44], up: [14, 44], right: [19, 44], left: [12, 44] },
-    bahu: { down: [[11, 34], [19, 34]], up: [[11, 34], [19, 34]],
-            right: [[13, 34], [13, 35]], left: [[17, 34], [17, 35]] },
-    tangan: { down: [[13, 41], [18, 41]], up: [[13, 41], [18, 41]],
-              right: [[27, 41], [26, 42]], left: [[4, 41], [5, 42]] },
-  },
-};
-
 // Ayunan kaki per frame (0 = diam, ±2 = kayuh).
 const AYUN = [0, 2, 0, -2];
 
+/**
+ * Satu bingkai "pemain menaiki kendaraan".
+ *
+ * Urutannya penting dan ini inti perbaikannya:
+ *   1. bodi kendaraan (di BELAKANG pemain)
+ *   2. potongan karakter dari lembar aslinya, ditempel utuh pada offset TEMPEL
+ *   3. kaki duduk untuk kendaraan beroda dua (mengayuh / menapak dek)
+ *   4. lapis depan kendaraan (setang, pintu kabin, dasbor) DI ATAS pemain
+ *
+ * Baris `up` untuk truk TIDAK memakai pengendara sama sekali: dari belakang
+ * yang terlihat hanya bak truk. Itu diminta pemain dan juga benar secara visual.
+ */
 function pengendara(tiles, arah, frame, jenis) {
-  const geo = GEO[jenis];
-  const potong = geo.potong[arah];
-  const src = tiles[arah][frame];
-  const g = new Gambar(FW, FH);
+  const [fw, fh] = UKURAN[jenis];
+  const g = new Gambar(fw, fh);
+  const tanpaPengendara = jenis === 'truk' && arah === 'up';
 
   g.tempel(kendaraanJenis(jenis, arah, 'bodi'), 0, 0);
+  if (tanpaPengendara) return g;
 
+  const [dx, dy] = TEMPEL[jenis][arah];
+  const potong = POTONG[jenis][arah];
+  const src = tiles[arah][frame];
   for (let y = 0; y < potong; y++) {
     for (let x = 0; x < SW; x++) {
       const c = src.get(x, y);
-      if (c[3] > 0) g.set(x, y, c);
+      if (c[3] > 0) g.set(x + dx, y + dy, c);
     }
   }
 
-  const [sx, sy] = geo.sadel[arah];
-  const [px0, py0] = geo.pedal[arah];
-  const ayun = AYUN[frame % AYUN.length];
-  const py = py0 + (arah === 'down' || arah === 'up' ? 0 : ayun);
-
-  const pakaiKaki = geo.kaki === false ? false : ((geo.kaki ?? {})[arah] ?? true);
-  if (pakaiKaki) {
-    if (arah === 'right' || arah === 'left') {
-      const arahLangkah = arah === 'right' ? 1 : -1;
-      const lutut = sx + 4 * arahLangkah;
-      g.rect(sx - 2 * arahLangkah, sy, lutut, sy + 2, C.biruT);            // paha
-      g.rect(lutut - 1, sy + 2, lutut + 1, py - 2, C.biruT);               // betis
-      g.rect(lutut - 2 + arahLangkah * ayun, py - 1, lutut + 2 + arahLangkah * ayun, py, C.sepatu);
-      g.set(sx - arahLangkah, sy + 1, C.biruM);
-    } else {
-      g.rect(sx - 5, sy, sx - 2, sy + 3, C.biruT);
-      g.rect(sx + 2, sy, sx + 5, sy + 3, C.biruT);
-      g.rect(sx - 5, sy + 3, sx - 2, py - 2, C.biruT);
-      g.rect(sx + 2, sy + 3, sx + 5, py - 2, C.biruT);
-      g.rect(sx - 6, py - 1, sx - 1, py, C.sepatu);
-      g.rect(sx + 1, py - 1, sx + 6, py, C.sepatu);
+  // Kaki + tangan versi duduk. Tanpa ini pemain terlihat BERDIRI di atas
+  // kendaraannya: sprite aslinya berdiri dengan tangan menggantung di sisi.
+  const samping = arah === 'right' || arah === 'left';
+  if (samping && jenis !== 'truk') {
+    const ayun = AYUN[frame % AYUN.length];
+    const x = (v) => (arah === 'right' ? v : fw - 1 - v);   // dicerminkan untuk 'left'
+    const lutut = 27 + ayun;
+    const tapak = jenis === 'sepeda' ? 61 : 57;
+    // kaki: paha -> betis -> sepatu di pedal/dek
+    g.rect(x(17), 54, x(26), 56, C.biruT);                  // paha
+    g.rect(x(lutut - 1), 57, x(lutut + 1), tapak - 1, C.biruT);   // betis
+    g.rect(x(lutut - 2), tapak, x(lutut + 3), tapak, C.sepatu);   // sepatu
+    g.set(x(17), 55, C.biruM); g.set(x(26), 55, C.biruT);
+    // tangan memegang setang/grip: lengan dari bahu ke pegangan
+    const genggam = jenis === 'sepeda' ? [33, 53] : [32, 53];
+    let lx = 25, ly = 49;
+    while (lx !== genggam[0] || ly !== genggam[1]) {
+      g.set(x(lx), ly, C.biruM);
+      g.set(x(lx), ly + 1, C.biruT);
+      if (lx < genggam[0]) lx++;
+      if (ly < genggam[1]) ly++;
     }
+    g.rect(x(genggam[0] - 1), genggam[1], x(genggam[0] + 1), genggam[1], C.kulit);
+    g.set(x(genggam[0]), genggam[1] + 1, C.kulitG);
   }
 
-  const [bahu, tangan] = [geo.bahu[arah], geo.tangan[arah]];
-  for (let i = 0; i < bahu.length; i++) {
-    const [bx, by] = bahu[i];
-    const [hx, hy] = tangan[i];
-    const n = Math.max(Math.abs(hx - bx), Math.abs(hy - by), 1);
-    for (let s = 0; s <= n; s++) {
-      const x = Math.round(bx + (hx - bx) * s / n);
-      const y = Math.round(by + (hy - by) * s / n);
-      g.set(x, y, s < n ? C.biruM : C.kulit);
-      g.set(x, y + 1, s < n ? C.biruT : C.kulitG);
-    }
-  }
-
-  if (jenis === 'truk') g.tempel(kendaraanJenis('truk', arah, 'atas'), 0, 0);
+  g.tempel(kendaraanJenis(jenis, arah, 'atas'), 0, 0);
   return g;
 }
 
@@ -429,11 +552,12 @@ for (const avatar of AVATAR) {
     tiles[arah] = [0, 1, 2, 3].map((c) => lembar.potong(c * SW, r * SH, SW, SH));
   });
   for (const jenis of KENDARAAN) {
-    const out = new Gambar(FW * 4, FH * 4);
+    const [fw, fh] = UKURAN[jenis];
+    const out = new Gambar(fw * 4, fh * 4);
     ARAH.forEach((arah, r) => {
       for (let c = 0; c < 4; c++) {
         const f = pengendara(tiles, arah, c, jenis);
-        out.tempel(f, c * FW, r * FH);
+        out.tempel(f, c * fw, r * fh);
       }
     });
     tulisPNG(join(AKAR, `assets/sprites/characters/${avatar}/${avatar}_${jenis}.png`), out);
@@ -441,4 +565,5 @@ for (const avatar of AVATAR) {
   }
 }
 
-console.log(`${jumlah} lembar sprite kendaraan dibuat (${AVATAR.length} avatar x ${KENDARAAN.length} kendaraan, bingkai ${FW}x${FH}).`);
+const ukuran = KENDARAAN.map((k) => `${k} ${UKURAN[k].join('x')}`).join(', ');
+console.log(`${jumlah} lembar sprite kendaraan dibuat (${AVATAR.length} avatar x ${KENDARAAN.length} kendaraan; bingkai ${ukuran}).`);

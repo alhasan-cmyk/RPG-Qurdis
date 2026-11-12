@@ -169,9 +169,19 @@ YANG PERLU DIKETAHUI
   atasnya (sepeda, motor, atau truk) di dunia, bukan cuma bergerak lebih cepat
   sambil tetap berjalan kaki. Tinggi kepalanya sama seperti saat berjalan, jadi
   tidak ada "loncatan" saat naik atau turun. Keempat avatar (laki-laki,
-  perempuan, dan dua varian lainnya) punya lembarnya sendiri. Lempar spritenya
-  dibuat ulang dengan `node tools/buat-sprite-kendaraan.mjs`; kalau skrip itu
-  diubah tanpa membuat ulang, tests/uji.mjs akan gagal ("berkas berbeda").
+  perempuan, dan dua varian lainnya) punya lembarnya sendiri.
+  Bingkai sprite kendaraan lebih besar dari pejalan kaki (sepeda & motor 48x64,
+  truk 64x64) supaya roda, rangka, dan kabin truk benar-benar muat — tetapi yang
+  membesar hanya kendaraannya: kepala pemain tetap di ketinggian yang sama.
+  Karena itu:
+    · sepeda  dua roda besar (13 px) dengan rangka, sadel, setang, keranjang
+    · motor   bentuk skuter: dek pijak, perisai kaki, jok, lampu, spion
+    · truk    kabin besar berjendela; dari samping kepala & bahu pengemudi
+              terlihat di dalam kabin, dari depan lewat kaca depan
+    · truk dari BELAKANG hanya memperlihatkan baknya, tanpa pengendara
+  Lembar sprite dibuat ulang dengan `node tools/buat-sprite-kendaraan.mjs`;
+  kalau skrip itu diubah tanpa membuat ulang, tests/uji.mjs akan gagal
+  ("berkas berbeda").
 - DIAMOND: setiap ujian bab yang LULUS memberi +1 diamond, dan mengulang bab
   yang sama juga +1 lagi (tanpa batas). Tidak lulus = 0. Hadiahnya per ujian,
   bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya

@@ -64,10 +64,13 @@ export class Character {
       ? this.spriteKendaraan
       : this.spriteName;
     const { def, img } = sprite(nama);
-    // baked contact shadow: characters have none in their sheets by design
+    // Baked contact shadow: characters have none in their sheets by design.
+    // Kendaraan lebih lebar daripada pejalan kaki, jadi bayangannya ikut melebar
+    // (truk berbingkai 64 px tidak boleh terlihat melayang di atas bayangan 18 px).
+    const lebar = def.frame[0] >= 64 ? 17 : def.frame[0] >= 48 ? 12 : 9;
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath();
-    ctx.ellipse(Math.round(this.x - camX), Math.round(this.y - camY) - 1, 9, 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(Math.round(this.x - camX), Math.round(this.y - camY) - 1, lebar, 4, 0, 0, Math.PI * 2);
     ctx.fill();
     drawFrame(ctx, img, def.frame[0], def.frame[1], this.frame(), DIR_ROW[this.dir], this.x - camX, this.y - camY);
   }

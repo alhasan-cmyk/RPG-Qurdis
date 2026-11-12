@@ -1444,8 +1444,8 @@
     "player_m_sepeda": {
       "file": "sprites/characters/player_m/player_m_sepeda.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1468,8 +1468,8 @@
     "player_m_motor": {
       "file": "sprites/characters/player_m/player_m_motor.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1492,8 +1492,8 @@
     "player_m_truk": {
       "file": "sprites/characters/player_m/player_m_truk.png",
       "frame": [
-        32,
-        48
+        64,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1516,8 +1516,8 @@
     "player_f_sepeda": {
       "file": "sprites/characters/player_f/player_f_sepeda.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1540,8 +1540,8 @@
     "player_f_motor": {
       "file": "sprites/characters/player_f/player_f_motor.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1564,8 +1564,8 @@
     "player_f_truk": {
       "file": "sprites/characters/player_f/player_f_truk.png",
       "frame": [
-        32,
-        48
+        64,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1588,8 +1588,8 @@
     "player_m2_sepeda": {
       "file": "sprites/characters/player_m2/player_m2_sepeda.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1612,8 +1612,8 @@
     "player_m2_motor": {
       "file": "sprites/characters/player_m2/player_m2_motor.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1636,8 +1636,8 @@
     "player_m2_truk": {
       "file": "sprites/characters/player_m2/player_m2_truk.png",
       "frame": [
-        32,
-        48
+        64,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1660,8 +1660,8 @@
     "player_f2_sepeda": {
       "file": "sprites/characters/player_f2/player_f2_sepeda.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1684,8 +1684,8 @@
     "player_f2_motor": {
       "file": "sprites/characters/player_f2/player_f2_motor.png",
       "frame": [
-        32,
-        48
+        48,
+        64
       ],
       "cols": 4,
       "rows": 4,
@@ -1708,8 +1708,8 @@
     "player_f2_truk": {
       "file": "sprites/characters/player_f2/player_f2_truk.png",
       "frame": [
-        32,
-        48
+        64,
+        64
       ],
       "cols": 4,
       "rows": 4,
