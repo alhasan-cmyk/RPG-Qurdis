@@ -195,48 +195,71 @@ YANG PERLU DIKETAHUI
 
 KODE DEBUG (HANYA UNTUK MENGUJI)
 
-Kode ini untuk pengetes dan guru, supaya tidak perlu mengumpulkan gold dan
-diamond dengan bermain dulu. TIDAK AKTIF pada pemakaian biasa: harus dibuka
-dengan menambahkan ?debug=1 di alamat halaman, misalnya
+Untuk pengetes dan guru, supaya tidak perlu mengumpulkan gold dan diamond
+dengan bermain dulu. TIDAK AKTIF pada pemakaian biasa: harus dibuka dengan
+menambahkan ?debug=1 di alamat halaman, misalnya
 
   game.html?debug=1
 
-Di GitHub Pages: .../RPG-Qurdis/game.html?debug=1 . Tanpa ?debug=1 tidak ada
-satu pun kode di bawah yang bekerja, jadi murid yang membuka halaman biasa
-tidak bisa menembus ekonomi permainan. Alasannya nilai: dengan 1.000 diamond
-semua kendaraan bisa dibeli, dan nilai ujian yang dibelanjakan dari hasil itu
-tidak sah.
+Di GitHub Pages: .../RPG-Qurdis/game.html?debug=1 . Penandanya juga disimpan
+selama TAB itu hidup, jadi ?debug=1 yang diketik di halaman depan ikut terbawa
+saat menekan "Main", tetapi hilang begitu tab ditutup (peramban sekolah dipakai
+bergantian dan murid berikutnya tidak boleh mewarisi mode debug). Tanpa
+penanda itu tidak ada satu pun perintah di bawah yang bekerja.
 
-  Ctrl + G   gold +1.000
-  Ctrl + D   diamond +1.000
-  Ctrl + B   bahan +50 tiap jenis (batu, kayu, serat, telur, lobak, kentang,
-             tomat, susu) — untuk mencoba peningkatan bangunan
-  Ctrl + K   bab berikutnya yang belum lulus dianggap lulus (1 bab)
-  Ctrl + L   semua bab kelas yang sedang dipakai dianggap lulus
-  Ctrl + J   semua peningkatan bangunan naik 1 tingkat, tanpa bahan dan tanpa
-             uang; efeknya langsung berlaku (energi maks, slot tas, slot peti,
-             ternak) karena pembeliannya lewat jalur yang sama dengan papan
-  Ctrl + H   energi penuh
-  Ctrl + M   sepeda, motor, dan truk diberikan tanpa memakai diamond
-  Ctrl + U   waktu maju 1 jam (jadwal warga dan lampu malam ikut jalan)
-  Ctrl + P   ganti musim
-  Ctrl + Y   simpan sekarang, tanpa menunggu tidur
-  F1         tampilkan/sembunyikan daftar kode di layar
+CARA MEMBUKANYA: tekan F2, atau tekan / (garis miring). Sebuah baris perintah
+muncul di bawah layar; ketik perintahnya lalu Enter. Garis miring di depan
+diketik otomatis, jadi cukup `gold 1000`. Esc membatalkan. Panah atas mengulang
+perintah sebelumnya. F1 menampilkan/menyembunyikan daftar perintah di layar.
 
-Yang perlu diketahui saat menguji:
-- Ctrl + R, W, T, N, Q sengaja TIDAK dipakai: itu tombol peramban (muat ulang,
-  tutup tab, buka tab, jendela baru, keluar). Ctrl + S juga dihindari karena
-  berarti "simpan halaman"; simpan permainan ada di Ctrl + Y.
-- Cheat TIDAK menulis keadaan secara langsung. Ctrl + J memakai bahan yang
-  diberikan cheat lalu membelinya seperti pemain menekan E di papan, Ctrl + M
-  memakai jalur pembelian kendaraan, Ctrl + D memakai penambah diamond yang
-  sama dengan hadiah ujian. Jadi keadaan yang dihasilkan selalu keadaan yang
-  bisa dicapai dengan bermain, dan bug yang sedang dicari tetap muncul.
-- Ctrl + B melaporkan berapa bahan yang TIDAK muat kalau tas penuh; kalau
-  semuanya muat, pesannya menyebut jumlah yang masuk.
-- Kode debug hanya ada di berkas src/core/cheat.js dan hanya dipasang di dalam
-  blok ?debug di src/main.js. tests/uji.mjs memeriksa dua arah: kode harus
-  terpasang di dalam blok itu, dan tidak boleh ada pemanggilan di luarnya.
+  /gold 1000      gold +1.000 (tanpa angka = +1.000; angka negatif boleh,
+                  mis. /gold -500 untuk menguji keadaan miskin)
+  /diamond 1000   diamond +1.000 (tanpa angka = +1.000)
+  /bahan 50       bahan +50 tiap jenis: batu, kayu, serat, telur, lobak,
+                  kentang, tomat, susu (tanpa angka = +50)
+  /bab 1          bab berikutnya yang belum lulus dianggap lulus (boleh
+                  /bab 3 untuk tiga bab sekaligus)
+  /babsemua       semua bab kelas yang sedang dipakai dianggap lulus
+  /tingkat 1      semua peningkatan bangunan naik 1 tingkat, tanpa bahan dan
+                  tanpa uang; efeknya langsung berlaku (energi maks, slot tas,
+                  slot peti, ternak) karena pembeliannya lewat jalur yang sama
+                  dengan papan (/tingkat 3 untuk tiga tingkat)
+  /energi         energi penuh
+  /kendaraan      sepeda, motor, dan truk diberikan tanpa memakai diamond
+  /jam 1          waktu maju 1 jam (jadwal warga dan lampu malam ikut jalan)
+  /musim          ganti musim
+  /simpan         simpan sekarang, tanpa menunggu tidur
+
+KENAPA PERINTAH KETIK, BUKAN Ctrl+D / Ctrl+G
+
+Versi pertama memakai Ctrl+G (gold) dan Ctrl+D (diamond). Itu TIDAK bisa
+diandalkan: Ctrl+D adalah "tandai halaman" dan Ctrl+G adalah "cari berikutnya"
+di Chrome, dan peramban boleh memprosesnya sebelum halaman sempat mencegah.
+Hasilnya cheat terasa "tidak jalan" padahal kodenya benar. Perintah ketik tidak
+bergantung pada peramban, bisa dibaca ulang sebelum dijalankan (tidak ada
+gold yang masuk karena salah tekan), dan bisa diberi angka.
+
+Alias Ctrl+G / Ctrl+D / Ctrl+B / Ctrl+K / Ctrl+L / Ctrl+J / Ctrl+H / Ctrl+M /
+Ctrl+U / Ctrl+P / Ctrl+Y masih terpasang bila kebetulan berhasil, tetapi
+BUKAN jalan yang diandalkan — pakai perintah ketik. Ctrl+R, W, T, N, Q tetap
+milik peramban (muat ulang, tutup tab, buka tab, jendela baru, keluar).
+
+YANG PERLU DIKETAHUI SAAT MENGUJI
+
+- Cheat TIDAK menulis keadaan secara langsung. /tingkat memakai bahan yang
+  diberikan cheat lalu membelinya seperti pemain menekan E di papan; /kendaraan
+  memakai jalur pembelian kendaraan; /diamond memakai penambah diamond yang sama
+  dengan hadiah ujian. Jadi keadaan yang dihasilkan selalu keadaan yang bisa
+  dicapai dengan bermain, dan bug yang sedang dicari tetap muncul.
+- /bahan melaporkan berapa bahan yang TIDAK muat kalau tas penuh; kalau semuanya
+  muat, pesannya menyebut jumlah yang masuk.
+- Salah ketik nama perintah tidak menutup baris; pesannya menyebut daftar
+  perintah yang ada, jadi bisa langsung diperbaiki.
+- Baris perintah tidak merampas tombol saat kursor ada di kotak obrolan.
+- Kode debug ada di src/core/cheat.js (perintah) dan src/ui/cheat-console.js
+  (baris perintah), dan hanya dipasang di dalam blok mode debug di src/main.js.
+  tests/uji.mjs memeriksa dua arah: harus terpasang di dalam blok itu, dan tidak
+  boleh ada pemanggilan di luarnya.
 
 MEMERIKSA DATA SEBELUM MENDORONG
 

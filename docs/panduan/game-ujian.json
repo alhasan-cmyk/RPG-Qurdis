@@ -1,0 +1,142 @@
+{
+ "w": 844,
+ "h": 560,
+ "teks": [
+  {
+   "teks": "UJIAN KEAHLIAN — BAB I",
+   "x": 318,
+   "y": 76,
+   "lebar": 209,
+   "ukuran": 10,
+   "warna": "#8a2c1d",
+   "pita": {
+    "x": 318,
+    "y": 77,
+    "w": 209,
+    "h": 8
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 631
+  },
+  {
+   "teks": "Soal 1 / 30   ·   benar 0   ·   lulus ≥ 24",
+   "x": 274,
+   "y": 94,
+   "lebar": 296,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 274,
+    "y": 95,
+    "w": 296,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 718
+  },
+  {
+   "teks": "Seorang santri bertanya mengapa al-Qur'an memakai bahasa Arab.",
+   "x": 140,
+   "y": 122,
+   "lebar": 546,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 123,
+    "w": 546,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 686
+  },
+  {
+   "teks": "Jawaban paling tepat ...",
+   "x": 140,
+   "y": 144,
+   "lebar": 211,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 145,
+    "w": 211,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 351
+  },
+  {
+   "teks": "▸ 1. Karena al-Qur'an diturunkan melalui kaum yang bertutur Arab",
+   "x": 140,
+   "y": 178,
+   "lebar": 563,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 179,
+    "w": 563,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 703
+  },
+  {
+   "teks": "2. Karena bahasa Arab tidak memiliki padanan di dunia",
+   "x": 140,
+   "y": 210,
+   "lebar": 466,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 211,
+    "w": 466,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 606
+  },
+  {
+   "teks": "3. Agar hanya bangsa Arab yang dapat memahaminya",
+   "x": 140,
+   "y": 242,
+   "lebar": 422,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 140,
+    "y": 243,
+    "w": 422,
+    "h": 15
+   },
+   "tengah": 140,
+   "align": "left",
+   "kanan": 562
+  },
+  {
+   "teks": "W/S pilih · E jawab · Esc berhenti",
+   "x": 302,
+   "y": 474,
+   "lebar": 239,
+   "ukuran": 16,
+   "warna": "#7a6647",
+   "pita": {
+    "x": 302,
+    "y": 475,
+    "w": 239,
+    "h": 12
+   },
+   "tengah": 422,
+   "align": "center",
+   "kanan": 661
+  }
+ ]
+}

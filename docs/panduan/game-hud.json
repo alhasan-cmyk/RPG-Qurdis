@@ -1,0 +1,312 @@
+{
+ "w": 844,
+ "h": 390,
+ "teks": [
+  {
+   "teks": "Musim Semi 3 · Tahun 1",
+   "x": 48,
+   "y": 16,
+   "lebar": 194,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 48,
+    "y": 17,
+    "w": 194,
+    "h": 15
+   },
+   "tengah": 48,
+   "align": "left",
+   "kanan": 242
+  },
+  {
+   "teks": "07:20",
+   "x": 48,
+   "y": 40,
+   "lebar": 44,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 48,
+    "y": 41,
+    "w": 44,
+    "h": 15
+   },
+   "tengah": 48,
+   "align": "left",
+   "kanan": 92
+  },
+  {
+   "teks": "Cerah",
+   "x": 178,
+   "y": 42,
+   "lebar": 44,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 178,
+    "y": 43,
+    "w": 44,
+    "h": 15
+   },
+   "tengah": 222,
+   "align": "right",
+   "kanan": 222
+  },
+  {
+   "teks": "78",
+   "x": 201,
+   "y": 68,
+   "lebar": 14,
+   "ukuran": 16,
+   "warna": "rgba(0,0,0,0.5)",
+   "pita": {
+    "x": 201,
+    "y": 69,
+    "w": 14,
+    "h": 12
+   },
+   "tengah": 215,
+   "align": "right",
+   "kanan": 215
+  },
+  {
+   "teks": "78",
+   "x": 200,
+   "y": 67,
+   "lebar": 14,
+   "ukuran": 16,
+   "warna": "#fff",
+   "pita": {
+    "x": 200,
+    "y": 68,
+    "w": 14,
+    "h": 12
+   },
+   "tengah": 214,
+   "align": "right",
+   "kanan": 214
+  },
+  {
+   "teks": "0",
+   "x": 813,
+   "y": 9,
+   "lebar": 9,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 813,
+    "y": 10,
+    "w": 9,
+    "h": 15
+   },
+   "tengah": 822,
+   "align": "right",
+   "kanan": 822
+  },
+  {
+   "teks": "1.250",
+   "x": 778,
+   "y": 33,
+   "lebar": 44,
+   "ukuran": 20,
+   "warna": "#3a2a2a",
+   "pita": {
+    "x": 778,
+    "y": 34,
+    "w": 44,
+    "h": 15
+   },
+   "tengah": 822,
+   "align": "right",
+   "kanan": 822
+  },
+  {
+   "teks": "1",
+   "x": 238,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 238,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 238,
+   "align": "left",
+   "kanan": 243
+  },
+  {
+   "teks": "2",
+   "x": 280,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 280,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 280,
+   "align": "left",
+   "kanan": 285
+  },
+  {
+   "teks": "5",
+   "x": 348,
+   "y": 361,
+   "lebar": 7,
+   "ukuran": 16,
+   "warna": "rgba(0,0,0,0.5)",
+   "pita": {
+    "x": 348,
+    "y": 362,
+    "w": 7,
+    "h": 12
+   },
+   "tengah": 355,
+   "align": "right",
+   "kanan": 355
+  },
+  {
+   "teks": "5",
+   "x": 347,
+   "y": 360,
+   "lebar": 7,
+   "ukuran": 16,
+   "warna": "#fff",
+   "pita": {
+    "x": 347,
+    "y": 361,
+    "w": 7,
+    "h": 12
+   },
+   "tengah": 354,
+   "align": "right",
+   "kanan": 354
+  },
+  {
+   "teks": "3",
+   "x": 322,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 322,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 322,
+   "align": "left",
+   "kanan": 327
+  },
+  {
+   "teks": "4",
+   "x": 364,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 364,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 364,
+   "align": "left",
+   "kanan": 369
+  },
+  {
+   "teks": "5",
+   "x": 406,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 406,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 406,
+   "align": "left",
+   "kanan": 411
+  },
+  {
+   "teks": "6",
+   "x": 448,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 448,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 448,
+   "align": "left",
+   "kanan": 453
+  },
+  {
+   "teks": "7",
+   "x": 490,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 490,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 490,
+   "align": "left",
+   "kanan": 495
+  },
+  {
+   "teks": "8",
+   "x": 532,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 532,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 532,
+   "align": "left",
+   "kanan": 537
+  },
+  {
+   "teks": "9",
+   "x": 574,
+   "y": 340,
+   "lebar": 5,
+   "ukuran": 12,
+   "warna": "#6b5a3a",
+   "pita": {
+    "x": 574,
+    "y": 341,
+    "w": 5,
+    "h": 9
+   },
+   "tengah": 574,
+   "align": "left",
+   "kanan": 579
+  }
+ ]
+}

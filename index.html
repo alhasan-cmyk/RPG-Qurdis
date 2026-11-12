@@ -485,12 +485,20 @@
     // kalau perpindahan halaman tertahan (jaringan lambat, tab di latar).
     else say(newErr, '');
 
+    // Penanda mode debug. Halaman ini pindah ke game.html dengan location.href,
+    // jadi ?debug=1 yang diketik di sini HILANG begitu pemain menekan "Main" —
+    // dan seluruh cheat mati tanpa penjelasan. Query-nya ikut dibawa di ketiga
+    // tempat pindah, dan penandanya juga disimpan di sessionStorage (hilang saat
+    // tab ditutup, bukan localStorage): peramban sekolah dipakai bergantian dan
+    // murid berikutnya tidak boleh mewarisi mode debug.
+    try { if (new URLSearchParams(location.search).has('debug')) sessionStorage.setItem('lk_debug', '1'); } catch (e) { /* mode privat: query tetap dibawa */ }
+
     // Simpanan lama di peramban ini milik username lain; buang supaya tidak
     // terbawa ke permainan yang baru.
     localStorage.removeItem('lk_save_0');
     localStorage.removeItem('lk_save_0.bak');
     setNewGame(profile);
-    location.href = 'game.html';
+    location.href = 'game.html' + (new URLSearchParams(location.search).has('debug') ? '?debug=1' : '');
   });
 
   document.getElementById('resumeform').addEventListener('submit', async (e) => {
@@ -517,7 +525,7 @@
       if (!mm.offline) return say(resumeErr, mm.error ?? 'PIN tidak cocok.');
       say(resumeErr, 'Spreadsheet belum terjangkau; PIN belum bisa diperiksa. Melanjutkan dengan simpanan di peramban ini.', true);
       writeProfile({ name: username });
-      location.href = 'game.html';
+      location.href = 'game.html' + (new URLSearchParams(location.search).has('debug') ? '?debug=1' : '');
       return;
     }
 
@@ -531,7 +539,7 @@
       name: username,
       ...(kelas.tingkat ? { tingkat: kelas.tingkat, rombel: kelas.rombel } : {}),
     });
-    location.href = 'game.html';
+    location.href = 'game.html' + (new URLSearchParams(location.search).has('debug') ? '?debug=1' : '');
   });
 </script>
 </body>

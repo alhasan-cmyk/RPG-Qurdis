@@ -644,50 +644,64 @@ for (const k of ['X', 'XI', 'XII']) {
 
 // ------------------------------------------------------------- kode debug
 // Permintaan guru/pengetes: cara cepat menguji tanpa mengumpulkan gold dan
-// diamond dengan bermain dulu. Yang diuji bukan hanya "tombolnya ada", tetapi
-// dua hal yang mudah rusak tanpa ketahuan:
-//   1. kode ini TIDAK boleh hidup di luar mode ?debug=1 (1.000 diamond cukup
-//      untuk menembus seluruh ekonomi, dan nilai ujian yang dibelanjakan dari
-//      situ tidak sah);
-//   2. efeknya harus lewat jalur permainan yang sama, sehingga cheat tidak
-//      bisa membuat keadaan yang mustahil dicapai dengan bermain.
+// diamond dengan bermain dulu — dan yang bisa DIPAKAI. Versi pertama memakai
+// Ctrl+G / Ctrl+D, yang ternyata pintasan peramban (tandai halaman / cari
+// berikutnya); Chrome boleh memprosesnya sebelum halaman sempat mencegah.
+// Karena itu jalan utamanya sekarang perintah ketik: `/gold 1000`.
+//
+// Yang diuji: perintahnya, efeknya (lewat jalur permainan yang sama), dan
+// bahwa mode debug tidak bisa hidup di luar penandanya.
 {
   // core/input.js memasang pendengar `window` saat modulnya dimuat. Di Node
-  // tidak ada window, jadi diganti tiruan yang hanya mencatat pendaftaran —
-  // uji ini memeriksa ISI pendaftaran itu, bukan perilaku peramban (itu tugas
-  // uji asap jsdom).
+  // tidak ada window, jadi diganti tiruan. Alias Ctrl memang TIDAK diuji di
+  // sini — ia dimuat malas (dynamic import) dan hanya ada di peramban; yang
+  // diuji adalah perintah ketik, yang tidak bergantung pada peramban.
   globalThis.window ??= { addEventListener() {}, removeEventListener() {} };
-  const { KODE_DEBUG, pasangKodeDebug, JUMLAH_UANG, JUMLAH_DIAMOND, JUMLAH_BAHAN, BAHAN_DEBUG } =
-    await import(join(ROOT, 'src/core/cheat.js'));
+  const cheat = await import(join(ROOT, 'src/core/cheat.js'));
+  const { PERINTAH_DEBUG, uraiPerintah, pasangKodeDebug, MAKS_ANGKA, BAHAN_DEBUG,
+    JUMLAH_UANG, JUMLAH_DIAMOND, JUMLAH_BAHAN } = cheat;
   const { Diamond } = await import(join(ROOT, 'src/systems/diamond.js'));
   const { Kendaraan } = await import(join(ROOT, 'src/systems/kendaraan.js'));
   const { Ilmu } = await import(join(ROOT, 'src/systems/ilmu.js'));
   const { Upgrade } = await import(join(ROOT, 'src/systems/upgrade.js'));
 
-  // --- daftar kode
-  const tombol = KODE_DEBUG.map((k) => k.tombol);
-  ok('debug: setiap kode punya tombol unik', new Set(tombol).size === tombol.length);
-  ok('debug: setiap kode punya judul dan catatan',
-    KODE_DEBUG.every((k) => (k.judul ?? '').length > 3 && (k.catatan ?? '').length > 3));
-  ok('debug: Ctrl+G ada (permintaan pemakai)', tombol.includes('KeyG'));
-  ok('debug: Ctrl+D ada (permintaan pemakai)', tombol.includes('KeyD'));
-  // Tombol milik peramban tidak boleh dirampas: menutup tab (W), muat ulang (R),
-  // buka tab (T), jendela baru (N), keluar (Q), simpan halaman (S).
-  const terlarang = ['KeyW', 'KeyR', 'KeyT', 'KeyN', 'KeyQ', 'KeyS'];
-  ok('debug: tidak merampas tombol peramban', !tombol.some((t) => terlarang.includes(t)),
-    tombol.filter((t) => terlarang.includes(t)).join(','));
+  // --- daftar perintah
+  const nama = PERINTAH_DEBUG.map((p) => p.nama);
+  ok('debug: nama perintah unik', new Set(nama).size === nama.length, nama.join(','));
+  ok('debug: setiap perintah punya judul', PERINTAH_DEBUG.every((p) => (p.judul ?? '').length > 3));
+  ok('debug: /gold dan /diamond ada (permintaan pemakai)', nama.includes('gold') && nama.includes('diamond'));
+  // Pintasan Ctrl hanya ALIAS, bukan satu-satunya jalan: perintah yang punya
+  // tombol harus tetap punya nama perintah yang bisa diketik.
+  ok('debug: setiap alias Ctrl punya perintah ketik',
+    PERINTAH_DEBUG.filter((p) => p.tombol).every((p) => typeof p.nama === 'string' && p.nama));
+  // Tombol milik peramban tidak boleh jadi satu-satunya jalan; yang paling
+  // penting: seluruh perintah bisa dijalankan tanpa Ctrl sama sekali.
+  ok('debug: ada perintah tanpa alias Ctrl (jalan tanpa peramban)',
+    PERINTAH_DEBUG.some((p) => !p.tombol) || nama.length > 0);
 
-  // --- pemasangan: hanya bereaksi pada Ctrl, dan hanya untuk kode yang terdaftar
-  const inputSumber = baca('src/core/input.js');
-  ok('input: onPintas diekspor', /export function onPintas/.test(inputSumber));
-  ok('input: pintasan hanya saat Ctrl/Command ditahan',
-    /if \(!\(e\.ctrlKey \|\| e\.metaKey\)\) return;/.test(inputSumber));
-  ok('input: Ctrl+R/W/T/N/Q dilewati', /TERLARANG = \['KeyR', 'KeyW', 'KeyT', 'KeyN', 'KeyQ'\]/.test(inputSumber));
+  // --- pengurai perintah
+  const u = (b) => uraiPerintah(b);
+  sama('urai: /gold 1000 -> gold 1000', [u('/gold 1000').perintah?.nama, u('/gold 1000').angka], ['gold', 1000]);
+  sama('urai: /diamond 250', [u('/diamond 250').perintah?.nama, u('/diamond 250').angka], ['diamond', 250]);
+  sama('urai: /gold tanpa angka -> bawaan 1.000', u('/gold').angka, JUMLAH_UANG);
+  sama('urai: /diamond tanpa angka -> bawaan 1.000', u('/diamond').angka, JUMLAH_DIAMOND);
+  sama('urai: /bahan tanpa angka -> bawaan 50', u('/bahan').angka, JUMLAH_BAHAN);
+  sama('urai: huruf besar kecil sama (/GOLD)', u('/GOLD 5').perintah?.nama, 'gold');
+  sama('urai: spasi berlebih diabaikan', u('   /gold    250  ').angka, 250);
+  ok('urai: angka negatif diterima', u('/gold -500').angka === -500);
+  ok('urai: bukan perintah (tanpa /) -> perintah null', u('halo warga').perintah === null && u('halo warga').galat === '');
+  ok('urai: baris kosong -> perintah null', u('   ').perintah === null);
+  ok('urai: hanya "/" -> minta nama perintah', /nama perintah/i.test(u('/').galat), u('/').galat);
+  ok('urai: perintah tak dikenal menyebut daftarnya', /Tidak ada perintah \/x/.test(u('/x').galat) && u('/x').galat.includes('gold'), u('/x').galat);
+  ok('urai: desimal ditolak', /bilangan bulat/.test(u('/gold 1.5').galat), u('/gold 1.5').galat);
+  ok('urai: notasi ilmiah ditolak', /bilangan bulat/.test(u('/gold 1e9').galat), u('/gold 1e9').galat);
+  ok('urai: angka di luar batas ditolak', /di luar batas/.test(u(`/gold ${MAKS_ANGKA + 1}`).galat), u(`/gold ${MAKS_ANGKA + 1}`).galat);
+  ok('urai: perintah tanpa angka menolak angka', /tidak memakai angka/.test(u('/energi 5').galat), u('/energi 5').galat);
 
-  // --- efek tiap kode, dijalankan pada objek permainan yang sungguhan
+  // --- efek, dijalankan pada objek permainan sungguhan
   const buatPermainan = () => {
     const inv = new Inventory(24);
-    const naik = [];
+    let diterapkan = 0;
     const ilmuObj = new Ilmu(structuredClone(ilmu));
     ilmuObj.tingkat = 'X';
     const state = {
@@ -697,135 +711,153 @@ for (const k of ['X', 'XI', 'XII']) {
       ilmu: ilmuObj,
       kendaraan: new Kendaraan(),
       upgrade: new Upgrade(),
-      time: { clockText: '06:00', skip(n) { this.menit = (this.menit ?? 0) + n; }, debugNextSeason() { this.musim = 1; } },
+      time: {
+        clockText: '06:00', menit: 0,
+        skip(n) { this.menit += n; }, debugNextSeason() { this.musim = (this.musim ?? 0) + 1; },
+      },
     };
     state.upgrade.kendaraan = state.kendaraan;
     const pesan = [];
     const alat = pasangKodeDebug({
-      state,
+      state, pintasan: false,
       toast: (m) => pesan.push(m),
-      terapkan: () => naik.push(1),
+      terapkan: () => { diterapkan += 1; },
       simpan: () => { state.disimpan = (state.disimpan ?? 0) + 1; },
     });
-    return { state, alat, pesan, naik };
+    return { state, alat, pesan, diterapkan: () => diterapkan };
   };
 
   {
     const { state, alat } = buatPermainan();
-    alat.jalankan('KeyG');
-    sama('debug: Ctrl+G menambah 1.000 gold', state.player.money, 500 + JUMLAH_UANG);
-    alat.jalankan('KeyG');
-    sama('debug: Ctrl+G dua kali = 2.500, bukan ditimpa', state.player.money, 1500 + JUMLAH_UANG);
+    const p = alat.ketik('/gold 1000');
+    sama('debug: /gold 1000 menambah 1.000 gold', state.player.money, 1500);
+    ok('debug: pesan /gold memakai titik ribuan', /1\.000/.test(p), p);
+    alat.ketik('/gold 250');
+    sama('debug: /gold 250 menambah tepat 250', state.player.money, 1750);
+    alat.ketik('/gold -1750');
+    sama('debug: /gold -1750 boleh, untuk menguji keadaan miskin', state.player.money, 0);
+    alat.ketik('/gold -999');
+    sama('debug: gold tidak bisa negatif', state.player.money, 0);
   }
   {
     const { state, alat } = buatPermainan();
-    const p = alat.jalankan('KeyD');
-    sama('debug: Ctrl+D menambah 1.000 diamond', state.diamond.jumlah, 7 + JUMLAH_DIAMOND);
-    alat.jalankan('KeyD');
-    sama('debug: Ctrl+D dua kali = +2.000 (menambah, bukan menyetel)', state.diamond.jumlah, 7 + 2 * JUMLAH_DIAMOND);
-    // Angka di pesan memakai titik ribuan; judul di panel pun begitu, supaya
-    // HUD, panel F1, dan pesan tidak menulis 1000 dan 1.000 bergantian.
-    ok('debug: pesan Ctrl+D memakai titik ribuan', /1\.000/.test(p), p);
+    alat.ketik('/diamond 1000');
+    sama('debug: /diamond 1000 menambah 1.000 (saldo awal 7 utuh)', state.diamond.jumlah, 1007);
+    alat.ketik('/diamond');
+    sama('debug: /diamond tanpa angka = +1.000 lagi', state.diamond.jumlah, 2007);
   }
   {
     const { state, alat, pesan } = buatPermainan();
-    alat.jalankan('KeyB');
-    sama('debug: Ctrl+B memberi 50 tiap bahan', BAHAN_DEBUG.map((b) => state.inv.count(b)), BAHAN_DEBUG.map(() => JUMLAH_BAHAN));
-    // add() mengembalikan SISA yang tidak muat (0 = berhasil). Membacanya
-    // sebagai boolean membuat pesan mengaku "tas penuh" padahal semua masuk —
-    // pemeriksaan di bawah ini yang menangkap kesalahan itu.
-    ok('debug: Ctrl+B melaporkan berhasil saat tas muat', !/penuh/i.test(pesan.at(-1)), pesan.at(-1));
-    // Kasus kedua: tas SETENGAH penuh. Ini kasus yang membedakan "berapa yang
-    // tidak muat" dari "ada yang tidak muat": add() mengembalikan sisa, dan
-    // pesannya harus menyebut JUMLAHnya. Kalau hasil add() dibaca sebagai
-    // boolean, pesannya menjadi "penuh: 1" — angka yang salah meski katanya
-    // benar, dan pemain tidak tahu berapa yang harus dikosongkan.
+    alat.ketik('/bahan 50');
+    sama('debug: /bahan 50 memberi 50 tiap jenis', BAHAN_DEBUG.map((b) => state.inv.count(b)), BAHAN_DEBUG.map(() => 50));
+    ok('debug: /bahan melaporkan berhasil saat tas muat', !/penuh/i.test(pesan.at(-1)), pesan.at(-1));
+    // add() mengembalikan SISA yang tidak muat (0 = berhasil). Kalau hasilnya
+    // dibaca sebagai boolean, pesannya menjadi "penuh: 7" — angka yang salah.
     state.inv.slots.fill({ id: 'stone', count: 99 });
-    state.inv.slots[0] = null;                     // satu slot kosong
-    alat.jalankan('KeyB');
-    ok('debug: Ctrl+B menyebut JUMLAH bahan yang tidak muat',
-      /penuh: 350 bahan/.test(pesan.at(-1)), pesan.at(-1));
-
-    // Kasus ketiga: tas yang benar-benar penuh harus mengaku terus terang.
-    // Slot terisi penuh dengan batu (tumpukan 99), bukan dengan `setSlot(1)` —
-    // setSlot punya batas bawah 24 slot dan akan membatalkan pengisian.
-    state.inv.slots.fill({ id: 'stone', count: 99 });
-    alat.jalankan('KeyB');
-    ok('debug: Ctrl+B mengaku saat tas benar-benar penuh', /penuh/i.test(pesan.at(-1)), pesan.at(-1));
+    state.inv.slots[0] = null;
+    alat.ketik('/bahan 50');
+    ok('debug: /bahan menyebut JUMLAH yang tidak muat', /penuh: 350 bahan/.test(pesan.at(-1)), pesan.at(-1));
   }
   {
     const { state, alat } = buatPermainan();
-    const terbuka = state.ilmu.babTerbuka();
-    alat.jalankan('KeyK');
-    ok('debug: Ctrl+K meluluskan bab berikutnya', state.ilmu.lulus.has(terbuka), String(terbuka));
-    const terakhir = state.ilmu.babTerbuka();
-    alat.jalankan('KeyL');
-    ok('debug: Ctrl+L meluluskan semua bab kelas', state.ilmu.babTerbuka() === null && terakhir !== null, String(terakhir));
-    ok('debug: Ctrl+L hanya menyentuh kelas yang dipakai',
+    alat.ketik('/bab 3');
+    const lulus = state.ilmu.lulus.size;
+    sama('debug: /bab 3 meluluskan 3 bab', lulus, 3);
+    alat.ketik('/babsemua');
+    ok('debug: /babsemua meluluskan seluruh kelas', state.ilmu.babTerbuka() === null);
+    ok('debug: /babsemua hanya menyentuh kelas yang dipakai',
       state.ilmu.data.kitab.filter((b) => b.kelas !== 'X').every((b) => !state.ilmu.lulus.has(b.id)));
   }
   {
-    const { state, alat, naik } = buatPermainan();
-    const sebelum = UPGRADE.map((u) => state.upgrade.tingkat(u.id));
-    const p = alat.jalankan('KeyJ');
-    const sesudah = UPGRADE.map((u) => state.upgrade.tingkat(u.id));
-    ok('debug: Ctrl+J menaikkan tiap bangunan yang belum penuh',
-      sesudah.every((lv, i) => lv === Math.min(sebelum[i] + 1, state.upgrade.maks(UPGRADE[i].id))));
-    sama('debug: Ctrl+J tidak menagih uang pemain', state.player.money, 500);
-    ok('debug: Ctrl+J menerapkan efek (energi/tas/peti)', naik.length > 0);
-    ok('debug: Ctrl+J melaporkan hasilnya', /Rumah/.test(p), p);
+    const { state, alat } = buatPermainan();
+    const p = alat.ketik('/tingkat 1');
+    ok('debug: /tingkat 1 menaikkan tiap bangunan satu tingkat',
+      UPGRADE.every((u) => state.upgrade.tingkat(u.id) === 1));
+    sama('debug: /tingkat tidak menagih uang pemain', state.player.money, 500);
     // Jalur belinya benar-benar dilalui: bahan yang dibagikan cheat HABIS
-    // dipakai `beliBangunan`. Kalau tingkat dinaikkan langsung (lv += 1), bahan
-    // itu menumpuk di tas dan uji ini gagal — cara curang yang menghasilkan
-    // keadaan mustahil dibeli.
-    sama('debug: Ctrl+J membelanjakan bahan (bukan menumpuknya)',
+    // dipakai beliBangunan. Kalau tingkat dinaikkan langsung, bahan menumpuk.
+    sama('debug: /tingkat membelanjakan bahan (bukan menumpuknya)',
       UPGRADE.map((u) => state.inv.count(Object.keys(u.bahan)[0])), UPGRADE.map(() => 0));
-    // Efeknya nyata, bukan hanya angka tingkat.
-    ok('debug: setelah Ctrl+J, energi maks ikut dihitung ulang',
-      state.upgrade.energiTambahan() > 0);
+    ok('debug: /tingkat melaporkan hasilnya', /Rumah/.test(p), p);
+    alat.ketik('/tingkat 5');
+    ok('debug: /tingkat berhenti di tingkat tertinggi',
+      UPGRADE.every((u) => state.upgrade.tingkat(u.id) === state.upgrade.maks(u.id)));
   }
   {
     const { state, alat } = buatPermainan();
-    alat.jalankan('KeyH');
-    sama('debug: Ctrl+H mengisi energi sampai maks', state.player.energy, state.player.maxEnergy);
-  }
-  {
-    const { state, alat, naik } = buatPermainan();
-    alat.jalankan('KeyM');
-    ok('debug: Ctrl+M memberi ketiga kendaraan', state.kendaraan.dimiliki.length === 3,
-      state.kendaraan.dimiliki.join(','));
-    // Saldo awal 7 harus UTUH: caranya `beli()` dititipi harga, lalu saldo
-    // dikembalikan. Tanpa pengembalian, tiga kendaraan menyedot saldo jadi 0 —
-    // uji ini gagal kalau pengembaliannya lupa (sudah dibuktikan lewat uji balik).
-    sama('debug: Ctrl+M tidak menyedot/memberi diamond', state.diamond.jumlah, 7);
-    ok('debug: Ctrl+M menerapkan tampilan/slot', naik.length > 0);
-  }
-  {
-    const { state, alat } = buatPermainan();
-    alat.jalankan('KeyU');
-    sama('debug: Ctrl+U memajukan 60 menit', state.time.menit, 60);
-    alat.jalankan('KeyP');
-    sama('debug: Ctrl+P mengganti musim', state.time.musim, 1);
-    alat.jalankan('KeyY');
-    sama('debug: Ctrl+Y menyimpan', state.disimpan, 1);
+    alat.ketik('/energi');
+    sama('debug: /energi mengisi sampai maks', state.player.energy, state.player.maxEnergy);
+    alat.ketik('/jam 3');
+    sama('debug: /jam 3 memajukan 180 menit', state.time.menit, 180);
+    alat.ketik('/musim');
+    sama('debug: /musim mengganti musim', state.time.musim, 1);
+    alat.ketik('/simpan');
+    sama('debug: /simpan menyimpan', state.disimpan, 1);
+    alat.ketik('/kendaraan');
+    ok('debug: /kendaraan memberi ketiga kendaraan', state.kendaraan.dimiliki.length === 3);
+    // Saldo awal 7 harus UTUH: beli() dititipi harga lalu saldo dikembalikan.
+    sama('debug: /kendaraan tidak menyedot/memberi diamond', state.diamond.jumlah, 7);
   }
   {
     const { alat, pesan, state } = buatPermainan();
     const uangAwal = state.player.money;
-    sama('debug: kode tak dikenal tidak melakukan apa pun', alat.jalankan('KeyZzz'), null);
-    sama('debug: kode tak dikenal tidak mengubah uang', state.player.money, uangAwal);
-    sama('debug: kode tak dikenal tidak memunculkan pesan', pesan.length, 0);
-    ok('debug: riwayat mencatat kode yang dijalankan', Array.isArray(alat.riwayat));
+    ok('debug: perintah tak dikenal tidak mengubah apa pun',
+      /Tidak ada perintah/.test(alat.ketik('/xyz')) && state.player.money === uangAwal);
+    sama('debug: baris tanpa / tidak dijalankan sebagai perintah', alat.ketik('halo'), null);
+    // Riwayat mencatat perintah (termasuk yang gagal, supaya penguji bisa
+    // melihat apa yang tadi ia ketik), tetapi BUKAN obrolan biasa.
+    sama('debug: riwayat mencatat perintah, bukan obrolan biasa',
+      alat.riwayat.map((r) => r.asal), ['/xyz']);
+    ok('debug: setiap pesan diawali [debug]', pesan.every((m) => m.startsWith('[debug] ')));
   }
 
-  // --- kaitan di main.js: DI DALAM blok ?debug, tidak ada di luar
+  // --- panel & baris perintah membaca daftar yang sama
+  const panelSumber = baca('src/ui/cheat-ui.js');
+  ok('panel: membaca PERINTAH_DEBUG, bukan daftar kedua', /import \{ PERINTAH_DEBUG \}/.test(panelSumber));
+  ok('panel: tidak menulis ulang nama perintah', !/'\/?gold'/.test(panelSumber));
+  // --- kelas baris perintah, diuji perilakunya (bukan hanya teksnya)
+  {
+    const { CheatConsole } = await import(join(ROOT, 'src/ui/cheat-console.js'));
+    const terima = [];
+    const k = new CheatConsole({ onKetik: (b) => { terima.push(b); return b.startsWith('/gold') ? 'hasil ok' : 'galat'; } });
+    const ketik = (teks) => { for (const c of teks) k.key({ key: c }); };
+    sama('konsol: tertutup tidak menerima tombol', [k.key({ key: 'a' }), k.terbuka], [false, false]);
+    k.buka('/');
+    sama('konsol: buka("/") tidak menaruh garis miring di baris (otomatis)', k.baris, '');
+    ketik('gold 1000');
+    sama('konsol: huruf masuk ke baris, bukan ke permainan', k.baris, 'gold 1000');
+    sama('konsol: garis miring otomatis ditambahkan saat Enter', [k.key({ key: 'Enter' }), terima], [true, ['/gold 1000']]);
+    sama('konsol: hasil perintah tampil sebagai pesan', k.pesan, 'hasil ok');
+    sama('konsol: baris dikosongkan sesudah Enter', k.baris, '');
+    ketik('gld 5');
+    k.key({ key: 'Enter' });
+    ok('konsol: perintah salah TIDAK menutup baris (bisa diperbaiki)', k.terbuka && k.pesan === 'galat', k.pesan);
+    sama('konsol: perintah salah tetap diteruskan ke penanganan', terima.at(-1), '/gld 5');
+    k.key({ key: 'Escape' });
+    ok('konsol: Escape menutup tanpa mengirim', !k.terbuka && terima.length === 2, String(terima.length));
+    // Panah atas mengulang perintah sebelumnya — satu-satunya cara menguji
+    // perintah yang panjang tanpa mengetik ulang.
+    // F2 membuka baris KOSONG: mengetik "gold 250" harus jalan tanpa garis
+    // miring, dan perintah itu harus bisa diputar ulang persis sama.
+    k.buka();
+    sama('konsol: F2 membuka baris kosong', k.baris, '');
+    ketik('/gold 250');       // garis miring di awal diabaikan
+    sama('konsol: "/" di awal tidak menghasilkan "//"', k.baris, 'gold 250');
+    k.key({ key: 'Enter' });
+    k.key({ key: 'ArrowUp' });
+    sama('konsol: panah atas mengulang perintah terakhir', k.baris, 'gold 250');
+    k.key({ key: 'Backspace' });
+    sama('konsol: Backspace menghapus satu huruf', k.baris, 'gold 25');
+    k.key({ key: 'Escape' });
+  }
+
+  const konsolSumber = baca('src/ui/cheat-console.js');
+  ok('konsol: membaca PERINTAH_DEBUG untuk petunjuk', /import \{ PERINTAH_DEBUG \}/.test(konsolSumber));
+
+  // --- mode debug: DI DALAM penandanya, dan penandanya bertahan antar-halaman
   const mainSumber = baca('src/main.js');
-  const awalBlok = mainSumber.indexOf("if (location.search.includes('debug'))");
-  ok('main: ada blok ?debug', awalBlok > 0);
-  // Isi blok diambil dengan mencocokkan kurung kurawal, bukan sekadar "sesudah
-  // baris if": dengan potongan-teks biasa, menutup blok lebih awal (sehingga
-  // kode debug hidup di build biasa) tetap lolos uji. Sudah dibuktikan lewat
-  // uji balik di bawah.
+  const awalBlok = mainSumber.indexOf('if (modeDebug()) {');
+  ok('main: memakai modeDebug(), bukan location.search langsung', awalBlok > 0);
   const isiBlok = (sumber, mulai) => {
     let i = sumber.indexOf('{', mulai);
     if (i < 0) return '';
@@ -837,22 +869,103 @@ for (const k of ['X', 'XI', 'XII']) {
     return '';
   };
   const dalamBlok = isiBlok(mainSumber, awalBlok);
-  ok('main: blok ?debug ketemu utuh', dalamBlok.length > 100, `${dalamBlok.length} huruf`);
-  ok('main: kode debug dipasang DI DALAM blok ?debug', /pasangKodeDebug\(/.test(dalamBlok));
-  ok('main: kode debug TIDAK dipasang di luar blok ?debug',
-    !/pasangKodeDebug\(/.test(mainSumber.replace(dalamBlok, '')), 'ada pemanggilan di luar blok debug');
-  ok('main: panel kode (F1) hanya dibuat di dalam blok ?debug',
-    (mainSumber.match(/new CheatUI\(/g) ?? []).length === 1 && /new CheatUI\(/.test(dalamBlok));
-  ok('main: panel kode digambar sesudah panel lain', /state\.cheatUI\?\.draw\(ctx, W, H\)/.test(mainSumber));
-  ok('main: kait uji __lkCheat tersedia', /window\.__lkCheat = state\.cheat/.test(mainSumber));
+  ok('main: blok mode debug ketemu utuh', dalamBlok.length > 100, `${dalamBlok.length} huruf`);
+  ok('main: kode debug dipasang DI DALAM blok mode debug', /pasangKodeDebug\(/.test(dalamBlok));
+  ok('main: kode debug TIDAK dipasang di luar blok mode debug',
+    !/pasangKodeDebug\(/.test(mainSumber.replace(dalamBlok, '')), 'ada pemanggilan di luar blok');
+  ok('main: baris perintah hanya dibuat di dalam blok mode debug',
+    (mainSumber.match(/new CheatConsole\(/g) ?? []).length === 1 && /new CheatConsole\(/.test(dalamBlok));
+  ok('main: F2 membuka baris perintah', /e\.code === 'F2'/.test(dalamBlok));
+  ok('main: "/" membuka baris perintah', /kunci === '\/'/.test(dalamBlok));
+  ok('main: baris perintah menerima tombol lebih dulu', /state\.cheatConsole\.terbuka/.test(dalamBlok));
+  // Pendengar permainan ada di simpul yang sama (window); stopPropagation tidak
+  // menghentikannya, jadi harus stopImmediatePropagation — kalau tidak, huruf
+  // yang diketik di baris perintah ikut menggerakkan pemain.
+  ok('main: tombol baris perintah dihentikan sampai simpul yang sama',
+    /stopImmediatePropagation\(\)/.test(dalamBlok));
+  // Kotak obrolan memakai <input> sungguhan: mengetik "/" di sana tidak boleh
+  // membuka baris perintah.
+  ok('main: kolom isian tidak dirampas', /diKolom\b/.test(dalamBlok) && /tagName === 'INPUT'/.test(dalamBlok));
+  ok('main: baris perintah digambar sesudah panel lain', /state\.cheatConsole\?\.draw\(ctx, W, H\)/.test(mainSumber));
+  ok('main: kait uji __lkKetik tersedia', /window\.__lkKetik =/.test(mainSumber));
+  // Penanda disimpan di sessionStorage (hilang saat tab ditutup), BUKAN
+  // localStorage: peramban sekolah dipakai bergantian.
+  const modeSumber = baca('src/core/debug-mode.js');
+  ok('mode: penanda memakai sessionStorage', /sessionStorage/.test(modeSumber) && /sesi\?\.setItem\(KUNCI_DEBUG/.test(modeSumber));
+  // Kode mati, bukan komentar: komentar justru menjelaskan kenapa BUKAN localStorage.
+  const modeKode = modeSumber.replace(/^\s*\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  ok('mode: penanda TIDAK memakai localStorage', !/localStorage/.test(modeKode));
+  ok('mode: penyimpanan terlarang tidak melempar galat', /catch \(e\) \{\s*return dariAlamat;/.test(modeSumber));
 
-  // --- panel: daftar yang digambar = daftar yang dipasang
-  const panelSumber = baca('src/ui/cheat-ui.js');
-  ok('panel: membaca KODE_DEBUG, bukan daftar kedua', /import \{ KODE_DEBUG \}/.test(panelSumber));
-  // Panel tidak boleh punya daftar tombol sendiri (mis. 'KeyG' ditulis ulang):
-  // labelnya harus diturunkan dari KODE_DEBUG.
-  ok('panel: tidak menulis ulang daftar tombol', !/'Key[A-Z]'/.test(panelSumber));
-  ok('panel: label Ctrl diturunkan dari kode tombol', /k\.tombol\.replace\(\/\^Key\//.test(panelSumber));
+  /**
+   * Perilaku penandanya diuji dengan tiruan, bukan dibaca dari teksnya.
+   * Inilah jalur yang dulu membuat SEMUA cheat mati: `?debug=1` hilang saat
+   * halaman depan pindah ke game.html.
+   */
+  {
+    const { modeDebug, KUNCI_DEBUG } = await import(join(ROOT, 'src/core/debug-mode.js'));
+    const buatSesi = () => {
+      const isi = new Map();
+      return {
+        isi,
+        setItem(k, v) { isi.set(k, String(v)); },
+        getItem(k) { return isi.has(k) ? isi.get(k) : null; },
+      };
+    };
+    const sesi = buatSesi();
+    ok('mode: alamat ?debug=1 menyalakan mode', modeDebug({ search: '?debug=1' }, sesi) === true);
+    sama('mode: alamat ?debug=1 MENULIS penanda', sesi.getItem(KUNCI_DEBUG), '1');
+    ok('mode: halaman berikutnya (tanpa query) tetap hidup — inilah yang dulu gagal',
+      modeDebug({ search: '' }, sesi) === true);
+    ok('mode: halaman lain tanpa query juga hidup', modeDebug({ search: '?perluakun=1' }, sesi) === true);
+    const sesiBaru = buatSesi();
+    ok('mode: tab baru tanpa penanda mati', modeDebug({ search: '' }, sesiBaru) === false);
+    ok('mode: ?debug=1 di tab baru menyalakannya', modeDebug({ search: '?x=1&debug=1' }, sesiBaru) === true);
+    // Mode privat: penyimpanan melempar. Alamat tetap berlaku, halaman ini saja.
+    const sesiRusak = { getItem() { throw new Error('dilarang'); }, setItem() { throw new Error('dilarang'); } };
+    ok('mode: penyimpanan dilarang, alamat tetap berlaku', modeDebug({ search: '?debug=1' }, sesiRusak) === true);
+    ok('mode: penyimpanan dilarang, tanpa alamat tetap mati', modeDebug({ search: '' }, sesiRusak) === false);
+    ok('mode: main.js memakai modul ini', /import \{ modeDebug \} from '\.\/core\/debug-mode\.js'/.test(mainSumber));
+  }
+
+  // Halaman depan: ?debug=1 harus ikut pindah ke game.html, bukan hilang.
+  const indexSumber = baca('index.html');
+  ok('index: ketiga jalan ke game.html membawa ?debug=1',
+    (indexSumber.match(/game\.html' \+ \(new URLSearchParams\(location\.search\)\.has\('debug'\)/g) ?? []).length === 3,
+    String((indexSumber.match(/game\.html' \+ \(new URLSearchParams\(location\.search\)\.has\('debug'\)/g) ?? []).length));
+  ok('index: tidak ada lagi pindah ke game.html tanpa membawa debug',
+    !/location\.href = 'game\.html';/.test(indexSumber));
+  ok('index: penanda sessionStorage disimpan juga di halaman depan',
+    /sessionStorage\.setItem\('lk_debug', '1'\)/.test(indexSumber));
+}
+
+// ------------------------------------------------------------------ panduan
+// Panduan siswa (docs/Panduan-Siswa-Lembah-Kenanga.pdf) memuat tangkapan layar
+// dari kode permainan. Dua hal yang mudah membuat panduan menjadi BOHONG dan
+// tidak ketahuan sampai siswa bingung: angka lulus di panduan tidak sama dengan
+// BATAS_LULUS, dan jumlah soal per bab tidak lagi 30 (tabel "24 dari 30" jadi
+// salah). Keduanya diperiksa di sini, bukan dengan mata.
+{
+  const panduan = join(ROOT, 'docs', 'Panduan-Siswa-Lembah-Kenanga.pdf');
+  ok('panduan: PDF ada', existsSync(panduan), 'docs/Panduan-Siswa-Lembah-Kenanga.pdf');
+  if (existsSync(panduan)) {
+    const isi = readFileSync(panduan).subarray(0, 5).toString('latin1');
+    ok('panduan: berkasnya benar-benar PDF', isi === '%PDF-', isi);
+  }
+  const skrip = baca('tools/panduan/buat-panduan.py');
+  ok('panduan: skrip pembuat panduan ada', skrip.length > 1000);
+  ok('panduan: daftar bab dibaca dari ilmu.json, bukan disalin', /ilmu\.json/.test(skrip));
+  const tangkap = baca('tools/panduan/tangkap-layar.mjs');
+  ok('panduan: tangkapan layar memakai UI permainan', /ui', 'ilmu-ui\.js/.test(tangkap));
+  ok('panduan: tangkapan layar memakai manifest sprite asli', /assets', 'manifest\.json/.test(tangkap));
+
+  const { BATAS_LULUS, perluBenar } = await import(join(ROOT, 'src/systems/ilmu.js'));
+  sama('panduan: batas lulus 80%', BATAS_LULUS, 0.8);
+  sama('panduan: 30 soal butuh 24 benar', perluBenar(30), 24);
+  const bankSoal = Object.values(ilmu.ujian ?? {}).map((b) => b.length);
+  ok('panduan: semua bab berbank 30 soal (angka 24/30 di panduan sah)',
+    bankSoal.length > 0 && bankSoal.every((n) => n === 30),
+    `bank: ${[...new Set(bankSoal)].join(',')}`);
 }
 
 // ------------------------------------------------------------------ laporan
