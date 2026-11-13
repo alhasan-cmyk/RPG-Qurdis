@@ -471,15 +471,17 @@ for (const k of ['X', 'XI', 'XII']) {
       const def = sprites[nama];
       ok(`sprite: ${nama} terdaftar`, !!def, nama);
       if (!def) continue;
-      // Bingkai SAMA dengan karakter biasa (32x48). Bingkai lebih tinggi
-      // sempat dicoba supaya roda dapat ruang, tetapi membuat kepala pemain
-      // melonjak 8 px setiap kali menaiki kendaraan.
-      sama(`sprite: ${nama} berbingkai 32x48`, def.frame, [32, 48]);
+      // Bingkai per kendaraan, BUKAN 32x48 lagi: kepala pemain memakai 30 dari
+      // 48 px dan topinya selebar 25 px, sehingga kabin truk mustahil lebih luas
+      // dari topi pengemudinya. Sepeda & motor 48x64, truk 64x64.
+      const BINGKAI = { sepeda: [48, 64], motor: [48, 64], truk: [64, 64] }[k.id];
+      sama(`sprite: ${nama} berbingkai ${BINGKAI.join('x')}`, def.frame, BINGKAI);
       sama(`sprite: ${nama} 4x4 bingkai`, [def.cols, def.rows], [4, 4]);
       ok(`sprite: ${nama} berkasnya ada`, existsSync(join(ROOT, 'assets', def.file)), def.file);
-      // PNG asli harus 128x192 — 4 kolom x 4 baris bingkai 32x48.
+      // PNG asli = 4 kolom x 4 baris bingkai di atas.
       const b = readFileSync(join(ROOT, 'assets', def.file));
-      sama(`sprite: ${nama} berukuran 128x192`, [b.readUInt32BE(16), b.readUInt32BE(20)], [128, 192]);
+      sama(`sprite: ${nama} berukuran ${BINGKAI[0] * 4}x${BINGKAI[1] * 4}`,
+        [b.readUInt32BE(16), b.readUInt32BE(20)], [BINGKAI[0] * 4, BINGKAI[1] * 4]);
     }
   }
 
@@ -523,6 +525,36 @@ for (const k of ['X', 'XI', 'XII']) {
       }
     }
     rmSync(tmp, { recursive: true, force: true });
+  }
+
+  // --- Tinggi kepala TIDAK bergeser. Yang dibandingkan adalah jarak kepala ke
+  // DASAR bingkai (bukan ke atas bingkai), karena bingkai kendaraan lebih tinggi
+  // dan tumbuh ke atas: dengan pivot bottom-center, jarak ke dasar itulah posisi
+  // kepala di layar. Selisih yang diizinkan 3 px supaya pengemudi boleh duduk
+  // sedikit lebih rendah di kabin, tetapi tidak boleh naik (melonjak).
+  {
+    const { PNG } = await import(join(ROOT, 'tools/panduan/png.mjs'));
+    const bacaPNG = (p) => PNG.baca(readFileSync(p));
+    const kepalaDariDasar = (png, fw, fh, row) => {
+      for (let y = 0; y < fh; y++) {
+        for (let x = 0; x < fw; x++) {
+          const i = ((row * fh + y) * png.w + x) * 4;
+          if (png.data[i + 3] > 0) return fh - y;   // px dari dasar bingkai
+        }
+      }
+      return -1;
+    };
+    const lembar = bacaPNG(join(ROOT, 'assets/sprites/characters/player_m/player_m_sheet.png'));
+    const acuan = kepalaDariDasar(lembar, 32, 48, 0);
+    for (const jenis of ['sepeda', 'motor', 'truk']) {
+      const def = sprites[`player_m_${jenis}`];
+      const [fw, fh] = def.frame;
+      const png = bacaPNG(join(ROOT, 'assets', def.file));
+      const k = kepalaDariDasar(png, fw, fh, 0);
+      ok(`sprite: ${jenis} kepala pemain tetap setinggi jalan kaki`,
+        Math.abs(k - acuan) <= 3,
+        `kepala jalan kaki ${acuan} px dari dasar, naik ${jenis} ${k} px`);
+    }
   }
 
   // --- Character memakai sprite itu, dan kembali ke avatar aslinya
