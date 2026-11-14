@@ -182,6 +182,43 @@ YANG PERLU DIKETAHUI
   Lembar sprite dibuat ulang dengan `node tools/buat-sprite-kendaraan.mjs`;
   kalau skrip itu diubah tanpa membuat ulang, tests/uji.mjs akan gagal
   ("berkas berbeda").
+- USTADZ TASORO — guru mengaji keliling, berpeci dan naik sepeda motor.
+  Ia TIDAK tinggal di satu tempat: ia memutari lembah lewat jalan desa, lalu
+  BERHENTI 8–15 detik di Balai Desa dan Perpustakaan, dan hanya saat berhenti
+  itu ia bisa diajak bicara. Kalau ia sedang melaju, label "Bicara" tidak
+  muncul — tunggu di salah satu dari dua tempat tadi, jangan dikejar.
+  Motornya tidak pernah dimatikan saat berhenti: ia tetap digambar di atas
+  motornya, bukan berdiri di sampingnya.
+  Yang ia berikan BUKAN ujian bab, melainkan dua jalur tambahan atas LIMA BAB
+  PERTAMA kelasmu:
+    · REMEDIAL  — 50 soal (10 untuk tiap bab dari lima bab pertama) untuk
+                  mengulang pelajaran yang belum dikuasai. Boleh ditempuh kapan
+                  saja, tanpa syarat sudah lulus bab mana pun — justru untuk
+                  murid yang BELUM lulus.
+    · PENGAYAAN — 50 soal dari lima bab yang sama, tetapi menuntut nalar
+                  (menganalisis, membandingkan, menilai), bukan hafalan.
+  Keduanya 50 soal per kelas (X, XI, XII punya bank sendiri), dan soalnya
+  DIUNDI dari bank itu setiap kali, jadi mengulang tidak menghafal urutan.
+  Nilai lulusnya sama: 80% (40 benar dari 50).
+  HASILNYA MASUK SPREADSHEET GURU, tetapi di tempat yang berbeda:
+  ujian bab menulis ke tab `Nilai`, sedangkan remedial & pengayaan menulis ke
+  tab `Remedial`. Jadi keduanya tercatat untuk guru tanpa pernah tercampur
+  menjadi "nilai sekolah".
+  Yang dikirim ke tab `Remedial`:
+    · SEMUA hasil, lulus maupun belum — justru yang belum lulus yang perlu
+      diketahui guru sebelum remedial ulang (beda dengan ujian bab, yang hanya
+      mencatat nilai 80% ke atas);
+    · rincian benar/salah per bab, mis. "x-wahyu 9/10 · x-nuzul 6/10".
+  Layar hasil menyebut benar/salah PER BAB, supaya jelas bab mana yang harus
+  dibaca ulang, dan menyebut terus terang apakah hasilnya sudah terkirim,
+  masih ditahan karena jaringan, atau gagal.
+  PENTING — apa yang TIDAK dilakukan kedua jalur ini:
+    · tidak menulis "lulus" untuk bab mana pun, jadi tidak membuka peningkatan
+      di papan Ragam Usaha dan tidak membuka alat;
+    · tidak masuk nilai sekolah: angkanya tidak pernah ditulis di tab `Nilai`
+      dan tidak mengubah nilai bab mana pun;
+    · hanya PENGAYAAN yang lulus yang memberi +1 diamond (remedial tidak,
+      karena remedial adalah latihan ulang, bukan prestasi baru).
 - DIAMOND: setiap ujian bab yang LULUS memberi +1 diamond, dan mengulang bab
   yang sama juga +1 lagi (tanpa batas). Tidak lulus = 0. Hadiahnya per ujian,
   bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya
@@ -201,7 +238,23 @@ YANG PERLU DIKETAHUI
 - Kalau ingin obrolan hidup, jalankan `python3 tools/serve.py` di komputer
   atau VPS. Lihat JALANKAN.md bagian 7.
 - Nilai murid masuk ke spreadsheet guru; sambungannya diatur di
-  src/core/nilai-api.js dan JALANKAN.md bagian 6.
+  src/core/nilai-api.js. Isi spreadsheet ada di EMPAT tab:
+    `Akun`      nama, kelas, PIN (hash) — diisi otomatis saat mendaftar
+    `Nilai`     satu baris per ujian BAB yang LULUS
+    `Remedial`  satu baris per percobaan REMEDIAL/PENGAYAAN (lulus atau tidak)
+    `Rekap Nilai`  SATU BARIS PER MURID, nilai berjejer ke samping
+  Tab `Rekap Nilai` itulah yang dipakai guru melihat sekilas: nama di kiri,
+  lalu kolom per bab (Bab I, Bab II, ...), ditutup kolom Remedial dan
+  Pengayaan. Contohnya satu baris berbunyi: ahmad · 90 · 90 · 90 · 87 · 62 · 88.
+  Yang ditampilkan adalah nilai TERBAIK tiap bab (bukan percobaan terakhir),
+  sel hijau = tuntas (>= 80), sel oranye = belum. Rekap disegarkan otomatis
+  setiap kali ada nilai masuk, dan bisa disegarkan manual lewat menu
+  "Lembah Ilmu -> Segarkan Rekap" di spreadsheet, atau dengan membuka
+  URL /exec?aksi=rekap di peramban.
+- Kalau kode server spreadsheet (Apps Script) diubah, JANGAN lupa
+  Deploy -> Manage deployments -> Edit -> Version: New version. Tanpa langkah
+  itu URL /exec masih menjalankan kode lama, dan nilai murid akan gagal
+  terkirim walau berkas Code.gs sudah benar.
 
 KODE DEBUG (HANYA UNTUK MENGUJI)
 
@@ -273,18 +326,31 @@ YANG PERLU DIKETAHUI SAAT MENGUJI
 
 MEMERIKSA DATA SEBELUM MENDORONG
 
-Alat-alat ini tidak memerlukan peramban. Tiga yang pertama cukup Node.js saja;
-yang terakhir butuh DOM (`npm i jsdom`) dan akan melewati dirinya sendiri kalau
-jsdom belum terpasang:
+Alat-alat ini tidak memerlukan peramban. Semuanya cukup Node.js saja, kecuali
+yang terakhir: ia butuh DOM (`npm i jsdom`) dan akan melewati dirinya sendiri
+kalau jsdom belum terpasang.
 
   node tools/buat-sprite-kendaraan.mjs  # membuat ulang 12 lembar sprite
                                      # "pemain menaiki kendaraan" (butuh Node
                                      # saja, tanpa pustaka tambahan)
-  node tools/periksa-data.mjs        # 30 bab, 900 soal, pembagian bab ke warga,
-                                     # alat, dan isi papan Ragam Usaha
+  node tools/buat-sprite-tasoro.mjs  # membuat ulang sprite & potret Ustadz
+                                     # Tasoro (lembar jalan kaki 32x48, lembar
+                                     # motor 48x64, potret 96x96)
+  node tools/periksa-data.mjs        # 30 bab, 900 soal, 300 soal remedial &
+                                     # pengayaan, pembagian bab ke warga, alat,
+                                     # dan isi papan Ragam Usaha
   node tools/uji-tata-letak.mjs      # layar Ragam Usaha di lima ukuran layar:
                                      # nama guru utuh, kalimat tidak terpotong
-  node tests/uji.mjs                 # seluruh uji sistem (±3.100 pemeriksaan)
+  node tools/uji-tasoro.mjs          # layar ujian & hasil remedial/pengayaan di
+                                     # lima ukuran layar: 50 soal tertulis,
+                                     # rincian lima bab tampil, janji "tidak masuk
+                                     # nilai sekolah" tidak hilang
+  node tools/uji-rekap.mjs           # server spreadsheet (apps-script/Code.gs)
+                                     # diuji tanpa Google: nilai di bawah 80
+                                     # ditolak untuk ujian bab, DITERIMA untuk
+                                     # remedial, dan tab Rekap berisi satu baris
+                                     # per murid dengan nilai berjejer
+  node tests/uji.mjs                 # seluruh uji sistem (±3.300 pemeriksaan)
   node tools/uji-sentuh.mjs          # baris "Tombol sentuh" di Pengaturan
                                      # (butuh DOM: npm i jsdom)
 

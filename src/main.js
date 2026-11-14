@@ -37,7 +37,8 @@ import { pasangTombolLayarPenuh, pasangAjakanPasang, pernahPenuh } from './ui/fu
 import { UpgradeUI } from './ui/upgrade-ui.js';
 import { Upgrade, BENIH_HARIAN } from './systems/upgrade.js';
 import { Kendaraan } from './systems/kendaraan.js';
-import { kirimNilai, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
+import { JALUR_TASORO } from './systems/ilmu.js';
+import { kirimNilai, kirimJalur, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
 import { NilaiUI } from './ui/nilai-ui.js';
 import { ChatUI } from './ui/chat-ui.js';
 import { AudioSystem } from './systems/audio.js';
@@ -197,6 +198,51 @@ async function boot() {
       if (r?.ok) kirimAntre();
       return r;
     });
+  };
+
+  /**
+   * Kirim hasil remedial / pengayaan ke spreadsheet guru.
+   *
+   * Tabnya beda: Apps Script menulis permintaan `aksi: 'jalur'` ke tab
+   * `Remedial`, bukan ke tab `Nilai`. Itulah yang membuat hasil ini boleh
+   * dikirim tanpa melanggar janji "tidak masuk nilai sekolah" — nilai sekolah
+   * hanya ada di tab `Nilai`.
+   *
+   * Kaitnya sengaja terpisah dari `onLulus` dan `onJalurLulus`:
+   *   onLulus       -> nilai bab: kirimNilai + diamond + simpan
+   *   onJalurLulus  -> hadiah diamond pengayaan saja
+   *   onJalurKirim  -> pengiriman hasil jalur, lulus maupun tidak
+   */
+  state.ilmuUI.onJalurKirim = (hasil) => kirimJalur({
+    jalur: hasil.jalur,
+    judul: hasil.judul,
+    benar: hasil.benar,
+    jumlah: hasil.jumlah,
+    nilai: hasil.nilai,
+    hari: hasil.hari,
+    perBab: hasil.perBab,
+    kelas: labelKelasMurid(state.ilmu.tingkat, state.ilmu.rombel) || muridAktif()?.kelas,
+  }).then((r) => {
+    if (r?.ok) kirimAntre();
+    return r;
+  });
+
+  /**
+   * Hadiah untuk ujian PENGAYAAN yang lulus.
+   *
+   * Dipisah dari `onLulus` dengan sengaja. `onLulus` milik ujian bab: ia
+   * memberi diamond, MENULIS SIMPANAN, dan MENGIRIM NILAI ke spreadsheet guru.
+   * Hasil pengayaan hanya boleh mendapat diamond — tidak boleh masuk nilai
+   * sekolah. Kait sendiri membuat janji itu tidak bisa rusak karena perubahan
+   * di jalur ujian bab.
+   */
+  state.ilmuUI.onJalurLulus = (hasil) => {
+    const dapat = state.diamond.hadiahLulus(Boolean(hasil?.lulus ?? true));
+    if (dapat) {
+      saveGame();
+      showToast(`+${dapat} diamond · ${hasil?.judul ?? 'pengayaan'}`, 3.5);
+    }
+    return dapat;
   };
 
   state.farming = new Farming(crops);
@@ -721,6 +767,10 @@ function interactTarget() {
 
   for (const n of state.npcs) {
     if (!inFront(n, 44)) continue;
+    // Warga bermotor hanya bisa dihampiri saat ia BERHENTI. Menawarkan
+    // percakapan kepada orang yang sedang melaju membuat pemain mengejarnya
+    // sambil menekan E, dan dialog bisa terbuka ketika ia sudah jauh.
+    if (typeof n.bisaDiajak === 'function' && !n.bisaDiajak()) continue;
     const held = state.inv.held;
     const canGift = !n.beast && held && !itemDef(held.id)?.tool;
     return { kind: 'npc', npc: n, label: canGift ? `Bicara · G beri hadiah` : `Bicara dengan ${n.name}` };
@@ -950,6 +1000,12 @@ function tawarkanUjian(npc) {
  * ("Bab III belum terbuka"). Menyembunyikannya membuat murid mengira tidak ada
  * apa-apa di sini, lalu berhenti datang.
  */
+/** Jalur ujian khusus yang dipegang seorang warga, dari data NPC-nya. */
+function npcUjianJalur(npc) {
+  const daftar = npc?.kendaraan?.ujian;
+  return Array.isArray(daftar) ? daftar : [];
+}
+
 function bukaPilihanNpc(npc) {
   const ilmu = state.ilmu;
   const opsi = [
@@ -973,6 +1029,24 @@ function bukaPilihanNpc(npc) {
       nilai: 'bab:' + t.kitab,
       mati: !t.boleh,
       catatan: t.boleh ? (t.lulus ? 'sudah lulus — boleh diulang' : null) : t.alasan,
+    });
+  }
+
+  // Jalur khusus yang dipegang seorang warga (sekarang hanya Ustadz Tasoro).
+  // Dibaca dari `kendaraan.ujian` di npcs.json — bukan dari id warga yang
+  // ditulis di kode — supaya menambah guru remedial lain kelak cukup di data.
+  for (const jalur of npcUjianJalur(npc)) {
+    const j = JALUR_TASORO[jalur];
+    if (!j) continue;
+    const izin = ilmu.izinJalur(jalur);
+    const hasil = ilmu.hasilJalur(jalur);
+    opsi.push({
+      label: `${j.judul} kelas ${ilmu.kelasAktif()} (${izin.jumlah ?? j.per} soal).`,
+      nilai: 'jalur:' + jalur,
+      mati: !izin.boleh,
+      catatan: !izin.boleh ? izin.alasan
+        : hasil ? `nilai terbaikmu ${hasil.nilai}% — boleh diulang`
+          : (jalur === 'remedial' ? 'lima bab pertama, untuk mengulang' : 'lima bab pertama, soal nalar'),
     });
   }
 
@@ -1007,6 +1081,13 @@ function bukaPilihanNpc(npc) {
         const t = ilmu.tawaranWarga(npc.id).find((b) => b.kitab === kitab);
         if (!t?.boleh) { showToast(`${npc.name}: "${t?.alasan ?? ''}"`, 4); return; }
         state.ilmuUI.bukaUjian(kitab, npc.id, npc.name, dayNumber());
+        return;
+      }
+      if (nilai.startsWith('jalur:')) {
+        const jalur = nilai.slice(6);
+        const izin = ilmu.izinJalur(jalur);
+        if (!izin.boleh) { showToast(`${npc.name}: "${izin.alasan}"`, 4); return; }
+        state.ilmuUI.bukaJalur(jalur, npc.id, npc.name, dayNumber());
         return;
       }
       if (nilai === 'tanya') {

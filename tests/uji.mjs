@@ -1000,6 +1000,292 @@ for (const k of ['X', 'XI', 'XII']) {
     `bank: ${[...new Set(bankSoal)].join(',')}`);
 }
 
+
+// ------------------------------------------- Ustadz Tasoro: bank, jalur, perilaku
+//
+// Yang diuji di sini adalah janji-janji yang mudah dilanggar tanpa ketahuan
+// saat bermain:
+//   1. 300 soal tambahan TIDAK mengubah 900 soal ujian per bab;
+//   2. remedial/pengayaan memakai 50 soal, bukan 30;
+//   3. hasil dua jalur itu tidak menulis `lulus` maupun `nilai` (nilai itulah
+//      yang dikirim ke spreadsheet guru), dan bertahan setelah simpan/muat;
+//   4. Tasoro benar-benar berkeliling lalu BERHENTI, dan hanya bisa diajak
+//      bicara saat berhenti;
+//   5. sprite 32x48 (jalan kaki) dan 48x64 (motor) sama-sama ada di manifest
+//      DAN di disk — nama di manifest saja tidak cukup.
+{
+  const { Ilmu, JALUR_TASORO, UJIAN_MAKS, maksJalur } = await import(join(ROOT, 'src/systems/ilmu.js'));
+
+  // --- 1 & 2: bank terpisah, 50 soal, 10 per bab
+  sama('tasoro: UJIAN_MAKS tetap 30 (aturan per bab tidak berubah)', UJIAN_MAKS, 30);
+  for (const jalur of ['remedial', 'pengayaan']) {
+    ok(`tasoro: jalur ${jalur} dikenal`, !!JALUR_TASORO[jalur]);
+    sama(`tasoro: jalur ${jalur} memakai ${JALUR_TASORO[jalur]?.per} soal`, JALUR_TASORO[jalur]?.per, 50);
+    for (const kelas of ['X', 'XI', 'XII']) {
+      const bank = ilmu[jalur]?.[kelas] ?? [];
+      sama(`tasoro: ${jalur} kelas ${kelas} berisi 50 soal`, bank.length, 50);
+      const per = {};
+      for (const s of bank) per[s.bab] = (per[s.bab] ?? 0) + 1;
+      const lima = ilmu.kitab.filter((b) => b.kelas === kelas).slice(0, 5).map((b) => b.id);
+      sama(`tasoro: ${jalur} ${kelas} hanya lima bab pertama`, Object.keys(per).sort(), lima.sort());
+      ok(`tasoro: ${jalur} ${kelas} 10 soal per bab`, lima.every((id) => per[id] === 10),
+        JSON.stringify(per));
+      ok(`tasoro: ${jalur} ${kelas} semua butir punya pembahasan`,
+        bank.every((s) => typeof s.bahas === 'string' && s.bahas.length > 20));
+    }
+    const total = ['X', 'XI', 'XII'].reduce((n, k) => n + (ilmu[jalur]?.[k]?.length ?? 0), 0);
+    sama(`tasoro: ${jalur} 150 soal`, total, 150);
+  }
+  // Sembilan ratus soal ujian per bab tetap utuh setelah 300 soal ditambahkan.
+  sama('tasoro: 900 soal ujian per bab tidak tersentuh',
+    Object.values(ilmu.ujian ?? {}).reduce((n, b) => n + b.length, 0), 900);
+
+  // --- 3: hasil jalur tidak menyentuh nilai sekolah
+  const buat = (kelas) => { const i = new Ilmu(ilmu); i.tingkat = kelas; return i; };
+  const il = buat('X');
+  sama('tasoro: maksJalur membaca 50, bukan UJIAN_MAKS', il.jumlahJalur('remedial'), 50);
+  const soal = il.soalJalur('pengayaan', 3);
+  sama('tasoro: seluruh bank 50 soal diujikan', soal.length, 50);
+  ok('tasoro: soal membawa medan bab untuk rekap', soal.every((s) => !!s.bab));
+  ok('tasoro: izin remedial tidak mensyaratkan lulus bab apa pun', il.izinJalur('remedial').boleh);
+  const jawaban = soal.map((s, i) => ({ bab: s.bab, tepat: i % 5 !== 0 }));
+  const benar = jawaban.filter((j) => j.tepat).length;
+  const hasil = il.catatJalur('remedial', benar, 50, 4, jawaban);
+  sama('tasoro: perlu 40 benar dari 50 (80%)', hasil.perlu, 40);
+  sama('tasoro: 40 benar = lulus', hasil.lulus, true);
+  sama('tasoro: remedial TIDAK menulis lulus bab', il.lulus.size, 0);
+  sama('tasoro: remedial TIDAK menulis nilai sekolah', Object.keys(il.nilai).length, 0);
+  const rinci = il.hasilJalur('remedial');
+  ok('tasoro: rincian per bab tercatat', Object.keys(rinci?.perBab ?? {}).length === 5);
+  sama('tasoro: benar per bab dihitung dari jawaban', Object.values(rinci.perBab).reduce((n, b) => n + b.benar, 0), benar);
+  // yang lebih buruk tidak boleh menimpa yang lebih baik
+  il.catatJalur('remedial', 10, 50, 5, jawaban);
+  sama('tasoro: hasil terbaik yang disimpan', il.hasilJalur('remedial').benar, benar);
+  const il2 = buat('X'); il2.load(JSON.parse(JSON.stringify(il.toJSON())));
+  sama('tasoro: hasil jalur bertahan setelah simpan/muat', il2.hasilJalur('remedial').nilai, rinci.nilai);
+  sama('tasoro: simpanan lama tanpa medan tasoro tidak error', buat('X').hasilJalur('remedial'), null);
+  const ilKosong = buat('X'); ilKosong.data = { ...ilmu, remedial: {} };
+  ok('tasoro: kelas tanpa bank ditolak dengan alasan, bukan crash',
+    ilKosong.izinJalur('remedial').boleh === false && /belum disiapkan/.test(ilKosong.izinJalur('remedial').alasan));
+  const kelasLain = buat('XII');
+  sama('tasoro: kelas XII memakai bank XII', kelasLain.jumlahJalur('pengayaan'), 50);
+  ok('tasoro: kelas XII memakai bab kelas XII',
+    kelasLain.bankJalur('pengayaan').every((s) => ['sederhana', 'sabar', 'lingkungan', 'iptek', 'dakwah'].includes(s.bab)));
+
+  // --- 4: perilaku berkendara
+  const { Npc } = await import(join(ROOT, 'src/entities/npc.js'));
+  const npcs = JSON.parse(baca('src/data/npcs.json'));
+  const dataTasoro = npcs.find((n) => n.id === 'tasoro');
+  ok('tasoro: terdaftar di npcs.json', !!dataTasoro);
+  ok('tasoro: punya tempat berhenti', (dataTasoro?.kendaraan?.henti ?? []).length >= 2);
+  ok('tasoro: menawarkan remedial & pengayaan',
+    ['remedial', 'pengayaan'].every((j) => (dataTasoro?.kendaraan?.ujian ?? []).includes(j)));
+  ok('tasoro: tidak mengajar keahlian (ajar milik warga lain)',
+    !Object.values(ilmu.keahlian.ajar).some((per) => Object.keys(per).includes('tasoro')));
+
+  // Peta tiruan: satu jalur lurus 4 tile, tempat henti di kedua ujungnya.
+  const peta = {
+    places: { balai: { c: 0, r: 0 }, perpustakaan: { c: 3, r: 0 } },
+    buatJalur: () => [{ c: 0, r: 0 }, { c: 1, r: 0 }, { c: 2, r: 0 }, { c: 3, r: 0 }],
+    collides: () => false,
+  };
+  const tas = new Npc(dataTasoro, 16, 32);
+  sama('tasoro: kecepatan motor (bukan kecepatan warga)', tas.speed, 62);
+  ok('tasoro: sebelum berhenti TIDAK bisa diajak bicara', tas.bisaDiajak() === false);
+  tas.update(peta, 0.016, () => 0);
+  ok('tasoro: mulai dari keadaan berhenti di titik terdekat', tas.modeJalan === 'henti' && tas.bisaDiajak());
+  // Habiskan waktu berhenti: ia harus mulai berjalan, bukan tetap diam.
+  for (let i = 0; i < 2000 && tas.modeJalan === 'henti'; i++) tas.update(peta, 0.05, () => 0);
+  ok('tasoro: setelah berhenti ia kembali berjalan', tas.modeJalan === 'naik');
+  ok('tasoro: saat berjalan tidak bisa diajak bicara', tas.bisaDiajak() === false);
+  let berhentiLagi = false, x0 = tas.x;
+  for (let i = 0; i < 4000; i++) {
+    tas.update(peta, 0.05, () => 0.5);
+    if (tas.modeJalan === 'henti') { berhentiLagi = true; break; }
+  }
+  ok('tasoro: benar-benar berpindah lalu berhenti lagi', berhentiLagi && tas.x !== x0, `x ${x0} -> ${tas.x}`);
+  // Tile tempat ia berhenti: kakinya harus berada di dalam tile itu, dan tile
+  // itu harus salah satu tempat henti (ujung jalur tiruan ini).
+  const tileX = Math.floor(tas.x / 32);
+  ok('tasoro: berhenti di dalam tile tempat, bukan di tengah jalan',
+    [0, 3].includes(tileX), `x=${tas.x} tile=${tileX}`);
+
+  // Peta ASLI: yang paling mudah salah bukan logika di atas kertas, melainkan
+  // apakah ia benar-benar sampai ke dua tempat di lembah yang sesungguhnya.
+  // Dulu sasaran melompat langsung ke ujung rute, dan hasilnya ia menembus
+  // pohon lalu diam di satu tile selamanya — lolos dari uji peta tiruan.
+  {
+    const { buildValley } = await import(join(ROOT, 'src/world/valley.js'));
+    const mapa = buildValley();
+    const spot = mapa.npcSpots.tasoro;
+    ok('tasoro: titik awal terdaftar di peta', !!spot);
+    const dia = new Npc(dataTasoro, spot.c * 32 + 16, (spot.r + 1) * 32);
+    let benih = 7;
+    const rng = () => { benih = (benih * 16807) % 2147483647; return benih / 2147483647; };
+    const dikunjungi = new Set();
+    let lamaHenti = 0;
+    for (let i = 0; i < 8000; i++) {
+      dia.update(mapa, 0.05, rng);
+      const tc = Math.floor(dia.x / 32), tr = Math.floor((dia.y - 1) / 32);
+      for (const nama of ['balai', 'perpustakaan']) {
+        const p = mapa.places[nama];
+        if (p.c === tc && p.r === tr) dikunjungi.add(nama);
+      }
+      if (dia.modeJalan === 'henti') lamaHenti += 0.05;
+    }
+    sama('tasoro: singgah di Balai Desa DAN Perpustakaan', [...dikunjungi].sort(), ['balai', 'perpustakaan']);
+    ok('tasoro: berhenti cukup lama, bukan sekadar lewat', lamaHenti > 30, `${lamaHenti.toFixed(0)} detik`);
+    ok('tasoro: sebagian waktunya dipakai berjalan', 400 - lamaHenti > 100, `${(400 - lamaHenti).toFixed(0)} detik`);
+  }
+
+  // --- 5: aset
+  const manifest = JSON.parse(baca('assets/manifest.json'));
+  for (const [nama, bingkai] of [['npc_tasoro', [32, 48]], ['npc_tasoro_motor', [48, 64]]]) {
+    const def = manifest.sprites[nama];
+    ok(`tasoro: sprite ${nama} terdaftar`, !!def, nama);
+    sama(`tasoro: ${nama} berbingkai ${bingkai.join('x')}`, def?.frame, bingkai);
+    ok(`tasoro: berkas ${nama} ada di disk`, !!def && existsSync(join(ROOT, 'assets', def.file)));
+  }
+  ok('tasoro: potret 96x96 terdaftar',
+    JSON.stringify(manifest.sprites.portrait_npc_tasoro?.frame) === '[96,96]');
+  ok('tasoro: berkas potret ada',
+    existsSync(join(ROOT, 'assets', manifest.sprites.portrait_npc_tasoro?.file ?? '')));
+  ok('tasoro: pembuat sprite bisa dijalankan ulang (skrip ada)', existsSync(join(ROOT, 'tools/buat-sprite-tasoro.mjs')));
+}
+
+// ---------------------------------------- panduan & manual menyebut Ustadz Tasoro
+//
+// Dokumen yang dibaca siswa/guru harus menyebut jalur baru ini, dan angkanya
+// harus sama dengan kode. Kalau soalnya berubah (mis. 50 -> 60) tetapi dokumen
+// tidak, murid membaca janji yang tidak ada lagi di layar.
+{
+  const bacaDulu = baca('BACA-DULU.txt');
+  ok('manual: menyebut Ustadz Tasoro', /USTADZ TASORO/i.test(bacaDulu));
+  ok('manual: menyebut remedial & pengayaan',
+    /REMEDIAL/.test(bacaDulu) && /PENGAYAAN/.test(bacaDulu));
+  ok('manual: menyebut tempat ia berhenti',
+    /Balai Desa/.test(bacaDulu) && /Perpustakaan/.test(bacaDulu));
+  ok('manual: menjanjikan hasilnya tidak masuk nilai sekolah',
+    /tidak masuk nilai sekolah/i.test(bacaDulu));
+  ok('manual: menyebut 50 soal per jalur', /50 soal/.test(bacaDulu));
+  // Sejak 2026-11-10 hasil remedial/pengayaan MEMANG dikirim ke spreadsheet,
+  // ke tab `Remedial`. Manual yang masih menulis "TIDAK dikirim" adalah
+  // dokumen yang berbohong — dan itu yang membuat murid/guru bingung.
+  ok('manual: menyebut hasil remedial dikirim ke tab Remedial',
+    /tab `Remedial`/.test(bacaDulu));
+  ok('manual: tidak lagi menjanjikan "tidak dikirim ke spreadsheet"',
+    !/TIDAK dikirim ke spreadsheet guru/i.test(bacaDulu));
+  ok('manual: menyebut tab Rekap Nilai berjejer',
+    /Rekap Nilai/.test(bacaDulu) && /berjejer/i.test(bacaDulu));
+
+  const skripPanduan = baca('tools/panduan/buat-panduan.py');
+  ok('panduan: ada bagian Ustadz Tasoro', /BAGIAN 8B/.test(skripPanduan));
+  ok('panduan: menyebut 40 benar dari 50', /40 benar dari 50/.test(skripPanduan));
+  ok('panduan: menyebut janji tidak masuk nilai sekolah',
+    /tidak masuk nilai sekolah/.test(skripPanduan));
+  ok('panduan: menyebut tab Remedial & Rekap Nilai',
+    /Tab Remedial/.test(skripPanduan) && /Rekap Nilai/.test(skripPanduan));
+}
+
+// -------------------------------------- remedial/pengayaan terkirim ke spreadsheet
+//
+// Dua aturan yang harus tetap terpisah, dan mudah tertukar tanpa ketahuan:
+//   · ujian BAB   -> hanya yang lulus (>= 80%) dikirim ke tab `Nilai`
+//   · remedial    -> SEMUA hasil dikirim ke tab `Remedial`
+// Kalau `kirimJalur` kelak "dirapikan" menjadi satu fungsi dengan `kirimNilai`,
+// remedial yang gagal akan diam-diam hilang — padahal itu inti fiturnya.
+{
+  const api = await import(join(ROOT, 'src/core/nilai-api.js'));
+  ok('nilai-api: kirimJalur diekspor', typeof api.kirimJalur === 'function');
+  ok('nilai-api: kirimNilai tetap ada (aturan lama tidak digeser)',
+    typeof api.kirimNilai === 'function');
+
+  // --- perilaku nyata: server yang BELUM mengenal aksi `jalur`
+  // (Apps Script belum di-deploy ulang) menjawab { ok:false, error:'Aksi tidak
+  // dikenal' }. Hasil murid tidak boleh hilang: harus masuk antrean.
+  {
+    const simpan = globalThis.fetch;
+    const simpanLs = globalThis.localStorage;
+    const isiLs = {};
+    globalThis.localStorage = {
+      getItem: (k) => (k in isiLs ? isiLs[k] : null),
+      setItem: (k, v) => { isiLs[k] = String(v); },
+      removeItem: (k) => { delete isiLs[k]; },
+    };
+    isiLs.lk_murid = JSON.stringify({ nama: 'uji', kelas: 'X-M / X-13', pin: '1234', terdaftar: true });
+    let dikirim = 0;
+    globalThis.fetch = async () => { dikirim++; return { text: async () => '{"ok":false,"error":"Aksi tidak dikenal: jalur"}' }; };
+    const r = await api.kirimJalur({
+      jalur: 'remedial', judul: 'Ujian Remedial', benar: 31, jumlah: 50, nilai: 62,
+      perBab: { 'x-wahyu': { benar: 9, jumlah: 10 } },
+    });
+    ok('kirimJalur: server menolak -> hasil DITAHAN, bukan hilang', r.antre === true && r.ok === false);
+    ok('kirimJalur: satu permintaan benar-benar dikirim', dikirim === 1);
+    ok('kirimJalur: antrean berisi hasilnya', api.jumlahAntre() >= 1);
+    globalThis.fetch = simpan;
+    globalThis.localStorage = simpanLs;
+  }
+
+  const sumberApi = baca('src/core/nilai-api.js');
+  ok('nilai-api: kirimJalur mengirim aksi jalur (bukan aksi nilai)',
+    /aksi: 'jalur'/.test(sumberApi));
+  ok('nilai-api: kirimJalur tidak memakai pagar BATAS_LULUS',
+    !/kirimJalur[\s\S]{0,900}BATAS_LULUS/.test(sumberApi.split('export async function kirimJalur')[1]?.slice(0, 900) ?? ''));
+
+  const sumberUi = baca('src/ui/ilmu-ui.js');
+  ok('ilmu-ui: hasil jalur memakai kait onJalurKirim', /onJalurKirim/.test(sumberUi));
+  ok('ilmu-ui: layar hasil menulis status terkirim',
+    /terkirim ke spreadsheet guru/.test(sumberUi) && /ditahan/.test(sumberUi));
+  ok('ilmu-ui: janji di layar bukan lagi "tidak dikirim"',
+    !/tidak dikirim ke spreadsheet guru/.test(sumberUi));
+
+  const sumberMain = baca('src/main.js');
+  ok('main: onJalurKirim disambungkan ke kirimJalur',
+    /onJalurKirim = \(hasil\) => kirimJalur/.test(sumberMain));
+  ok('main: onLulus tetap memakai kirimNilai (nilai sekolah)',
+    /return kirimNilai\(/.test(sumberMain));
+}
+
+// ------------------------------------------------- server spreadsheet (Code.gs)
+//
+// Berkas server tidak bisa dijalankan di sini tanpa Google, jadi yang diperiksa
+// adalah janji yang tertulis di dalamnya. Perilakunya sendiri diuji oleh
+// tools/uji-rekap.mjs (SpreadsheetApp ditiru) — dan uji itu dijalankan di sini
+// supaya satu perintah `node tests/uji.mjs` tidak bisa hijau sementara server
+// spreadsheet sudah rusak.
+{
+  const gs = baca('apps-script/Code.gs');
+  ok('code.gs: ada', gs.length > 2000);
+  ok('code.gs: mengenal aksi jalur', /aksi === 'jalur'/.test(gs));
+  ok('code.gs: menulis tab Remedial', /TAB_REMEDIAL = 'Remedial'/.test(gs));
+  ok('code.gs: membuat lembar Rekap Nilai', /LEMBAR_REKAP = 'Rekap Nilai'/.test(gs));
+  ok('code.gs: menjaga batas lulus 80 di server', /BATAS_LULUS = 80/.test(gs));
+  ok('code.gs: PIN disimpan sebagai hash + garam',
+    /SHA_256/.test(gs) && /garam/.test(gs));
+  ok('code.gs: tidak menyimpan PIN sebagai teks biasa',
+    !/appendRow\(\[nama, kelas, pin/.test(gs));
+  ok('code.gs: rekap menyegarkan diri saat nilai/jalur masuk',
+    (gs.match(/try \{ rekapSemua\(\); \} catch/g) ?? []).length === 2);
+  ok('code.gs: rekap mengosongkan lembar sebelum menulis ulang',
+    /s\.clear\(\)/.test(gs));
+  ok('code.gs: nilai terbaik dipakai di rekap, bukan yang terakhir',
+    /terbaik === null \|\| n > terbaik/.test(gs));
+
+  // Konstanta jalur di ilmu.js harus menyebut tab tujuannya, supaya tidak ada
+  // yang "merapikan" pengiriman kembali ke tab Nilai tanpa sadar.
+  const sumberIlmu = baca('src/systems/ilmu.js');
+  ok('ilmu.js: jalur Tasoro menulis ke tab Remedial', /tab: 'Remedial'/.test(sumberIlmu));
+  // Tiga kemunculan: dua di objek jalur, satu di komentar penjelasnya.
+  ok('ilmu.js: jalur Tasoro ditandai bukan nilai sekolah',
+    (sumberIlmu.match(/nilaiSekolah: false/g) ?? []).length >= 2);
+  ok('ilmu.js: jalur Tasoro mengirim semua hasil', /kirim: 'selalu'/.test(sumberIlmu));
+
+  // Jalankan uji perilaku server; satu perintah, dua berkas yang dijaga.
+  const hasil = spawnSync(process.execPath, [join(ROOT, 'tools/uji-rekap.mjs')], { encoding: 'utf8' });
+  ok('code.gs: uji perilaku (tools/uji-rekap.mjs) lulus', hasil.status === 0,
+    (hasil.stderr || hasil.stdout || '').trim().split('\n').slice(-3).join(' | '));
+}
+
 // ------------------------------------------------------------------ laporan
 console.log(`\n${lulus} lulus, ${gagal} gagal`);
 process.exit(gagal ? 1 : 0);
