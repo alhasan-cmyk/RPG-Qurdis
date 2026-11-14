@@ -200,6 +200,10 @@ YANG PERLU DIKETAHUI
   Keduanya 50 soal per kelas (X, XI, XII punya bank sendiri), dan soalnya
   DIUNDI dari bank itu setiap kali, jadi mengulang tidak menghafal urutan.
   Nilai lulusnya sama: 80% (40 benar dari 50).
+  Pilihan jawabannya sudah DIRATAKAN panjangnya: jawaban benar tidak lagi
+  menjadi kalimat paling panjang, jadi murid tidak bisa menebak hanya dengan
+  memilih pilihan yang paling panjang. Aturan ini dijaga otomatis oleh
+  tools/periksa-variasi.mjs dan ikut dijalankan tests/uji.mjs.
   HASILNYA MASUK SPREADSHEET GURU, tetapi di tempat yang berbeda:
   ujian bab menulis ke tab `Nilai`, sedangkan remedial & pengayaan menulis ke
   tab `Remedial`. Jadi keduanya tercatat untuk guru tanpa pernah tercampur
@@ -339,6 +343,9 @@ kalau jsdom belum terpasang.
   node tools/periksa-data.mjs        # 30 bab, 900 soal, 300 soal remedial &
                                      # pengayaan, pembagian bab ke warga, alat,
                                      # dan isi papan Ragam Usaha
+  node tools/periksa-variasi.mjs     # panjang pilihan di 300 soal remedial &
+                                     # pengayaan: jawaban benar tidak boleh
+                                     # paling panjang (pakai --rinci untuk daftar)
   node tools/uji-tata-letak.mjs      # layar Ragam Usaha di lima ukuran layar:
                                      # nama guru utuh, kalimat tidak terpotong
   node tools/uji-tasoro.mjs          # layar ujian & hasil remedial/pengayaan di

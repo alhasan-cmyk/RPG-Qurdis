@@ -1246,6 +1246,54 @@ for (const k of ['X', 'XI', 'XII']) {
     /return kirimNilai\(/.test(sumberMain));
 }
 
+// -------------------------------------- panjang pilihan tidak membocorkan kunci
+//
+// Dulu kunci hampir selalu pilihan TERPANJANG (273/300 soal; 100% di pengayaan
+// X dan XI), sehingga murid bisa menebak tanpa memahami materi. Aturannya
+// sekarang dijaga di tools/periksa-variasi.mjs, dan blok ini memastikan aturan
+// itu tidak bisa dilanggar diam-diam saat soal diedit lagi.
+{
+  const { periksaIlmu, BATAS_SEBARAN, BATAS_SELISIH, BATAS_KUNCI_PANJANG } =
+    await import(join(ROOT, 'tools/periksa-variasi.mjs'));
+
+  ok('variasi: batas sebaran 12 karakter', BATAS_SEBARAN === 12);
+  ok('variasi: batas selisih kunci-vs-pengecoh 8 karakter', BATAS_SELISIH === 8);
+  ok('variasi: batas kunci-terpanjang 40% per bank', BATAS_KUNCI_PANJANG === 0.4);
+
+  const { hasil, pelanggaran } = periksaIlmu(ilmu);
+
+  for (const [nama, r] of Object.entries(hasil)) {
+    const sebaran = r.melanggar.filter((m) => m.sebaranLewat);
+    const selisih = r.melanggar.filter((m) => m.selisihLewat);
+    ok(`variasi: ${nama} sebaran panjang <= ${BATAS_SEBARAN}`,
+      sebaran.length === 0,
+      sebaran.slice(0, 3).map((m) => `#${m.nomor} [${m.panjang.join('/')}]`).join(', '));
+    ok(`variasi: ${nama} kunci tidak jauh lebih panjang dari pengecoh`,
+      selisih.length === 0,
+      selisih.slice(0, 3).map((m) => `#${m.nomor} selisih ${m.selisih.toFixed(1)}`).join(', '));
+    ok(`variasi: ${nama} kunci paling panjang <= 40%`,
+      r.porsiKunciPanjang <= BATAS_KUNCI_PANJANG,
+      `${r.kunciPanjang}/${r.jumlah}`);
+  }
+
+  ok('variasi: tidak ada pelanggaran di seluruh 300 soal', pelanggaran.length === 0,
+    `${pelanggaran.length} pelanggaran`);
+
+  // Setiap soal masih punya tiga pilihan berbeda dan kunci yang sah — pagar ini
+  // menjaga agar \"meratakan panjang\" tidak berubah menjadi soal rusak.
+  for (const jenis of ['remedial', 'pengayaan']) {
+    for (const kelas of ['X', 'XI', 'XII']) {
+      const bank = ilmu[jenis]?.[kelas] ?? [];
+      ok(`variasi: ${jenis} ${kelas} kunci masih sah`,
+        bank.every((s) => Number.isInteger(s.kunci) && s.kunci >= 0 && s.kunci < s.pilihan.length));
+      ok(`variasi: ${jenis} ${kelas} pilihan tidak ada yang kembar`,
+        bank.every((s) => new Set(s.pilihan).size === s.pilihan.length));
+      ok(`variasi: ${jenis} ${kelas} tidak ada pilihan kosong atau berspasi ganda`,
+        bank.every((s) => s.pilihan.every((t) => t.trim().length > 0 && !/\s{2}/.test(t))));
+    }
+  }
+}
+
 // ------------------------------------------------- server spreadsheet (Code.gs)
 //
 // Berkas server tidak bisa dijalankan di sini tanpa Google, jadi yang diperiksa
