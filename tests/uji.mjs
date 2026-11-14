@@ -1319,6 +1319,21 @@ for (const k of ['X', 'XI', 'XII']) {
   ok('code.gs: nilai terbaik dipakai di rekap, bukan yang terakhir',
     /terbaik === null \|\| n > terbaik/.test(gs));
 
+  // Obrolan kelas. Yang dijaga di sini adalah hal-hal yang kalau rusak tidak
+  // memunculkan galat, hanya obrolan yang diam-diam salah: batas 30 baris,
+  // ruang per kelas, dan PIN yang diperiksa untuk setiap pesan.
+  const ob = baca('apps-script/Obrolan.gs');
+  ok('obrolan: berkas ada', ob.length > 1500);
+  ok('obrolan: batas 30 baris', /BARIS_OBROLAN = 30/.test(ob));
+  ok('obrolan: baris tertua dihapus, bukan yang terbaru', /deleteRow\(milik\[k\]\)/.test(ob));
+  ok('obrolan: setiap pesan memeriksa PIN', /function obrolanTulis[\s\S]{0,400}cekPin\(/.test(ob));
+  ok('obrolan: ruang diambil dari kelas di tab Akun', /function kelasRuang/.test(ob));
+  ok('obrolan: doPost meneruskan aksi obrolan', /aksi === 'obrolanTulis'/.test(gs));
+  ok('obrolan: tanpa Obrolan.gs, doPost menjawab dengan jelas (tidak melempar)',
+    /tanpaObrolan: true/.test(gs));
+  ok('obrolan: waktu jeda disimpan sebagai epoch, bukan teks jam',
+    /Date\.now\(\)\]/.test(ob) && !/waktuMs/.test(ob));
+
   // Konstanta jalur di ilmu.js harus menyebut tab tujuannya, supaya tidak ada
   // yang "merapikan" pengiriman kembali ke tab Nilai tanpa sadar.
   const sumberIlmu = baca('src/systems/ilmu.js');
@@ -1332,6 +1347,10 @@ for (const k of ['X', 'XI', 'XII']) {
   const hasil = spawnSync(process.execPath, [join(ROOT, 'tools/uji-rekap.mjs')], { encoding: 'utf8' });
   ok('code.gs: uji perilaku (tools/uji-rekap.mjs) lulus', hasil.status === 0,
     (hasil.stderr || hasil.stdout || '').trim().split('\n').slice(-3).join(' | '));
+
+  const hasilObrolan = spawnSync(process.execPath, [join(ROOT, 'tools/uji-obrolan.mjs')], { encoding: 'utf8' });
+  ok('obrolan: uji perilaku (tools/uji-obrolan.mjs) lulus', hasilObrolan.status === 0,
+    (hasilObrolan.stderr || hasilObrolan.stdout || '').trim().split('\n').slice(-3).join(' | '));
 }
 
 // ------------------------------------------------------------------ laporan

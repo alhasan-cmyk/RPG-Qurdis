@@ -236,17 +236,42 @@ YANG PERLU DIKETAHUI
 - Simpanan permainan hanya tersimpan di peramban masing-masing (localStorage).
   Membuka game dari komputer lain akan mulai dari awal, tetapi akun dan nilai
   tetap dianggap sah karena PIN diperiksa Apps Script.
-- Obrolan desa TIDAK ADA di GitHub Pages: `api/chat` butuh server Python
-  (`tools/serve.py`). Di GitHub Pages fitur obrolan mati, dan itu tidak
-  memengaruhi pendaftaran, permainan, ujian, maupun nilai.
-- Kalau ingin obrolan hidup, jalankan `python3 tools/serve.py` di komputer
-  atau VPS. Lihat JALANKAN.md bagian 7.
+- OBROLAN KELAS (chat antar murid) hidup di GitHub Pages karena menumpang
+  Apps Script yang sama dengan nilai, BUKAN server sendiri. Dulu berkas ini
+  menyuruh menjalankan `python3 tools/serve.py`; berkas itu tidak pernah ada
+  di repo, jadi obrolan waktu itu tidak pernah bisa hidup. Kalimat itu sudah
+  dibuang supaya tidak menyesatkan.
+    Satu ruang per TINGKAT: kelas X hanya melihat obrolan kelas X, begitu pula
+    XI dan XII. Tingkatnya diambil dari kolom Kelas di tab `Akun`, bukan dari
+    yang dikirim peramban, jadi murid tidak bisa pindah ruang sendiri.
+    Hanya 30 BARIS TERAKHIR yang disimpan per kelas. Saat baris ke-31 masuk,
+    baris paling lama dihapus — sama seperti chat game lain. Nomor pesan tetap
+    naik, jadi layar tidak pernah mengira ada pesan yang hilang.
+    Siapa pun yang menulis harus sudah terdaftar (nama + PIN). PIN diperiksa
+    server untuk SETIAP pesan, jadi tidak ada yang bisa menulis atas nama
+    temannya. Murid yang belum masuk melihat panelnya tetapi tidak bisa
+    mengetik, beserta alasannya.
+    Isinya tersimpan di tab `Obrolan` dalam spreadsheet guru, jadi guru bisa
+    membacanya. Pesan terlarang disensor sebelum disimpan. Ada juga jeda 1,2
+    detik antar-pesan per murid supaya satu orang tidak membanjiri ruang.
+    Untuk menengok obrolan satu kelas tanpa membuka spreadsheet, buka
+    URL /exec?aksi=obrolan&kelas=X di peramban.
+- UNTUK MENGAKTIFKAN OBROLAN: tempel isi `apps-script/Obrolan.gs` ke bagian
+  paling bawah `apps-script/Code.gs` (atau tambahkan sebagai berkas baru di
+  editor Apps Script), lalu Deploy -> Manage deployments -> Edit -> Version:
+  New version. Selama belum, panel obrolan menulis "Obrolan belum dipasang di
+  Apps Script" dan permainan tetap jalan seperti biasa — tidak ada yang rusak.
+- Apps Script bukan server real-time: tiap pesan satu permintaan HTTP dan
+  pesan sampai dalam ~1-2 detik, bukan seketika. Itu harga yang dibayar karena
+  tidak perlu server sendiri, dan untuk sekelas itu cukup.
 - Nilai murid masuk ke spreadsheet guru; sambungannya diatur di
-  src/core/nilai-api.js. Isi spreadsheet ada di EMPAT tab:
+  src/core/nilai-api.js. Isi spreadsheet ada di LIMA tab (Obrolan hanya dibuat
+  sendiri saat ada murid pertama yang mengirim pesan):
     `Akun`      nama, kelas, PIN (hash) — diisi otomatis saat mendaftar
     `Nilai`     satu baris per ujian BAB yang LULUS
     `Remedial`  satu baris per percobaan REMEDIAL/PENGAYAAN (lulus atau tidak)
     `Rekap Nilai`  SATU BARIS PER MURID, nilai berjejer ke samping
+    `Obrolan`  30 baris terakhir per kelas; baris lama dihapus otomatis
   Tab `Rekap Nilai` itulah yang dipakai guru melihat sekilas: nama di kiri,
   lalu kolom per bab (Bab I, Bab II, ...), ditutup kolom Remedial dan
   Pengayaan. Contohnya satu baris berbunyi: ahmad · 90 · 90 · 90 · 87 · 62 · 88.
@@ -353,6 +378,8 @@ kalau jsdom belum terpasang.
                                      # rincian lima bab tampil, janji "tidak masuk
                                      # nilai sekolah" tidak hilang
   node tools/uji-rekap.mjs           # server spreadsheet (apps-script/Code.gs)
+  node tools/uji-obrolan.mjs         # obrolan kelas (apps-script/Obrolan.gs):
+                                     # batas 30 baris, ruang per kelas, PIN
                                      # diuji tanpa Google: nilai di bawah 80
                                      # ditolak untuk ujian bab, DITERIMA untuk
                                      # remedial, dan tab Rekap berisi satu baris

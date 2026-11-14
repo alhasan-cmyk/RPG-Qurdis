@@ -17,13 +17,19 @@
  *                          kode LAMA dan nilai murid akan gagal terkirim.
  *
  * Aksi yang dikenal (medan `aksi` pada isi permintaan):
- *   daftar  -> menambah baris di tab `Akun`
- *   masuk   -> memeriksa PIN, mengembalikan kelas
- *   nilai   -> menulis satu baris ujian BAB ke tab `Nilai` (hanya yang lulus)
- *   jalur   -> menulis satu baris REMEDIAL/PENGAYAAN ke tab `Remedial`
- *   rekap   -> menyusun/menyegarkan tab `Rekap` (nilai murid berjejer ke samping)
+ *   daftar         -> menambah baris di tab `Akun`
+ *   masuk          -> memeriksa PIN, mengembalikan kelas
+ *   nilai          -> menulis satu baris ujian BAB ke tab `Nilai` (hanya yang lulus)
+ *   jalur          -> menulis satu baris REMEDIAL/PENGAYAAN ke tab `Remedial`
+ *   rekap          -> menyusun/menyegarkan tab `Rekap` (nilai murid berjejer ke samping)
+ *   obrolan        -> mengambil pesan baru obrolan kelas (lihat berkas `Obrolan.gs`)
+ *   obrolanTulis   -> mengirim satu pesan obrolan kelas
  *
  * PIN tidak pernah disimpan sebagai teks: hanya SHA-256 + garam.
+ *
+ * OBROLAN: kode chat ada di berkas terpisah `apps-script/Obrolan.gs`. Kalau
+ * berkas itu belum ditempel, `obrolan`/`obrolanTulis` akan menjawab dengan
+ * pesan jelas (bukan melempar galat), dan permainan tetap jalan.
  */
 
 var TAB_AKUN = 'Akun';
@@ -45,6 +51,10 @@ function doPost(e) {
     else if (aksi === 'nilai') out = tulisNilai(isi);
     else if (aksi === 'jalur') out = tulisJalur(isi);
     else if (aksi === 'rekap') out = { ok: true, dibuat: rekapSemua() };
+    else if (aksi === 'obrolan') out = typeof obrolanAmbil === 'function'
+      ? obrolanAmbil(isi) : { ok: false, tanpaObrolan: true, error: 'Berkas Obrolan.gs belum dipasang di Apps Script.' };
+    else if (aksi === 'obrolanTulis') out = typeof obrolanTulis === 'function'
+      ? obrolanTulis(isi) : { ok: false, tanpaObrolan: true, error: 'Berkas Obrolan.gs belum dipasang di Apps Script.' };
     else out = { ok: false, error: 'Aksi tidak dikenal: ' + aksi };
   } catch (err) {
     out = { ok: false, error: 'Server gagal: ' + (err && err.message ? err.message : err) };
@@ -61,8 +71,14 @@ function doGet(e) {
   if (aksi === 'rekap') {
     try { out = { ok: true, murid: rekapSemua(), waktu: now() }; }
     catch (err) { out = { ok: false, error: String(err && err.message ? err.message : err) }; }
+  } else if (aksi === 'obrolan') {
+    // Guru menengok obrolan satu kelas tanpa membuka spreadsheet. Hanya baca.
+    try { out = typeof obrolanGuru === 'function'
+      ? obrolanGuru(e && e.parameter && e.parameter.kelas)
+      : { ok: false, error: 'Berkas Obrolan.gs belum dipasang.' }; }
+    catch (err) { out = { ok: false, error: String(err && err.message ? err.message : err) }; }
   } else {
-    out = { ok: true, pesan: 'Server Lembah Ilmu hidup. Tambahkan ?aksi=rekap untuk menyegarkan rekap.', waktu: now() };
+    out = { ok: true, pesan: 'Server Lembah Ilmu hidup. Tambahkan ?aksi=rekap untuk menyegarkan rekap, atau ?aksi=obrolan&kelas=X untuk membaca obrolan satu kelas.', waktu: now() };
   }
   return ContentService
     .createTextOutput(JSON.stringify(out))
