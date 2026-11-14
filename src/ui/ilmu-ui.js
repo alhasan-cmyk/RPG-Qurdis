@@ -6,7 +6,7 @@
 // dan baris pendek — kalau tidak, harakatnya bertumpuk dan tak terbaca.
 import { view } from '../render/renderer.js';
 import { panel, text, wrap, fit, icon, UI } from './draw.js';
-import { UJIAN_MAKS, perluBenar } from '../systems/ilmu.js';
+import { UJIAN_MAKS, perluBenar, JALUR_TASORO } from '../systems/ilmu.js';
 
 const ARAB_FONT = '26px "Traditional Arabic", "Scheherazade New", "Amiri", "Noto Naskh Arabic", serif';
 
@@ -226,6 +226,51 @@ export class IlmuUI {
    * belum terisi, yang ada dipakai apa adanya dan jumlahnya ditampilkan jujur
    * di layar — lebih baik daripada berpura-pura ada tiga soal.
    */
+  /**
+   * Buka ujian salah satu jalur Ustadz Tasoro (remedial / pengayaan).
+   *
+   * Sengaja dipisah dari `bukaUjian` per bab: jalur ini tidak punya `kitab`,
+   * tetapi punya kelas dan 50 soal. Kalau dipaksa lewat `bukaUjian`, `kitab`
+   * akan kosong dan aturan urutan bab ikut terpanggil — padahal aturan itu
+   * justru tidak berlaku di sini.
+   */
+  bukaJalur(jalurId, npcId, npcName, hari = 0) {
+    const j = JALUR_TASORO[jalurId];
+    if (!j) return false;
+    this.open = true;
+    this.mode = 'ujian';
+    this.tanya = { npcId, npcName, data: { jalur: jalurId } };
+    this.cursor = 0;
+    this.selesai = null;
+    return this.mulaiJalur(jalurId, hari);
+  }
+
+  /** Siapkan satu ujian jalur: bank, kocokan, dan aturan lulusnya. */
+  mulaiJalur(jalurId, hari = 0) {
+    const j = JALUR_TASORO[jalurId];
+    const izin = this.ilmu.izinJalur(jalurId);
+    if (!izin.boleh) { this.pesan = izin.alasan; return false; }
+    const soal = this.ilmu.soalJalur(jalurId);
+    if (!soal.length) { this.pesan = izin.alasan; return false; }
+    this.ujian = {
+      jalur: jalurId,
+      kelas: izin.kelas,
+      soal, bank: this.ilmu.jumlahJalur(jalurId), i: 0,
+      benar: 0, salah: [], jawaban: [], hari,
+      perlu: perluBenar(soal.length),
+      judul: `${j.judul} — kelas ${izin.kelas}`,
+      // Jalur ini tidak dikirim ke spreadsheet dan tidak menulis `lulus`, jadi
+      // layar tidak boleh menampilkan janji "nilai dikirim ke guru".
+      terkirim: null,
+      // Catatan per bab dihitung sambil menjawab, supaya layar hasil bisa
+      // menyebut bab mana yang masih lemah — inti gunanya remedial.
+    };
+    this.mode = 'ujian';
+    this.cursor = 0;
+    this.selesai = null;
+    return true;
+  }
+
   /** Buka ujian keahlian langsung, tanpa lewat layar latihan. */
   bukaUjian(kitabId, npcId, npcName, hari = 0) {
     this.open = true;
@@ -276,9 +321,37 @@ export class IlmuUI {
     const tepat = this.cursor === (s.kunci ?? 0);
     if (tepat) u.benar++;
     if (!tepat) u.salah.push({ soal: s.tanya, bahas: s.bahas, benar: pilihan[s.kunci ?? 0] });
+    // Untuk jalur khusus, ketepatan per bab ikut dicatat. Disimpan di sini dan
+    // bukan dihitung ulang di layar, karena `salah` hanya menyimpan yang salah.
+    if (u.jalur) u.jawaban.push({ bab: s.bab, tepat, kunci: s.bahas });
     u.i++;
     this.cursor = 0;
     if (u.i < u.soal.length) return;
+
+    if (u.jalur) {
+      // Jalur remedial/pengayaan: hasilnya TIDAK masuk `lulus`, `nilai`, maupun
+      // spreadsheet guru. Yang didapat murid: catatan pribadi + rincian per bab.
+      const hasil = this.ilmu.catatJalur(u.jalur, u.benar, u.soal.length, u.hari, u.jawaban);
+      u.lulus = hasil.lulus;
+      u.perlu = hasil.perlu;
+      u.nilai = hasil.nilai;
+      u.perBab = this.ilmu.hasilJalur(u.jalur)?.perBab ?? {};
+      u.diamond = null;
+      this.mode = 'ujianHasil';
+      this.onProgress?.();
+      if (hasil.lulus && JALUR_TASORO[u.jalur].diamond) {
+        // Hadiah pengayaan memakai kait SENDIRI (`onJalurLulus`), bukan
+        // `onLulus`. `onLulus` milik ujian bab dan tugasnya antara lain
+        // mengirim nilai ke spreadsheet guru — dan hasil pengayaan tidak boleh
+        // ikut terkirim. Memisahkan kaitnya membuat janji itu tidak bisa
+        // terlanggar oleh perubahan di jalur ujian bab.
+        u.diamond = Number(this.onJalurLulus?.({
+          jalur: u.jalur, judul: u.judul, benar: u.benar,
+          jumlah: u.soal.length, nilai: u.nilai, hari: u.hari,
+        })) || 0;
+      }
+      return;
+    }
 
     // Ujian selesai. Batas lulus 80% dari jumlah soal yang ditanyakan, dihitung
     // di satu tempat (perluBenar) supaya layar dan penyimpanan tidak pernah
@@ -525,25 +598,56 @@ export class IlmuUI {
     if (!u) { this.tutup(); return; }
     const s = u.soal[u.i];
     const nama = u.judul.split(' \u2014 ')[0];
-    text(ctx, `UJIAN KEAHLIAN \u2014 ${nama.toUpperCase()}`, x + W / 2, y + 16,
+    const judulUjian = u.jalur
+      ? `${JALUR_TASORO[u.jalur].judul.toUpperCase()} \u2014 KELAS ${u.kelas}`
+      : `UJIAN KEAHLIAN \u2014 ${nama.toUpperCase()}`;
+    text(ctx, judulUjian, x + W / 2, y + 16,
       { font: UI.fontTitle, align: 'center', color: UI.red });
+    // Jalur khusus menyebut asal soalnya secara terbuka: 50 soal dari lima bab
+    // pertama. Murid perlu tahu cakupannya, bukan hanya jumlahnya. Kalimatnya
+    // DIBUNGKUS, bukan dipangkas: janji "tidak masuk nilai sekolah" harus utuh
+    // di layar sekecil apa pun — memotongnya dengan "…" membuat janji itu
+    // hilang dari tempat yang paling perlu membacanya.
+    if (u.jalur) {
+      wrap(ctx, 'lima bab pertama kelasmu \u00b7 bukan nilai sekolah', W - 32, UI.font)
+        .forEach((l, i) => text(ctx, l, x + W / 2, y + 32 + i * 16,
+          { font: UI.font, align: 'center', color: '#7a6647' }));
+    }
     // Bank soal boleh puluhan; ujian hanya menanyakan sebagian. Kalau banknya
     // baru terisi sedikit, katakan apa adanya — jangan berpura-pura lengkap.
     const bank = u.bank ?? u.soal.length;
     const catatan = bank > u.soal.length
       ? `  \u00b7  diundi dari ${bank} soal`
-      : (bank < UJIAN_MAKS ? '  (bank soal baru terisi sebagian)' : '');
-    text(ctx, `Soal ${u.i + 1} / ${u.soal.length}` + catatan
-      + `   \u00b7   benar ${u.benar}   \u00b7   lulus \u2265 ${u.perlu}`,
+      // Batas 30 soal adalah aturan ujian per bab; jalur Tasoro punya batasnya
+      // sendiri (50), jadi jangan memakainya untuk menilai "terisi sebagian".
+      : (bank < (u.jalur ? JALUR_TASORO[u.jalur].per : UJIAN_MAKS)
+        ? '  (bank soal baru terisi sebagian)' : '');
+    text(ctx, fit(ctx, `Soal ${u.i + 1} / ${u.soal.length}` + catatan
+      + `   \u00b7   benar ${u.benar}   \u00b7   lulus \u2265 ${u.perlu}`, W - 32, UI.font),
       x + W / 2, y + 34, { font: UI.font, align: 'center', color: '#7a6647' });
 
     let cy = y + 62;
     const innerW = W - 56;
     wrap(ctx, s.tanya, innerW, UI.fontBig).forEach((l) => { text(ctx, l, x + 28, cy, { font: UI.fontBig }); cy += 22; });
     cy += 12;
+    // Panel pendek (ponsel mendatar 568x320 hanya memberi 200 px) tidak selalu
+    // memuat soal panjang + tiga pilihan. Sisa pilihan yang tidak muat TIDAK
+    // digambar — dulu ia digambar melewati tepi bawah panel dan menutupi baris
+    // petunjuk. Pemain tetap bisa memilihnya (panah atas/bawah berputar), jadi
+    // yang hilang hanya pratinjaunya, bukan aksinya.
+    const batasBawah = y + H - 34;
     (s.pilihan ?? []).forEach((p, i) => {
       const on = i === this.cursor;
       const baris = wrap(ctx, `${on ? '\u25b8' : ' '} ${i + 1}. ${p}`, innerW, UI.fontBig);
+      const tinggiBaris = baris.length * 22 + 10;
+      const muat = cy + tinggiBaris <= batasBawah;
+      if (!muat && !on) return;
+      if (!muat && on) {
+        // Pilihan yang sedang disorot WAJIB terlihat walau harus dipotong:
+        // menyorot pilihan yang tak tergambar membuat E terasa menekan apa pun.
+        const maksBaris = Math.max(1, Math.floor((batasBawah - cy) / 22));
+        baris.length = Math.min(baris.length, maksBaris);
+      }
       if (on) { ctx.fillStyle = '#fff3d6'; ctx.fillRect(x + 20, cy - 4, W - 40, baris.length * 22 + 6); }
       baris.forEach((l, j) => { text(ctx, l, x + 28, cy + j * 22, { font: UI.fontBig }); });
       cy += baris.length * 22 + 10;
@@ -556,6 +660,7 @@ export class IlmuUI {
     const u = this.ujian;
     if (!u) { this.tutup(); return; }
     const nama = u.judul.split(' \u2014 ')[0];
+    if (u.jalur) return this.drawJalurHasil(ctx, x, y, W, H);
     text(ctx, u.lulus ? 'LULUS UJIAN' : 'BELUM LULUS', x + W / 2, y + 16,
       { font: UI.fontTitle, align: 'center', color: u.lulus ? '#4f7a2f' : UI.red });
     let cy = y + 48;
@@ -621,6 +726,120 @@ export class IlmuUI {
     }
     text(ctx, u.lulus ? 'E  tutup' : 'E  tutup \u00b7 bicara lagi dengan warga ini untuk mengulang',
       x + W / 2, y + H - 26, { font: UI.font, align: 'center', color: '#7a6647' });
+  }
+
+  /**
+   * Layar hasil remedial / pengayaan.
+   *
+   * Dibuat terpisah dari hasil ujian bab karena JANJINYA berbeda: di sini tidak
+   * ada "nilai dikirim ke spreadsheet", tidak ada "boleh memakai alat", dan
+   * tidak ada hadiah diamond dari bab. Yang ditampilkan justru yang tidak ada
+   * di ujian bab: rincian benar/salah PER BAB, sebab itulah yang dibutuhkan
+   * murid untuk tahu bab mana yang harus dibaca ulang.
+   */
+  drawJalurHasil(ctx, x, y, W, H) {
+    const u = this.ujian;
+    const j = JALUR_TASORO[u.jalur] ?? { judul: 'Ujian' };
+    const innerW = W - 56;
+    // Panel pendek (ponsel mendatar 568x320 hanya memberi 200 px) tidak mungkin
+    // memuat judul + ringkasan + rincian lima bab + pesan + janji sekaligus.
+    // Karena itu ada dua tata letak, dan yang dipilih HANYA berdasarkan tinggi
+    // panel: ruang yang tidak ada tidak bisa ditambal dengan huruf yang lebih
+    // kecil sampai tak terbaca.
+    const padat = H < 260;
+
+    // Janji "tidak dikirim ke spreadsheet" ditempel di BAWAH, di atas baris
+    // petunjuk; sisa ruang di atasnya dipakai isi. Urutan menggambarnya
+    // terbalik dari urutan membacanya — disengaja: janji inilah yang tidak
+    // boleh hilang di panel kecil, sedangkan kalimat penyemangat boleh dipotong.
+    const janji = wrap(ctx, 'Hasil ini tidak masuk nilai sekolah dan tidak dikirim ke spreadsheet guru.',
+      innerW, UI.font);
+    const janjiY = y + H - 34 - janji.length * 18;
+    const bawah = janjiY - 6;
+
+    text(ctx, fit(ctx, `${j.judul.toUpperCase()} \u2014 ${u.lulus ? 'LULUS' : 'BELUM LULUS'}`, W - 40, UI.fontTitle),
+      x + W / 2, y + 16,
+      { font: UI.fontTitle, align: 'center', color: u.lulus ? '#4f7a2f' : UI.red });
+
+    let cy = y + (padat ? 38 : 48);
+    // Di panel padat baris dirapatkan 14 px: VT323 16 px masih terbaca nyaman,
+    // dan tanpa ini baris kelima rincian tidak muat (dulu Bab V hilang).
+    const barisTinggi = padat ? 14 : 18;
+    const ringkas = `Benar ${u.benar} dari ${u.soal.length} (perlu ${u.perlu}) \u00b7 nilai ${u.nilai}%`;
+    // Huruf besar dipakai selama ringkasannya muat dua baris. Kalau tidak (panel
+    // sempit membuatnya pecah jadi tiga baris dan mendorong rincian bab keluar),
+    // huruf biasa dipakai — lebih baik sedikit kecil daripada Bab V hilang.
+    let fontRingkas = padat ? UI.font : UI.fontBig;
+    let barisRingkas = wrap(ctx, ringkas, innerW, fontRingkas);
+    if (!padat && barisRingkas.length > 2) {
+      fontRingkas = UI.font;
+      barisRingkas = wrap(ctx, ringkas, innerW, fontRingkas);
+    }
+    for (const l of barisRingkas) {
+      if (cy + barisTinggi > bawah) break;
+      text(ctx, l, x + 28, cy, { font: fontRingkas });
+      cy += fontRingkas === UI.fontBig ? 22 : barisTinggi;
+    }
+    cy += 2;
+
+    // Rincian per bab. Urutannya mengikuti urutan bab di rak, bukan urutan
+    // objek — supaya mata membaca bab I..V seperti di perpustakaan. Ini bagian
+    // terpenting layar ini (itulah gunanya remedial), jadi ia didahulukan
+    // sebelum kalimat penyemangat.
+    const per = u.perBab ?? {};
+    const urut = (this.ilmu.babPertama?.() ?? []).filter((id) => per[id]);
+    for (const id of Object.keys(per)) if (!urut.includes(id)) urut.push(id);
+    const judulBab = (id) => (this.ilmu.kitab(id)?.judul ?? id).split(' \u2014 ')[0];
+    if (urut.length) {
+      if (!padat && cy + 18 <= bawah) {
+        text(ctx, 'Rincian per bab:', x + 28, cy, { font: UI.font, color: '#7a6647' });
+        cy += 18;
+      }
+      urut.forEach((id, i) => {
+        const k = i % 2;
+        // Di panel padat, rincian satu baris per bab (lima baris) lebih mudah
+        // dibaca daripada dua kolom yang sebagian terpotong.
+        const barisY = padat ? cy + i * barisTinggi : cy + Math.floor(i / 2) * barisTinggi;
+        if (barisY + barisTinggi > bawah) return;
+        const v = per[id];
+        const persen = v.jumlah ? Math.round((v.benar / v.jumlah) * 100) : 0;
+        const warna = persen >= 80 ? '#4f7a2f' : (persen >= 50 ? '#7a6647' : UI.red);
+        // Selalu "x/10": pembilang yang lebih pendek (mis. "8/10") menyisakan
+        // ruang untuk nama bab yang panjang — nama bab XII memang paling
+        // panjang di lembah ini ("Kebenaran Al-Qur'an pada Semua Aspek...").
+        const teks = `${judulBab(id)}: ${v.benar}/10`;
+        text(ctx, fit(ctx, teks, padat ? innerW : innerW / 2, UI.font),
+          x + 28 + (padat ? 0 : k * (innerW / 2)), barisY, { font: UI.font, color: warna });
+      });
+      cy += (padat ? urut.length : Math.ceil(urut.length / 2)) * barisTinggi + 6;
+    }
+
+    const pesan = u.jalur === 'remedial'
+      ? (u.lulus
+        ? 'Lima bab pertama sudah kau kuasai ulang. Ujian bab yang sesungguhnya menantimu.'
+        : 'Baca ulang bab yang merah di atas, lalu temui aku lagi. Remedial boleh diulang kapan saja.')
+      : (u.lulus
+        ? 'Bagus. Soal pengayaan menuntut nalar, bukan hafalan — dan kau berhasil.'
+        : 'Pengayaan memang lebih tajam. Pelajari pembahasannya, lalu coba lagi.');
+    for (const l of wrap(ctx, pesan, innerW, UI.font)) {
+      if (cy + barisTinggi > bawah) break;
+      text(ctx, l, x + 28, cy, { font: UI.font, color: '#5a4230' });
+      cy += barisTinggi;
+    }
+
+    if (u.lulus && (u.diamond ?? 0) > 0 && cy + 20 <= bawah) {
+      icon(ctx, 'ui_diamond', 0, x + 28, cy + 2);
+      text(ctx, `+${u.diamond} diamond`, x + 56, cy + 2, { font: UI.fontBig, color: '#2f6a8c' });
+    }
+
+    // Janji yang ditempel di bawah; digambar paling akhir supaya tidak pernah
+    // tertimpa isi.
+    janji.forEach((l, i) => text(ctx, l, x + 28, janjiY + i * 18,
+      { font: UI.font, color: '#7a6647' }));
+
+    text(ctx, fit(ctx, this.pesan || 'E tutup \u00b7 bicara lagi dengan Ustadz Tasoro untuk mengulang',
+      W - 32, UI.font), x + W / 2, y + H - 26,
+      { font: UI.font, align: 'center', color: '#7a6647' });
   }
 
   drawTanya(ctx, x, y, W, H) {

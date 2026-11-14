@@ -29,6 +29,52 @@ export const UJIAN_MAKS = 30;
 // Batas lulus: 80% dari jumlah soal yang ditanyakan. Dibulatkan KE ATAS
 // (ceil), supaya 25 soal pun tetap menuntut 20 benar, bukan 19,9 yang lalu
 // dibulatkan ke bawah dan diam-diam melunakkan aturannya.
+/**
+ * Dua jalur ujian khusus yang diberikan Ustadz Tasoro — di luar ujian per bab.
+ *
+ *   remedial — mengulang lima bab PERTAMA kelasmu, 50 soal.
+ *   pengayaan — soal analisis dari lima bab yang sama, 50 soal.
+ *
+ * Banknya SAMA SEKALI terpisah dari `ujian` per bab: 900 soal per bab tetap
+ * utuh dan tidak satu pun dipakai ulang di sini. Yang dihitung per bab di dalam
+ * bank ini adalah medan `bab` pada tiap butir soal, dipakai untuk merekap
+ * "bab mana yang masih lemah" tanpa perlu menebak dari teks soal.
+ */
+export const JALUR_TASORO = {
+  remedial: {
+    id: 'remedial',
+    judul: 'Ujian Remedial',
+    per: 50,
+    // Remedial TIDAK mengubah `lulus`, TIDAK memberi diamond, dan TIDAK dikirim
+    // ke spreadsheet guru. Tujuannya murni latihan ulang: mengulang pelajaran
+    // yang belum dikuasai sebelum murid menempuh ujian bab yang sebenarnya.
+    menulisLulus: false,
+    terkirim: false,
+    diamond: false,
+  },
+  pengayaan: {
+    id: 'pengayaan',
+    judul: 'Ujian Pengayaan',
+    per: 50,
+    menulisLulus: false,
+    terkirim: false,          // tidak ke spreadsheet guru
+    diamond: true,            // tetap dihargai, tapi TIDAK lewat hadiahLulus bab
+  },
+};
+
+/**
+ * Berapa soal yang ditanyakan pada satu ujian jalur khusus.
+ *
+ * Dasar hitungannya `JALUR_TASORO[jalur].per` (50 soal), BUKAN `UJIAN_MAKS`
+ * (30 soal). Aturan 30 soal itu milik ujian per bab dan tidak boleh berubah;
+ * jalur remedial/pengayaan justru sengaja lebih panjang. Kalau banknya belum
+ * penuh, yang ada dipakai apa adanya dan layar menyebutkannya terus terang.
+ */
+export function maksJalur(bank, jalurId) {
+  const j = JALUR_TASORO[jalurId];
+  return Math.min(bank.length, j?.per ?? UJIAN_MAKS);
+}
+
 export const BATAS_LULUS = 0.8;
 export function perluBenar(jumlahSoal) {
   return Math.max(1, Math.ceil(jumlahSoal * BATAS_LULUS));
@@ -88,6 +134,12 @@ export class Ilmu {
     // Hanya ujian yang LULUS yang dicatat di sini (dan dikirim ke spreadsheet).
     this.nilai = {};
     this.ujianSisipan = null;    // hanya untuk pengujian; null di permainan
+    // Hasil dua jalur Ustadz Tasoro: { X: { benar, jumlah, nilai, hari, perBab }, ... }
+    // Dipisah dari `nilai` dengan sengaja — `nilai` adalah daftar bab yang
+    // dilaporkan ke sekolah, sedangkan dua jalur ini urusan murid dengan
+    // dirinya sendiri. Kunci teratasnya 'remedial' | 'pengayaan', di bawahnya
+    // nama kelas ('X' | 'XI' | 'XII').
+    this.tasoro = { remedial: {}, pengayaan: {} };
   }
 
   /** Satu kitab menurut id — dari seluruh data, dipakai untuk cek internal. */
@@ -383,6 +435,25 @@ export class Ilmu {
       }
       return a;
     };
+    return this.kocokSoal(bank, n, benih);
+  }
+
+  /**
+   * Kocok bank lalu acak pilihan tiap soal. Satu tempat untuk ujian bab dan
+   * ujian jalur khusus: kalau aturan pengacakan hidup di dua salinan, cepat
+   * atau lambat keduanya berbeda dan `kunci` bisa menunjuk pilihan yang salah.
+   */
+  kocokSoal(bank, n, benih = null) {
+    if (!bank.length || !n) return [];
+    const acak = benih === null ? Math.random : mulberry32(Number(benih) || 1);
+    const kocok = (arr) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(acak() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
     // Seluruh bank dikocok lalu dipakai n soal teratas; tiap soal juga
     // diacak pilihannya. `kunci` ikut digeser supaya tetap menunjuk jawaban
     // yang sama — tanpa itu, mengacak pilihan akan menilai jawaban benar
@@ -401,6 +472,109 @@ export class Ilmu {
 
   /** Berapa soal yang tersedia untuk satu bab — dipakai layar ujian & rekap. */
   jumlahSoal(kitabId) { return this.bankSoal(kitabId).length; }
+
+  /* ------------------------------------------- jalur khusus (Ustadz Tasoro) */
+
+  /** Kelas yang sedang ditempuh; sebelum murid memilih, kelas bawaan data. */
+  kelasAktif() { return this.tingkat ?? this.kelasBawaan(); }
+
+  /**
+   * Bank soal satu jalur khusus untuk kelas pemain.
+   *
+   * Membaca `remedial` / `pengayaan` di ilmu.json. Keduanya berbentuk
+   * `{ X: [soal...], XI: [...], XII: [...] }` — 50 soal per kelas, 10 untuk
+   * masing-masing lima bab pertama. Bank ini terpisah dari `ujian` per bab,
+   * jadi menambah/mengubahnya tidak menyentuh 900 soal ujian bab.
+   */
+  bankJalur(jalurId) {
+    const semua = this.data?.[jalurId] ?? {};
+    const bank = semua[this.kelasAktif()] ?? [];
+    return Array.isArray(bank) ? bank : [];
+  }
+
+  /** Berapa soal yang ditanyakan pada satu ujian jalur khusus. */
+  jumlahJalur(jalurId) { return maksJalur(this.bankJalur(jalurId), jalurId); }
+
+  /**
+   * Soal satu ujian jalur khusus: SELURUH bank dikocok (50 soal), pilihan juga
+   * diacak per soal, sama seperti `soalUjian`. Dipakai ulang untuk keduanya
+   * supaya aturan pengacakan tidak bercabang dua.
+   */
+  soalJalur(jalurId, benih = null) {
+    const soal = this.bankJalur(jalurId);
+    if (!soal.length) return [];
+    const n = maksJalur(soal, jalurId);
+    return this.kocokSoal(soal, n, benih);
+  }
+
+  /** Lima bab pertama kelas ini (persis seperti urutan rak). */
+  babPertama(jumlah = 5) { return this.urutanBab().slice(0, jumlah); }
+
+  /**
+   * Apakah satu jalur khusus boleh dibuka sekarang.
+   *
+   * Aturannya jauh lebih longgar daripada ujian bab, dan itu disengaja:
+   * remedial justru untuk murid yang BELUM lulus, jadi mensyaratkan "lulus
+   * dulu" akan mengunci satu-satunya pintu yang menolongnya. Pengayaan boleh
+   * dibuka kapan saja karena ia menuntut pemahaman yang lebih tinggi, bukan
+   * urutan bab. Yang diperiksa hanya dua: banknya ada, dan kelasnya cocok.
+   */
+  izinJalur(jalurId) {
+    const j = JALUR_TASORO[jalurId];
+    if (!j) return { boleh: false, alasan: 'Ujian itu tidak dikenal.' };
+    const bank = this.jumlahJalur(jalurId);
+    if (!bank) {
+      return { boleh: false, alasan: `Soal ${j.judul.toLowerCase()} untuk kelas ${this.kelasAktif()} belum disiapkan.` };
+    }
+    return { boleh: true, alasan: '', jumlah: bank, kelas: this.kelasAktif() };
+  }
+
+  /**
+   * Simpan hasil satu jalur khusus.
+   *
+   * Tiga hal yang SENGAJA tidak dilakukan di sini, dan itu janji yang sudah
+   * disebut ke pemain:
+   *   1. tidak menulis `lulus` — remedial bukan ujian bab, dan murid yang gagal
+   *      di sini tidak boleh dianggap gagal menuntaskan bab;
+   *   2. tidak menulis `nilai` — `nilai` itulah yang dikirim ke spreadsheet
+   *      guru, dan hasil remedial/pengayaan bukan nilai sekolah;
+   *   3. tidak menyentuh `benar`/`salah` harian — hitungan itu untuk latihan
+   *      harian dengan warga, bukan ujian panjang.
+   *
+   * Yang disimpan: nilai TERBAIK per kelas per jalur, plus rincian per bab
+   * (`jawaban` berisi satu butir `{ bab, tepat }` per soal) supaya layar rekap
+   * bisa menyebut bab mana yang masih lemah — itulah gunanya remedial.
+   */
+  catatJalur(jalurId, benar, jumlah, hari = 0, jawaban = []) {
+    const j = JALUR_TASORO[jalurId];
+    if (!j) return { lulus: false, perlu: 1, nilai: 0 };
+    const perlu = perluBenar(jumlah);
+    const lulus = benar >= perlu;
+    const kelas = this.kelasAktif();
+    const perBab = {};
+    for (const j of jawaban) {
+      const bab = j?.bab;
+      if (!bab) continue;
+      perBab[bab] = perBab[bab] ?? { benar: 0, jumlah: 0 };
+      perBab[bab].jumlah += 1;
+      if (j.tepat) perBab[bab].benar += 1;
+    }
+    const lama = this.tasoro?.[jalurId]?.[kelas];
+    const hasil = {
+      benar, jumlah, perlu, lulus, hari,
+      nilai: jumlah ? Math.round((benar / jumlah) * 100) : 0,
+    };
+    // Hanya hasil terbaik yang disimpan — mengulang untuk memperbaiki tidak
+    // boleh menurunkan catatan yang sudah bagus.
+    if (!lama || benar > lama.benar) {
+      this.tasoro[jalurId] = this.tasoro[jalurId] ?? {};
+      this.tasoro[jalurId][kelas] = { ...hasil, perBab };
+    }
+    return hasil;
+  }
+
+  /** Hasil terakhir/terbaik satu jalur untuk kelas pemain, atau null. */
+  hasilJalur(jalurId) { return this.tasoro?.[jalurId]?.[this.kelasAktif()] ?? null; }
 
   /* ------------------------------------------------------- urutan bab & nilai */
 
@@ -555,7 +729,11 @@ export class Ilmu {
     return { dibaca: [...this.dibaca], benar: this.benar, salah: this.salah,
              tanyaHari: this.tanyaHari, lulus: [...this.lulus],
              tingkat: this.tingkat, rombel: this.rombel,
-             nilai: this.nilai };
+             nilai: this.nilai,
+             // Hasil remedial & pengayaan. Simpanan lama tidak punya medan ini,
+             // jadi `load` mengisinya dengan objek kosong — pemain lama tidak
+             // kehilangan apa pun dan rekap tidak menampilkan "undefined".
+             tasoro: this.tasoro };
   }
 
   load(data) {
@@ -568,6 +746,8 @@ export class Ilmu {
     this.tingkat = data.tingkat ?? null;
     this.rombel = data.rombel ?? null;
     this.nilai = data.nilai ?? {};
+    const t = data.tasoro ?? {};
+    this.tasoro = { remedial: t.remedial ?? {}, pengayaan: t.pengayaan ?? {} };
   }
 
   /** Baris rapor untuk pemain/guru: apa yang sudah disentuh dan seberapa tepat. */
@@ -583,6 +763,13 @@ export class Ilmu {
       `Jawaban benar: ${this.benar}, salah: ${this.salah} (ketepatan ${nilai}%)`,
       'UJIAN PER BAB (lulus = 80%)',
       ...ujian,
+      'UJIAN USTADZ TASORO (tidak masuk nilai sekolah)',
+      ...Object.keys(JALUR_TASORO).map((id) => {
+        const h = this.hasilJalur(id);
+        const nama = JALUR_TASORO[id].judul;
+        return h ? `- ${nama}: ${h.benar}/${h.jumlah} (nilai ${h.nilai}%)`
+          : `- ${nama}: belum ditempuh`;
+      }),
     ].join('\n');
   }
 }

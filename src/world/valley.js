@@ -410,6 +410,72 @@ export function buildValley() {
     // bawah, supaya murid tidak langsung masuk lagi.
     libraryDoor: { c: libraryDoorC, r: library.r + 1, dir: 'down' },
   };
+  /**
+   * Jalan desa + dua tempat berhenti Ustadz Tasoro, sebagai satu grafik tile.
+   *
+   * Dia satu-satunya warga yang harus berpindah jauh (Balai Desa <-> Perpus-
+   * takaan), jadi dia satu-satunya yang butuh jalur. Yang dipakai adalah jalan
+   * desa yang SUDAH dibangun di atas: jalan itu memang menyambung semua tempat
+   * penting, jadi tidak ada jalur baru yang perlu digambar khusus untuknya.
+   *
+   * Bila suatu saat jalan dipindah sehingga kedua tempat tidak lagi tersambung,
+   * fungsinya mengembalikan null dan Npc jatuh ke mode lurus-lalu-macet — ia
+   * tetap terlihat berkeliling, tidak membeku.
+   */
+  map.buatJalur = (daftar) => {
+    const key = (c, r) => `${c},${r}`;
+    const biaya = (c, r) => (map.isSolid(c, r) ? Infinity : (road.has(key(c, r)) ? 1 : 8));
+    const titik = daftar.map((nama) => map.places[nama]).filter(Boolean);
+    if (titik.length < 2) return null;
+    const biayaJalur = (a, b) => {
+      const mulai = key(titik[a].c, titik[a].r);
+      const tujuan = key(titik[b].c, titik[b].r);
+      const jarak = new Map([[mulai, 0]]);
+      const sebelum = new Map();
+      const antre = [[0, titik[a].c, titik[a].r]];
+      while (antre.length) {
+        antre.sort((x, y) => x[0] - y[0]);
+        const [d, c, r] = antre.shift();
+        if (d > (jarak.get(key(c, r)) ?? Infinity)) continue;
+        if (key(c, r) === tujuan) break;
+        for (const [dc, dr] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
+          const nc = c + dc, nr = r + dr;
+          if (!map.inBounds(nc, nr)) continue;
+          const b = biaya(nc, nr);
+          if (!Number.isFinite(b)) continue;
+          const nd = d + b;
+          if (nd < (jarak.get(key(nc, nr)) ?? Infinity)) {
+            jarak.set(key(nc, nr), nd);
+            sebelum.set(key(nc, nr), [c, r]);
+            antre.push([nd, nc, nr]);
+          }
+        }
+      }
+      if (!jarak.has(tujuan)) return null;
+      const balik = [];
+      let cur = [titik[b].c, titik[b].r];
+      while (cur) {
+        balik.push({ c: cur[0], r: cur[1] });
+        cur = sebelum.get(key(cur[0], cur[1]));
+      }
+      return balik.reverse();
+    };
+
+    // Tiap pasangan berurutan disambung, lalu digabung menjadi satu rute
+    // berkeliling: 0 -> 1 -> 2 -> ... dan kembali ke 0.
+    const rute = [];
+    for (let i = 0; i < titik.length; i++) {
+      const j = (i + 1) % titik.length;
+      const potong = biayaJalur(i, j);
+      if (!potong) return null;
+      for (const t of potong) {
+        const akhir = rute[rute.length - 1];
+        if (akhir && akhir.c === t.c && akhir.r === t.r) continue;
+        rute.push(t);
+      }
+    }
+    return rute;
+  };
   map.npcSpots = {
     harun: { c: plazaCx, r: plaza.r0 + 1 },
     sari: { c: map.storeDoor.c + 2, r: map.storeDoor.r + 2 },
@@ -422,6 +488,11 @@ export function buildValley() {
     // Hutan di utara Balai Desa: 120 dari 135 petaknya bisa dilalui, jadi ia
     // punya ruang berkeliling tanpa tersangkut di sela pohon.
     maung: { c: plazaCx + 1, r: map.townHallDoor.r - 6 },
+    // Ustadz Tasoro memulai di depan Balai Desa, salah satu dari dua tempat ia
+    // biasa berhenti. Titik hentinya tidak ditulis di sini: ia menyebut NAMA
+    // tempat (`kendaraan.henti` di npcs.json) dan `Npc.titikHenti` menerjemah-
+    // kannya lewat `map.places`, jadi memindahkan bangunan tidak memutus rutenya.
+    tasoro: { c: map.townHallDoor.c + 2, r: map.townHallDoor.r + 3 },
   };
   // Tempat yang bisa disebut namanya oleh jadwal NPC di `npcs.json`. Menaruh
   // koordinat di berkas data akan membuat setiap penggeseran bangunan

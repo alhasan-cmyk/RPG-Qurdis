@@ -191,6 +191,57 @@ for (const cek of papanCek) {
   if (!cek.aksi.test(mainjs)) catat(`${cek.nama}: tidak ada aksi saat E ditekan di main.js`);
 }
 
+// ---------------------------------------- 7. bank remedial & pengayaan (Tasoro)
+//
+// Dua jalur ini punya aturan sendiri, dan pemeriksa ini mengunci yang paling
+// mudah rusak saat soalnya disunting:
+//   - tiap kelas punya tepat 50 soal (10 untuk masing-masing lima bab pertama),
+//   - tidak ada bab di luar lima bab pertama kelas itu,
+//   - bentuk soalnya sama dengan bank ujian (tanya, 3 pilihan, kunci, bahas),
+//   - warga yang menawarkannya memang menyebut jalurnya di npcs.json.
+const { JALUR_TASORO } = await import(join(AKAR, 'src/systems/ilmu.js'));
+const npcs = JSON.parse(baca('src/data/npcs.json'));
+for (const [jalurId, jalur] of Object.entries(JALUR_TASORO)) {
+  const bank = ilmu[jalurId];
+  if (!bank) { catat(`jalur ${jalurId}: tidak ada bank soal di ilmu.json`); continue; }
+  for (const k of ['X', 'XI', 'XII']) {
+    const daftar = bank[k];
+    if (!Array.isArray(daftar)) { catat(`jalur ${jalurId} kelas ${k}: bank tidak ada`); continue; }
+    if (daftar.length !== jalur.per) {
+      catat(`jalur ${jalurId} kelas ${k}: ${daftar.length} soal, seharusnya ${jalur.per}`);
+    }
+    const limaBab = ids.filter((id) => kelas[id] === k).slice(0, 5);
+    const per = {};
+    daftar.forEach((s, i) => {
+      const label = `jalur ${jalurId} ${k} #${i + 1}`;
+      if (!s.tanya) catat(`${label}: tanpa pertanyaan`);
+      if (!Array.isArray(s.pilihan) || s.pilihan.length !== 3) catat(`${label}: pilihan bukan 3`);
+      else if (new Set(s.pilihan).size !== s.pilihan.length) catat(`${label}: ada pilihan kembar`);
+      if (typeof s.kunci !== 'number' || s.kunci < 0 || s.kunci >= (s.pilihan?.length ?? 0)) {
+        catat(`${label}: kunci jawaban di luar jangkauan`);
+      }
+      if (!s.bahas) catat(`${label}: tanpa pembahasan`);
+      if (!s.bab) catat(`${label}: tanpa medan bab (rekap per bab jadi mustahil)`);
+      else if (!limaBab.includes(s.bab)) catat(`${label}: bab "${s.bab}" bukan lima bab pertama kelas ${k}`);
+      else per[s.bab] = (per[s.bab] ?? 0) + 1;
+    });
+    for (const id of limaBab) {
+      const n = per[id] ?? 0;
+      if (n !== jalur.per / 5) catat(`jalur ${jalurId} kelas ${k}: bab "${id}" punya ${n} soal, seharusnya ${jalur.per / 5}`);
+    }
+  }
+  // Warga yang menawarkannya: disebut di npcs.json DAN bernama di ilmu.json.
+  const penawar = npcs.filter((n) => (n.kendaraan?.ujian ?? []).includes(jalurId));
+  if (!penawar.length) catat(`jalur ${jalurId}: tidak ada warga yang menawarkannya di npcs.json`);
+  for (const n of penawar) {
+    if (!nama[n.id]) catat(`jalur ${jalurId}: penawarnya "${n.name}" tidak ada di ilmu.json npcNama`);
+    if (!n.kendaraan?.henti?.length) catat(`jalur ${jalurId}: penawar "${n.name}" tidak punya tempat berhenti`);
+    for (const tempat of n.kendaraan.henti) {
+      if (!valley.includes(`${tempat}:`)) catat(`jalur ${jalurId}: "${n.name}" berhenti di "${tempat}" yang tidak ada di map.places`);
+    }
+  }
+}
+
 // ---------------------------------------------------------------------- laporan
 if (masalah.length) {
   console.error(`Ditemukan ${masalah.length} masalah data:\n`);
@@ -200,4 +251,5 @@ if (masalah.length) {
 console.log('Data pelajaran konsisten:');
 console.log(`  ${ids.length} bab, ${ids.reduce((n, id) => n + (ilmu.ujian?.[id]?.length ?? 0), 0)} soal ujian`);
 console.log(`  ${Object.keys(nama).length} warga, ${Object.values(npcSoal).flat().length} soal latihan harian`);
+console.log(`  bank remedial & pengayaan: ${['remedial', 'pengayaan'].map((j) => `${j} ${['X', 'XI', 'XII'].reduce((n, k) => n + (ilmu[j]?.[k]?.length ?? 0), 0)}`).join(', ')} soal`);
 console.log(`  papan usaha: ${UPGRADE.length} peningkatan bangunan + ${(await import(join(AKAR, 'src/systems/kendaraan.js'))).KENDARAAN.length} kendaraan, alat sah: ${[...ALAT_SAH].join(', ')}`);

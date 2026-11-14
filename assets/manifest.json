@@ -1026,6 +1026,11 @@
       ],
       "status": "approved"
     },
+    "portrait_npc_tasoro": {
+      "file": "sprites/portraits/npc_tasoro.png",
+      "frame": [96, 96],
+      "status": "approved"
+    },
     "clinic": {
       "file": "sprites/buildings/clinic.png",
       "frame": [
@@ -1420,6 +1425,30 @@
       "cols": 4,
       "rows": 4,
       "pivot": "bottom-center",
+      "status": "approved"
+    },
+    "npc_tasoro": {
+      "file": "sprites/characters/npc_tasoro/npc_tasoro_sheet.png",
+      "frame": [32, 48],
+      "cols": 4,
+      "rows": 4,
+      "pivot": "bottom-center",
+      "rows_dir": ["down", "left", "right", "up"],
+      "idle_col": 0,
+      "walk_cols": [1, 2, 3],
+      "walk_fps": 8,
+      "status": "approved"
+    },
+    "npc_tasoro_motor": {
+      "file": "sprites/characters/npc_tasoro/npc_tasoro_motor.png",
+      "frame": [48, 64],
+      "cols": 4,
+      "rows": 4,
+      "pivot": "bottom-center",
+      "rows_dir": ["down", "left", "right", "up"],
+      "idle_col": 0,
+      "walk_cols": [1, 2, 3],
+      "walk_fps": 8,
       "status": "approved"
     },
     "bookshelf": {

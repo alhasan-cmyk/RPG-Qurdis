@@ -7,6 +7,16 @@ import { TILE } from '../world/map.js';
 // jadi tidak pernah menutupi dua warga yang berdiri berdampingan.
 const NAMA_FONT = '16px "VT323", monospace';
 
+// Seberapa lama Ustadz Tasoro berhenti di satu tempat (detik). Delapan sampai
+// lima belas detik cukup untuk satu kotak pilihan + satu ujian pendek, tetapi
+// tetap membuat lembah terasa hidup: ia jelas berhenti, bukan nyangkut.
+const HENTI_MIN = 8;
+const HENTI_MAKS = 15;
+
+// Kecepatan motor. Warga berjalan 48 px/s; kendaraan pemain 3x lipat. Motor
+// Tasoro sengaja tidak secepat pemain — ia sedang berkeliling, bukan balapan.
+const KECEPATAN_MOTOR = 62;
+
 export class Npc extends Character {
   constructor(data, x, y) {
     super(data.sprite, x, y);
@@ -27,6 +37,137 @@ export class Npc extends Character {
     this.target = null;
     this.wait = 1 + Math.random() * 3;
     this.talking = false;
+
+    /**
+     * Berkendara — hanya dipakai warga yang punya `kendaraan` di npcs.json
+     * (sekarang: Ustadz Tasoro).
+     *
+     * `rute` berisi TITIK BERHENTI, bukan jalan yang harus dilalui persis.
+     * Warga ini tidak mencari jalur: lembah dibangun dengan jalan desa yang
+     * menyambung semua tempat penting (lihat `map.road`), jadi arah cukup
+     * dihitung lurus ke titik berikutnya dan tabrakan diselesaikan per sumbu
+     * oleh `Character.move`. Kalau ia tersangkut (mis. menabrak sudut lumbung),
+     * `macet` menghitung dan setelah sedetik ia memilih titik lain — jadi
+     * tidak pernah berhenti selamanya di balik pohon.
+     */
+    this.kendaraan = data.kendaraan ?? null;   // { naik, henti[] } nama tempat
+    this.modeJalan = 'naik';                   // 'naik' (menuju titik) | 'henti'
+    this.lamaHenti = 0;
+    this.sasaran = -1;                         // indeks titik henti yang dituju
+    this.macet = 0;
+    if (this.kendaraan) {
+      this.speed = KECEPATAN_MOTOR;
+      this.wait = 0;
+    }
+  }
+
+  /**
+   * Rute berkeliling yang dibaca dari PETA, bukan dari berkas data.
+   *
+   * Musuh utamanya satu: warga yang menyangkut di sudut lumbung. Karena itu
+   * rute tidak disimpan sebagai daftar koordinat di npcs.json (yang akan basi
+   * begitu satu bangunan bergeser), melainkan dihitung `map.buatJalur` dari
+   * jalan desa yang sudah ada. Hasilnya urutan tile; tile tempat ia berdiam
+   * ditandai `henti`.
+   */
+  siapkanRute(map) {
+    const daftar = this.kendaraan?.henti ?? [];
+    const rute = map.buatJalur?.(daftar) ?? null;
+    this.rute = rute;
+    this.ruteSiap = true;
+    this.titik = rute
+      ? rute.map((t) => ({ ...t, henti: daftar.some((n) => {
+          const p = map.places?.[n];
+          return p && p.c === t.c && p.r === t.r;
+        }) }))
+      : [];
+    if (!this.titik.length) {
+      // Peta tidak menyediakan jalur (mis. uji tanpa peta): tetap ada dua titik
+      // dari `places`, supaya ia tidak membeku sama sekali.
+      this.titik = daftar.map((n) => map.places?.[n]).filter(Boolean)
+        .map((p) => ({ c: p.c, r: p.r, henti: true }));
+    }
+    // Mulai menuju titik henti TERDEKAT, bukan ke tile pertama rute: warga
+    // tidak boleh mengawali permainan dengan memutar setengah lembah hanya
+    // untuk sampai ke tempat pertamanya. Keadaannya `naik`, bukan `henti`,
+    // karena ia belum benar-benar berdiri DI tile itu — kalau dipaksa
+    // berhenti, ia akan diam satu tile di sebelah tempat yang ia sebut.
+    let dekat = 0, jarak = Infinity;
+    this.titik.forEach((t, i) => {
+      if (!t.henti) return;
+      const d = Math.hypot(t.c * TILE + TILE / 2 - this.x, (t.r + 1) * TILE - this.y);
+      if (d < jarak) { jarak = d; dekat = i; }
+    });
+    this.sasaran = dekat;
+    this.modeJalan = 'naik';
+    this.lamaHenti = 0;
+  }
+
+  /** Apakah warga ini sedang bisa diajak bicara (berhenti di tempat). */
+  bisaDiajak() { return !this.kendaraan || this.modeJalan === 'henti'; }
+
+  /**
+   * Satu langkah berkendara.
+   *
+   * Dua keadaan saja, dan sengaja sesederhana itu:
+   *   naik  — menyusuri rute tile menuju titik henti berikutnya; TIDAK bisa
+   *           diajak bicara, karena ia sedang di tengah jalan.
+   *   henti — diam 8–15 detik di Balai Desa atau Perpustakaan; E membuka
+   *           percakapan. Motor tetap menyala (tetap digambar dengan lembar
+   *           motor, bukan berdiri di sampingnya).
+   */
+  updateKendaraan(map, dt, rng) {
+    if (!this.ruteSiap) this.siapkanRute(map);
+    if (!this.titik.length) { this.moving = false; return; }
+    if (this.talking) { this.moving = false; return; }
+
+    if (this.modeJalan === 'henti') {
+      this.moving = false;
+      this.lamaHenti -= dt;
+      if (this.lamaHenti <= 0 && !this.talking) {
+        // Lanjut ke TILE BERIKUTNYA dalam rute, bukan langsung ke titik henti
+        // jauh di ujung. Inilah bedanya menyusuri jalan dan menembus bangunan:
+        // sasaran yang melompat ke ujung rute membuat ia berjalan lurus
+        // menembus pohon, lalu diam di situ karena setiap langkah tertahan.
+        this.sasaran = (this.sasaran + 1) % this.titik.length;
+        this.modeJalan = 'naik';
+        this.macet = 0;
+      }
+      return;
+    }
+
+    const t = this.titik[this.sasaran];
+    if (!t) { this.modeJalan = 'henti'; this.lamaHenti = HENTI_MIN; return; }
+    const cx = t.c * TILE + TILE / 2;
+    const cy = (t.r + 1) * TILE;
+    const dx = cx - this.x, dy = cy - this.y;
+    const dist = Math.hypot(dx, dy);
+    // Tile dianggap tercapai saat kakinya sudah masuk tile itu. Tanpa ambang
+    // ini ia bisa berhenti 1 px dari pusat tile lalu berbalik arah terus.
+    const dalamTile = Math.floor(this.x / TILE) === t.c
+      && Math.floor((this.y - 1) / TILE) === t.r;
+    if (dist < 4 || (dalamTile && dist < TILE * 0.55)) {
+      if (t.henti) {
+        this.modeJalan = 'henti';
+        this.lamaHenti = HENTI_MIN + rng() * (HENTI_MAKS - HENTI_MIN);
+        this.moving = false;
+        return;
+      }
+      this.sasaran = (this.sasaran + 1) % this.titik.length;
+      return;
+    }
+    const before = { x: this.x, y: this.y };
+    this.move(map, dx / dist, dy / dist, dt);
+    if (Math.hypot(this.x - before.x, this.y - before.y) < 0.1) {
+      if ((this.macet += dt) > 0.8) {
+        // Tersangkut: lewati tile ini dan coba berikutnya. Menunggu lebih lama
+        // hanya membuatnya terlihat membeku di balik bangunan.
+        this.macet = 0;
+        this.sasaran = (this.sasaran + 1) % this.titik.length;
+      }
+    } else {
+      this.macet = 0;
+    }
   }
 
   /**
@@ -44,7 +185,19 @@ export class Npc extends Character {
    * kita): namanya digambar lebih terang dan ada titik penanda, sehingga murid
    * tahu siapa yang harus dihampiri tanpa mencoba satu per satu.
    */
+  /**
+   * Warga bermotor memakai lembar 48x64 — 16 px lebih tinggi daripada pejalan
+   * kaki (48 px), jadi kedua bingkai tidak boleh ditukar. Karena `Character.draw`
+   * membaca `spriteKendaraan` lebih dulu, cukup isi medan itu dengan nama lembar
+   * motor; mengosongkannya mengembalikan ia ke lembar jalan kaki.
+   */
+  draw(ctx, camX, camY) {
+    if (this.kendaraan) this.spriteKendaraan = this.kendaraan.naik;
+    super.draw(ctx, camX, camY);
+  }
+
   drawName(ctx, camX, camY, dekat = false) {
+    const jarakNama = this.kendaraan ? 62 : 46;   // motor 64 px, pejalan 48 px
     const x = Math.round(this.x - camX);
     const y = Math.round(this.y - camY);
     ctx.save();
@@ -53,7 +206,9 @@ export class Npc extends Character {
     ctx.textBaseline = 'top';
     const w = Math.ceil(ctx.measureText(this.name).width) + 12;
     const h = 17;
-    const bx = x - w / 2, by = y - 46;
+    // Kendaraan berbingkai 64 px, pejalan kaki 48 px: nama harus ikut naik,
+    // kalau tidak ia menutupi setang dan lampu motor.
+    const bx = x - w / 2, by = y - jarakNama;
     ctx.globalAlpha = dekat ? 0.95 : 0.72;
     ctx.fillStyle = dekat ? '#2f2118' : '#3a2a2a';
     ctx.fillRect(bx, by, w, h);
@@ -73,6 +228,7 @@ export class Npc extends Character {
   }
 
   update(map, dt, rng = Math.random) {
+    if (this.kendaraan) { this.updateKendaraan(map, dt, rng); return; }
     if (this.talking) { this.moving = false; return; }
     if (!this.target) {
       this.wait -= dt;

@@ -667,6 +667,49 @@ def buat() -> None:
                 "Layar hasil: BELUM LULUS, nilai, batas 80%, dan pembahasan soal yang salah."),
     ]
 
+    # ------------------------------- 8b. Ustadz Tasoro: remedial & pengayaan
+    #
+    # Ditulis TANPA tangkapan layar baru: gambar panduan berasal dari
+    # tools/panduan/tangkap-layar.mjs yang butuh peramban, dan bagian ini harus
+    # tetap bisa dibuat ulang di mesin tanpa peramban.
+    cerita += [
+        P("BAGIAN 8B — USTADZ TASORO: REMEDIAL DAN PENGAYAAN", "h1"),
+        P("Ustadz Tasoro adalah guru mengaji keliling. Ia berpeci dan naik sepeda motor, "
+          "dan <b>tidak tinggal di satu tempat</b>: ia memutari lembah lewat jalan desa, "
+          "lalu berhenti 8–15 detik di <b>Balai Desa</b> dan <b>Perpustakaan</b>. Baru "
+          "saat berhenti itu namanya menyala dan kamu bisa menekan E. Kalau ia sedang "
+          "melaju, tunggu di salah satu dari dua tempat tadi — jangan dikejar.", "isi"),
+        P("Yang ia berikan bukan ujian bab, melainkan dua jalur tambahan atas "
+          "<b>lima bab pertama kelasmu</b>:", "isi"),
+        kotak_tabel([
+            ["Jalur", "Isi", "Untuk siapa"],
+            ["Remedial", "50 soal (10 per bab, 5 bab)", "Mengulang pelajaran yang belum dikuasai"],
+            ["Pengayaan", "50 soal (10 per bab, 5 bab)", "Soal nalar: membandingkan, menilai, menyimpulkan"],
+        ], [26, 56, 70]),
+        Spacer(1, 3 * mm),
+        butir([
+            "Tiap kelas (X, XI, XII) punya bank soalnya sendiri, 50 soal per jalur.",
+            "Soalnya <b>diundi</b> dari bank itu setiap kali, jadi mengulang tidak "
+            "menghafal urutan.",
+            "Batas lulusnya sama: <b>80%</b> — 40 benar dari 50.",
+            "Remedial boleh ditempuh kapan saja, <b>tanpa syarat sudah lulus bab apa pun</b>. "
+            "Justru untuk murid yang belum lulus.",
+        ]),
+        P("Yang perlu kamu tahu sebelum menempuhnya — ini janji permainannya:", "h2"),
+        butir([
+            "Hasil remedial dan pengayaan <b>tidak menulis “lulus”</b> untuk bab mana pun, "
+            "jadi tidak membuka alat dan tidak membuka peningkatan di papan Ragam Usaha.",
+            "Keduanya <b>tidak masuk nilai sekolah</b> dan <b>tidak dikirim ke spreadsheet guru</b>.",
+            "Hanya <b>pengayaan</b> yang lulus yang memberi <b>+1 diamond</b>. Remedial tidak, "
+            "karena remedial adalah latihan ulang, bukan prestasi baru.",
+            "Layar hasilnya menyebut benar/salah <b>per bab</b>, supaya jelas bab mana yang "
+            "harus kamu baca ulang. Itulah gunanya remedial.",
+        ]),
+        P("Ujian bab yang sesungguhnya tetap diberikan warga yang mengajar bab itu, seperti "
+          "biasa. Tasoro tidak mengajar keahlian apa pun, jadi alat-alatmu tetap dibuka oleh "
+          "warga lain.", "isi"),
+    ]
+
     # ------------------------------------------ 9. kenapa alat tidak bekerja
     cerita += [
         P("BAGIAN 9 — KENAPA ALATKU TIDAK BEKERJA", "h1"),

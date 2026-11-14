@@ -182,6 +182,32 @@ YANG PERLU DIKETAHUI
   Lembar sprite dibuat ulang dengan `node tools/buat-sprite-kendaraan.mjs`;
   kalau skrip itu diubah tanpa membuat ulang, tests/uji.mjs akan gagal
   ("berkas berbeda").
+- USTADZ TASORO — guru mengaji keliling, berpeci dan naik sepeda motor.
+  Ia TIDAK tinggal di satu tempat: ia memutari lembah lewat jalan desa, lalu
+  BERHENTI 8–15 detik di Balai Desa dan Perpustakaan, dan hanya saat berhenti
+  itu ia bisa diajak bicara. Kalau ia sedang melaju, label "Bicara" tidak
+  muncul — tunggu di salah satu dari dua tempat tadi, jangan dikejar.
+  Motornya tidak pernah dimatikan saat berhenti: ia tetap digambar di atas
+  motornya, bukan berdiri di sampingnya.
+  Yang ia berikan BUKAN ujian bab, melainkan dua jalur tambahan atas LIMA BAB
+  PERTAMA kelasmu:
+    · REMEDIAL  — 50 soal (10 untuk tiap bab dari lima bab pertama) untuk
+                  mengulang pelajaran yang belum dikuasai. Boleh ditempuh kapan
+                  saja, tanpa syarat sudah lulus bab mana pun — justru untuk
+                  murid yang BELUM lulus.
+    · PENGAYAAN — 50 soal dari lima bab yang sama, tetapi menuntut nalar
+                  (menganalisis, membandingkan, menilai), bukan hafalan.
+  Keduanya 50 soal per kelas (X, XI, XII punya bank sendiri), dan soalnya
+  DIUNDI dari bank itu setiap kali, jadi mengulang tidak menghafal urutan.
+  Nilai lulusnya sama: 80% (40 benar dari 50).
+  PENTING — apa yang TIDAK dilakukan kedua jalur ini:
+    · tidak menulis "lulus" untuk bab mana pun, jadi tidak membuka peningkatan
+      di papan Ragam Usaha dan tidak membuka alat;
+    · tidak masuk nilai sekolah dan TIDAK dikirim ke spreadsheet guru;
+    · hanya PENGAYAAN yang lulus yang memberi +1 diamond (remedial tidak,
+      karena remedial adalah latihan ulang, bukan prestasi baru).
+  Layar hasilnya menyebut benar/salah PER BAB, supaya jelas bab mana yang harus
+  dibaca ulang. Itulah gunanya remedial.
 - DIAMOND: setiap ujian bab yang LULUS memberi +1 diamond, dan mengulang bab
   yang sama juga +1 lagi (tanpa batas). Tidak lulus = 0. Hadiahnya per ujian,
   bukan per soal — satu bab yang banknya 30 soal tetap 1 diamond. Angkanya
@@ -273,18 +299,26 @@ YANG PERLU DIKETAHUI SAAT MENGUJI
 
 MEMERIKSA DATA SEBELUM MENDORONG
 
-Alat-alat ini tidak memerlukan peramban. Tiga yang pertama cukup Node.js saja;
-yang terakhir butuh DOM (`npm i jsdom`) dan akan melewati dirinya sendiri kalau
-jsdom belum terpasang:
+Alat-alat ini tidak memerlukan peramban. Semuanya cukup Node.js saja, kecuali
+yang terakhir: ia butuh DOM (`npm i jsdom`) dan akan melewati dirinya sendiri
+kalau jsdom belum terpasang.
 
   node tools/buat-sprite-kendaraan.mjs  # membuat ulang 12 lembar sprite
                                      # "pemain menaiki kendaraan" (butuh Node
                                      # saja, tanpa pustaka tambahan)
-  node tools/periksa-data.mjs        # 30 bab, 900 soal, pembagian bab ke warga,
-                                     # alat, dan isi papan Ragam Usaha
+  node tools/buat-sprite-tasoro.mjs  # membuat ulang sprite & potret Ustadz
+                                     # Tasoro (lembar jalan kaki 32x48, lembar
+                                     # motor 48x64, potret 96x96)
+  node tools/periksa-data.mjs        # 30 bab, 900 soal, 300 soal remedial &
+                                     # pengayaan, pembagian bab ke warga, alat,
+                                     # dan isi papan Ragam Usaha
   node tools/uji-tata-letak.mjs      # layar Ragam Usaha di lima ukuran layar:
                                      # nama guru utuh, kalimat tidak terpotong
-  node tests/uji.mjs                 # seluruh uji sistem (±3.100 pemeriksaan)
+  node tools/uji-tasoro.mjs          # layar ujian & hasil remedial/pengayaan di
+                                     # lima ukuran layar: 50 soal tertulis,
+                                     # rincian lima bab tampil, janji "tidak masuk
+                                     # nilai sekolah" tidak hilang
+  node tests/uji.mjs                 # seluruh uji sistem (±3.300 pemeriksaan)
   node tools/uji-sentuh.mjs          # baris "Tombol sentuh" di Pengaturan
                                      # (butuh DOM: npm i jsdom)
 

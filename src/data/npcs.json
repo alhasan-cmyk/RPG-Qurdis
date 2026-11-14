@@ -50,6 +50,48 @@
     ]
   },
   {
+    "id": "tasoro",
+    "name": "Ustadz Tasoro",
+    "sprite": "npc_tasoro",
+    "portrait": "portrait_npc_tasoro",
+    "role": "Guru mengaji keliling",
+    "kendaraan": {
+      "naik": "npc_tasoro_motor",
+      "henti": [
+        "balai",
+        "perpustakaan"
+      ],
+      "ujian": [
+        "remedial",
+        "pengayaan"
+      ]
+    },
+    "likes": [
+      "Kopi",
+      "Es Kelapa"
+    ],
+    "dialogs": {
+      "default": [
+        "Assalamualaikum, Nak.|Aku keliling lembah ini pakai motor butut. Kalau aku sudah berhenti, baru boleh kau hampiri — jangan dikejar di jalan, berbahaya.",
+        "Ilmu itu dicari, bukan ditunggu. Kalau ada bab yang belum kau kuasai, datang saja; kita ulang pelan-pelan.",
+        "Aku berhenti lama di balai desa dan perpustakaan. Di situ tempatku mengajar, bukan di tengah jalan."
+      ],
+      "winter": [
+        "Dingin begini tetap kukelilingi lembah. Motor tua ini masih kuat, dan murid tidak boleh menunggu terlalu lama."
+      ],
+      "friend": [
+        "Kau ini murid yang rajin. Aku sengaja memutar lembah lebih lama supaya sempat mampir ke tempatmu.",
+        "Jangan malu mengulang pelajaran. Yang mengulang itu yang akhirnya hafal, bukan yang malu bertanya.",
+        "Kalau sudah lulus semua, giliranmu mengajari yang lain. Ilmu itu bertambah kalau dibagi."
+      ]
+    },
+    "wants": [
+      "kopi",
+      "es_kelapa",
+      "jamu"
+    ]
+  },
+  {
     "id": "sari",
     "name": "Bu Sari",
     "sprite": "npc_sari",
