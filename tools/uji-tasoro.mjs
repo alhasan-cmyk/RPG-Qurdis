@@ -147,6 +147,12 @@ for (const kelas of ['X', 'XI', 'XII']) {
           if (j.tepat) u.perBab[j.bab].benar++;
         }
         ui.mode = 'ujianHasil';
+        // Skenario ini menggambar layar hasil langsung, tanpa melewati
+        // `jawabUjian()` — jadi status pengiriman diisi sendiri. Tanpa ini,
+        // yang diuji adalah layar yang belum pernah terjadi di permainan.
+        // Ketiga keadaan diuji bergiliran supaya tidak ada yang terpotong:
+        //   mengirim (teks panjang), ok (pendek), antre (paling panjang).
+        u.terkirim = ['mengirim', 'ok', 'antre'][(benar === 50 ? 0 : 2)];
         const { ctx, tulisan } = kanvasTiruan(w, h);
         ui.draw(ctx);
         for (const t of tulisan) {
@@ -162,8 +168,23 @@ for (const kelas of ['X', 'XI', 'XII']) {
         if (jumlahBab !== 5) {
           salah(`${label} hasil (${sebut}): rincian per bab ${jumlahBab}, seharusnya 5`);
         }
-        if (!/tidak dikirim ke spreadsheet guru/.test(tulisan.map((t) => t.s).join(' '))) {
-          salah(`${label} hasil (${sebut}): janji "tidak dikirim ke spreadsheet" tidak tampil`);
+        // Janji yang berlaku sejak 2026-11-10: hasilnya MASUK catatan guru
+        // (tab `Remedial`), tetapi TIDAK masuk nilai sekolah. Kalimat lama
+        // ("tidak dikirim") sudah tidak benar dan tidak boleh muncul lagi.
+        const semuaHasil = tulisan.map((t) => t.s).join(' ');
+        if (!/tidak masuk nilai sekolah/.test(semuaHasil)) {
+          salah(`${label} hasil (${sebut}): janji "tidak masuk nilai sekolah" tidak tampil`);
+        }
+        if (!/masuk catatan guru/.test(semuaHasil)) {
+          salah(`${label} hasil (${sebut}): keterangan "masuk catatan guru" tidak tampil`);
+        }
+        if (/tidak dikirim ke spreadsheet guru/.test(semuaHasil)) {
+          salah(`${label} hasil (${sebut}): kalimat lama "tidak dikirim" masih tampil`);
+        }
+        // Status pengiriman juga harus terbaca — murid berhak tahu hasilnya
+        // sudah sampai, masih ditahan, atau gagal.
+        if (!/spreadsheet guru/.test(semuaHasil)) {
+          salah(`${label} hasil (${sebut}): status pengiriman ke spreadsheet tidak tampil`);
         }
         // Baris kaki (tombol tutup) harus digambar paling akhir, di bawah isi.
         const kaki = tulisan.find((t) => /E\s+tutup/.test(t.s));

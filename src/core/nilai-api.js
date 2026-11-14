@@ -4,12 +4,16 @@
 // di peramban, dan tidak perlu. Semua permintaan lewat satu Web App Apps Script
 // (`apps-script/Code.gs`) yang menulis ke tab `Akun` dan `Nilai`.
 //
-// Tiga hal yang dijaga di sini:
+// Empat hal yang dijaga di sini:
 //   1. Daftar/masuk hanya sekali per murid; identitas disimpan di peramban
 //      supaya murid yang kembali tidak mengetik ulang nama, kelas, dan PIN.
-//   2. Nilai dikirim HANYA untuk bab yang lulus (aturan sekolah).
+//   2. Nilai ujian bab dikirim HANYA untuk bab yang lulus (aturan sekolah).
 //   3. Kalau jaringan sekolah putus, nilai tidak hilang: ia masuk antrean di
 //      peramban dan dikirim ulang saat game dibuka lagi.
+//   4. Hasil remedial & pengayaan Ustadz Tasoro DIKIRIM, tetapi dengan penanda
+//      `jalur` supaya Apps Script menuliskannya di tab `Remedial`, terpisah
+//      dari `Nilai`. Hasil gagal pun ikut terkirim — justru itu gunanya
+//      remedial bagi guru — sedangkan ujian bab tetap hanya yang lulus.
 
 /**
  * URL Web App Apps Script (berakhiran /exec).
@@ -204,6 +208,68 @@ export async function kirimNilai({ kitab, judul, benar, jumlah, nilai, kelas }) 
   if (!r.ok && r.offline) { tulisAntre([...antre(), isi]); return { ...r, antre: true }; }
   // Nilai yang lebih rendah dari yang sudah tercatat bukan kegagalan: server
   // mempertahankan yang terbaik.
+  return r;
+}
+
+/**
+ * Kirim hasil ujian REMEDIAL atau PENGAYAAN ke tab `Remedial`.
+ *
+ * Sengaja dipisah dari `kirimNilai`, bukan ditambah satu parameter di sana.
+ * `kirimNilai` punya aturan mati: yang di bawah 80% tidak dikirim. Aturan itu
+ * milik ujian bab dan tidak boleh ikut longgar hanya karena ada fitur baru.
+ * Di sini aturannya justru sebaliknya — SEMUA hasil dikirim, lulus maupun
+ * tidak, karena guru perlu tahu bab mana yang belum dikuasai murid sebelum
+ * remedial. Yang membedakan keduanya adalah medan `jalur`: server menulisnya
+ * ke tab lain, jadi baris remedial tidak pernah tercampur nilai sekolah.
+ *
+ * `perBab` ikut dikirim (bukan hanya nilai akhir) supaya guru bisa melihat
+ * bab mana yang merah tanpa harus membuka layar permainan murid.
+ */
+export async function kirimJalur({ jalur, judul, benar, jumlah, nilai, kelas, hari, perBab }) {
+  const murid = muridAktif();
+  if (!murid) return { ok: false, error: 'Murid belum terdaftar di peramban ini.' };
+
+  // Rincian per bab dirampingkan ke bentuk pendek: { 'x-wahyu': [9, 10] }.
+  // Tanpa ini isi permintaan membengkak oleh nama bab yang panjang dan tidak
+  // ada gunanya bagi server.
+  const rincian = {};
+  for (const [id, v] of Object.entries(perBab ?? {})) {
+    if (!v) continue;
+    rincian[id] = [Number(v.benar) || 0, Number(v.jumlah) || 0];
+  }
+
+  const isi = {
+    aksi: 'jalur',
+    jalur,
+    nama: murid.nama,
+    pin: murid.pin,
+    kelas: kelas ?? murid.kelas,
+    bab: jalur,
+    judul,
+    nilai: Number(nilai),
+    benar: Number(benar),
+    jumlah: Number(jumlah),
+    hari: hari ?? null,
+    perBab: rincian,
+  };
+
+  if (!tersambung()) { tulisAntre([...antre(), isi]); return { ok: false, offline: true, antre: true }; }
+
+  // Sama seperti kirimNilai: pendaftaran yang tertunda dikirim lebih dulu,
+  // karena tanpa baris di tab Akun server akan menolak hasilnya.
+  if (murid.terdaftar === false) {
+    const d = await panggil({ aksi: 'daftar', nama: murid.nama, kelas: murid.kelas, pin: murid.pin });
+    if (d.ok || d.sudahAda) {
+      const m = d.ok ? d : await panggil({ aksi: 'masuk', nama: murid.nama, pin: murid.pin });
+      if (!m.ok) return { ok: false, error: m.error ?? 'Pendaftaran tertunda gagal.' };
+      simpanMurid({ ...murid, terdaftar: true });
+    }
+  }
+
+  const r = await panggil(isi);
+  if (!r.ok && r.offline) { tulisAntre([...antre(), isi]); return { ...r, antre: true }; }
+  // Server menyimpan SEMUA percobaan (bukan hanya yang tertinggi), karena
+  // remedial yang gagal lalu berhasil adalah cerita yang ingin dilihat guru.
   return r;
 }
 

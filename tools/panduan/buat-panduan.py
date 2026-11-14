@@ -699,12 +699,28 @@ def buat() -> None:
         butir([
             "Hasil remedial dan pengayaan <b>tidak menulis “lulus”</b> untuk bab mana pun, "
             "jadi tidak membuka alat dan tidak membuka peningkatan di papan Ragam Usaha.",
-            "Keduanya <b>tidak masuk nilai sekolah</b> dan <b>tidak dikirim ke spreadsheet guru</b>.",
+            "Keduanya <b>tidak masuk nilai sekolah</b>: angkanya tidak pernah ditulis di tab "
+            "<b>Nilai</b> dan tidak mengubah nilai bab mana pun.",
             "Hanya <b>pengayaan</b> yang lulus yang memberi <b>+1 diamond</b>. Remedial tidak, "
             "karena remedial adalah latihan ulang, bukan prestasi baru.",
             "Layar hasilnya menyebut benar/salah <b>per bab</b>, supaya jelas bab mana yang "
             "harus kamu baca ulang. Itulah gunanya remedial.",
         ]),
+        P("Hasilnya tetap sampai ke guru, tetapi di tempat yang berbeda dan dengan aturan "
+          "yang berbeda — ini yang baru:", "h2"),
+        kotak_tabel([
+            ["Tempat", "Isi", "Kapan ditulis"],
+            ["Tab Remedial", "Satu baris per percobaan remedial/pengayaan, "
+             "lengkap dengan rincian per bab", "Setiap kali selesai, lulus maupun tidak"],
+            ["Tab Rekap Nilai", "Satu baris per murid, nilai berjejer ke samping", "Otomatis setiap ada nilai baru"],
+        ], [30, 74, 48]),
+        Spacer(1, 3 * mm),
+        P("Bedanya dengan ujian bab: tab <b>Nilai</b> hanya "
+          "mencatat ujian bab yang <b>lulus</b> (80% ke atas), sedangkan tab "
+          "<b>Remedial</b> mencatat <b>semua</b> hasil. "
+          "Justru hasil yang belum lulus itu yang perlu diketahui gurumu sebelum remedial "
+          "diulang. Di layar hasil kamu akan melihat terus terang apakah hasilnya sudah "
+          "terkirim, masih ditahan karena jaringan, atau gagal.", "isi"),
         P("Ujian bab yang sesungguhnya tetap diberikan warga yang mengajar bab itu, seperti "
           "biasa. Tasoro tidak mengajar keahlian apa pun, jadi alat-alatmu tetap dibuka oleh "
           "warga lain.", "isi"),

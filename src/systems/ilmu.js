@@ -45,11 +45,17 @@ export const JALUR_TASORO = {
     id: 'remedial',
     judul: 'Ujian Remedial',
     per: 50,
-    // Remedial TIDAK mengubah `lulus`, TIDAK memberi diamond, dan TIDAK dikirim
-    // ke spreadsheet guru. Tujuannya murni latihan ulang: mengulang pelajaran
-    // yang belum dikuasai sebelum murid menempuh ujian bab yang sebenarnya.
+    // Remedial TIDAK mengubah `lulus`, TIDAK menulis nilai sekolah, dan TIDAK
+    // memberi diamond. Hasilnya TETAP dikirim ke spreadsheet guru, tetapi ke
+    // tab `Remedial` (bukan `Nilai`) lewat nilai-api.js -> kirimJalur.
+    // Tujuannya latihan ulang: mengulang pelajaran yang belum dikuasai sebelum
+    // murid menempuh ujian bab yang sebenarnya.
     menulisLulus: false,
-    terkirim: false,
+    // `tab` = tab spreadsheet tujuan. `nilaiSekolah: false` menegaskan bahwa
+    // angka ini tidak boleh masuk tab `Nilai` dan tidak mengubah nilai bab.
+    tab: 'Remedial',
+    nilaiSekolah: false,
+    kirim: 'selalu',          // kirim SEMUA hasil, lulus maupun belum
     diamond: false,
   },
   pengayaan: {
@@ -57,7 +63,9 @@ export const JALUR_TASORO = {
     judul: 'Ujian Pengayaan',
     per: 50,
     menulisLulus: false,
-    terkirim: false,          // tidak ke spreadsheet guru
+    tab: 'Remedial',
+    nilaiSekolah: false,
+    kirim: 'selalu',
     diamond: true,            // tetap dihargai, tapi TIDAK lewat hadiahLulus bab
   },
 };

@@ -38,7 +38,7 @@ import { UpgradeUI } from './ui/upgrade-ui.js';
 import { Upgrade, BENIH_HARIAN } from './systems/upgrade.js';
 import { Kendaraan } from './systems/kendaraan.js';
 import { JALUR_TASORO } from './systems/ilmu.js';
-import { kirimNilai, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
+import { kirimNilai, kirimJalur, kirimAntre, muridAktif, labelKelasMurid } from './core/nilai-api.js';
 import { NilaiUI } from './ui/nilai-ui.js';
 import { ChatUI } from './ui/chat-ui.js';
 import { AudioSystem } from './systems/audio.js';
@@ -199,6 +199,33 @@ async function boot() {
       return r;
     });
   };
+
+  /**
+   * Kirim hasil remedial / pengayaan ke spreadsheet guru.
+   *
+   * Tabnya beda: Apps Script menulis permintaan `aksi: 'jalur'` ke tab
+   * `Remedial`, bukan ke tab `Nilai`. Itulah yang membuat hasil ini boleh
+   * dikirim tanpa melanggar janji "tidak masuk nilai sekolah" — nilai sekolah
+   * hanya ada di tab `Nilai`.
+   *
+   * Kaitnya sengaja terpisah dari `onLulus` dan `onJalurLulus`:
+   *   onLulus       -> nilai bab: kirimNilai + diamond + simpan
+   *   onJalurLulus  -> hadiah diamond pengayaan saja
+   *   onJalurKirim  -> pengiriman hasil jalur, lulus maupun tidak
+   */
+  state.ilmuUI.onJalurKirim = (hasil) => kirimJalur({
+    jalur: hasil.jalur,
+    judul: hasil.judul,
+    benar: hasil.benar,
+    jumlah: hasil.jumlah,
+    nilai: hasil.nilai,
+    hari: hasil.hari,
+    perBab: hasil.perBab,
+    kelas: labelKelasMurid(state.ilmu.tingkat, state.ilmu.rombel) || muridAktif()?.kelas,
+  }).then((r) => {
+    if (r?.ok) kirimAntre();
+    return r;
+  });
 
   /**
    * Hadiah untuk ujian PENGAYAAN yang lulus.

@@ -259,7 +259,7 @@ export class IlmuUI {
       benar: 0, salah: [], jawaban: [], hari,
       perlu: perluBenar(soal.length),
       judul: `${j.judul} — kelas ${izin.kelas}`,
-      // Jalur ini tidak dikirim ke spreadsheet dan tidak menulis `lulus`, jadi
+      // Jalur ini tidak menulis `lulus` dan tidak menyentuh nilai sekolah, jadi
       // layar tidak boleh menampilkan janji "nilai dikirim ke guru".
       terkirim: null,
       // Catatan per bab dihitung sambil menjawab, supaya layar hasil bisa
@@ -329,8 +329,9 @@ export class IlmuUI {
     if (u.i < u.soal.length) return;
 
     if (u.jalur) {
-      // Jalur remedial/pengayaan: hasilnya TIDAK masuk `lulus`, `nilai`, maupun
-      // spreadsheet guru. Yang didapat murid: catatan pribadi + rincian per bab.
+      // Jalur remedial/pengayaan: hasilnya TIDAK masuk `lulus` maupun `nilai`
+      // sekolah. Yang tercatat di sini: catatan pribadi + rincian per bab;
+      // pengirimannya ke tab `Remedial` dilakukan beberapa baris di bawah.
       const hasil = this.ilmu.catatJalur(u.jalur, u.benar, u.soal.length, u.hari, u.jawaban);
       u.lulus = hasil.lulus;
       u.perlu = hasil.perlu;
@@ -339,6 +340,21 @@ export class IlmuUI {
       u.diamond = null;
       this.mode = 'ujianHasil';
       this.onProgress?.();
+      // Hasil remedial/pengayaan DIKIRIM ke spreadsheet guru (tab `Remedial`,
+      // terpisah dari `Nilai`). Dikirim SELALU — lulus maupun tidak — karena
+      // guru justru perlu tahu bab mana yang belum dikuasai sebelum remedial.
+      // Kaitnya `onJalurKirim`, bukan `onLulus`: `onLulus` menulis nilai
+      // sekolah, dan janji "tidak masuk nilai sekolah" harus tetap utuh.
+      u.terkirim = 'mengirim';
+      Promise.resolve(this.onJalurKirim?.({
+        jalur: u.jalur, judul: u.judul, benar: u.benar,
+        jumlah: u.soal.length, nilai: u.nilai, hari: u.hari,
+        perBab: u.perBab,
+      })).then((r) => {
+        // Tiga keadaan, sama seperti ujian bab: terkirim, DITAHAN (jaringan),
+        // dan gagal. Semuanya ditulis terus terang di layar.
+        u.terkirim = !r ? 'gagal' : (r.ok ? 'ok' : (r.antre || r.offline ? 'antre' : 'gagal'));
+      }).catch(() => { u.terkirim = 'gagal'; });
       if (hasil.lulus && JALUR_TASORO[u.jalur].diamond) {
         // Hadiah pengayaan memakai kait SENDIRI (`onJalurLulus`), bukan
         // `onLulus`. `onLulus` milik ujian bab dan tugasnya antara lain
@@ -752,7 +768,12 @@ export class IlmuUI {
     // petunjuk; sisa ruang di atasnya dipakai isi. Urutan menggambarnya
     // terbalik dari urutan membacanya — disengaja: janji inilah yang tidak
     // boleh hilang di panel kecil, sedangkan kalimat penyemangat boleh dipotong.
-    const janji = wrap(ctx, 'Hasil ini tidak masuk nilai sekolah dan tidak dikirim ke spreadsheet guru.',
+    // Kalimat janji ini berubah 2026-11-10: hasil remedial/pengayaan sekarang
+    // MEMANG dikirim ke spreadsheet, tetapi ke tab `Remedial` yang terpisah dari
+    // tab `Nilai`. Yang tetap dijanjikan — dan yang paling ditanyakan murid —
+    // adalah bahwa angka ini tidak masuk nilai sekolah. Menulis kalimat lama
+    // ("tidak dikirim") berarti layar berbohong tentang apa yang baru terjadi.
+    const janji = wrap(ctx, 'Hasil ini masuk catatan guru, tetapi tidak masuk nilai sekolah.',
       innerW, UI.font);
     const janjiY = y + H - 34 - janji.length * 18;
     const bawah = janjiY - 6;
@@ -830,6 +851,25 @@ export class IlmuUI {
     if (u.lulus && (u.diamond ?? 0) > 0 && cy + 20 <= bawah) {
       icon(ctx, 'ui_diamond', 0, x + 28, cy + 2);
       text(ctx, `+${u.diamond} diamond`, x + 56, cy + 2, { font: UI.fontBig, color: '#2f6a8c' });
+    }
+
+    // Status pengiriman ke spreadsheet guru — keadaan sebenarnya, bukan
+    // harapan. Ditaruh TEPAT di atas janji supaya "masuk catatan guru" dan
+    // "sudah/belum terkirim" terbaca sebagai satu kalimat yang utuh.
+    const status = {
+      mengirim: 'Mengirim hasil ke spreadsheet guru...',
+      ok: 'Hasil sudah terkirim ke spreadsheet guru.',
+      antre: 'Jaringan belum siap — hasil ditahan dan dikirim ke spreadsheet guru otomatis nanti.',
+      gagal: 'Hasil gagal terkirim. Coba lagi dengan membuka Rekap Belajar.',
+    }[u.terkirim];
+    if (status) {
+      const warna = u.terkirim === 'ok' ? '#4f7a2f' : (u.terkirim === 'gagal' ? UI.red : '#7a6647');
+      const barisStatus = wrap(ctx, status, innerW, UI.font);
+      let sy = janjiY - 4 - barisStatus.length * 16;
+      for (const l of barisStatus) {
+        text(ctx, l, x + 28, sy, { font: UI.font, color: warna });
+        sy += 16;
+      }
     }
 
     // Janji yang ditempel di bawah; digambar paling akhir supaya tidak pernah

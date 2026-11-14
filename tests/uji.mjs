@@ -1166,15 +1166,98 @@ for (const k of ['X', 'XI', 'XII']) {
   ok('manual: menyebut tempat ia berhenti',
     /Balai Desa/.test(bacaDulu) && /Perpustakaan/.test(bacaDulu));
   ok('manual: menjanjikan hasilnya tidak masuk nilai sekolah',
-    /tidak masuk nilai sekolah/i.test(bacaDulu)
-    && /tidak dikirim ke spreadsheet guru/i.test(bacaDulu));
+    /tidak masuk nilai sekolah/i.test(bacaDulu));
   ok('manual: menyebut 50 soal per jalur', /50 soal/.test(bacaDulu));
+  // Sejak 2026-11-10 hasil remedial/pengayaan MEMANG dikirim ke spreadsheet,
+  // ke tab `Remedial`. Manual yang masih menulis "TIDAK dikirim" adalah
+  // dokumen yang berbohong — dan itu yang membuat murid/guru bingung.
+  ok('manual: menyebut hasil remedial dikirim ke tab Remedial',
+    /tab `Remedial`/.test(bacaDulu));
+  ok('manual: tidak lagi menjanjikan "tidak dikirim ke spreadsheet"',
+    !/TIDAK dikirim ke spreadsheet guru/i.test(bacaDulu));
+  ok('manual: menyebut tab Rekap Nilai berjejer',
+    /Rekap Nilai/.test(bacaDulu) && /berjejer/i.test(bacaDulu));
 
   const skripPanduan = baca('tools/panduan/buat-panduan.py');
   ok('panduan: ada bagian Ustadz Tasoro', /BAGIAN 8B/.test(skripPanduan));
   ok('panduan: menyebut 40 benar dari 50', /40 benar dari 50/.test(skripPanduan));
   ok('panduan: menyebut janji tidak masuk nilai sekolah',
     /tidak masuk nilai sekolah/.test(skripPanduan));
+  ok('panduan: menyebut tab Remedial & Rekap Nilai',
+    /Tab Remedial/.test(skripPanduan) && /Rekap Nilai/.test(skripPanduan));
+}
+
+// -------------------------------------- remedial/pengayaan terkirim ke spreadsheet
+//
+// Dua aturan yang harus tetap terpisah, dan mudah tertukar tanpa ketahuan:
+//   · ujian BAB   -> hanya yang lulus (>= 80%) dikirim ke tab `Nilai`
+//   · remedial    -> SEMUA hasil dikirim ke tab `Remedial`
+// Kalau `kirimJalur` kelak "dirapikan" menjadi satu fungsi dengan `kirimNilai`,
+// remedial yang gagal akan diam-diam hilang — padahal itu inti fiturnya.
+{
+  const api = await import(join(ROOT, 'src/core/nilai-api.js'));
+  ok('nilai-api: kirimJalur diekspor', typeof api.kirimJalur === 'function');
+  ok('nilai-api: kirimNilai tetap ada (aturan lama tidak digeser)',
+    typeof api.kirimNilai === 'function');
+
+  const sumberApi = baca('src/core/nilai-api.js');
+  ok('nilai-api: kirimJalur mengirim aksi jalur (bukan aksi nilai)',
+    /aksi: 'jalur'/.test(sumberApi));
+  ok('nilai-api: kirimJalur tidak memakai pagar BATAS_LULUS',
+    !/kirimJalur[\s\S]{0,900}BATAS_LULUS/.test(sumberApi.split('export async function kirimJalur')[1]?.slice(0, 900) ?? ''));
+
+  const sumberUi = baca('src/ui/ilmu-ui.js');
+  ok('ilmu-ui: hasil jalur memakai kait onJalurKirim', /onJalurKirim/.test(sumberUi));
+  ok('ilmu-ui: layar hasil menulis status terkirim',
+    /terkirim ke spreadsheet guru/.test(sumberUi) && /ditahan/.test(sumberUi));
+  ok('ilmu-ui: janji di layar bukan lagi "tidak dikirim"',
+    !/tidak dikirim ke spreadsheet guru/.test(sumberUi));
+
+  const sumberMain = baca('src/main.js');
+  ok('main: onJalurKirim disambungkan ke kirimJalur',
+    /onJalurKirim = \(hasil\) => kirimJalur/.test(sumberMain));
+  ok('main: onLulus tetap memakai kirimNilai (nilai sekolah)',
+    /return kirimNilai\(/.test(sumberMain));
+}
+
+// ------------------------------------------------- server spreadsheet (Code.gs)
+//
+// Berkas server tidak bisa dijalankan di sini tanpa Google, jadi yang diperiksa
+// adalah janji yang tertulis di dalamnya. Perilakunya sendiri diuji oleh
+// tools/uji-rekap.mjs (SpreadsheetApp ditiru) — dan uji itu dijalankan di sini
+// supaya satu perintah `node tests/uji.mjs` tidak bisa hijau sementara server
+// spreadsheet sudah rusak.
+{
+  const gs = baca('apps-script/Code.gs');
+  ok('code.gs: ada', gs.length > 2000);
+  ok('code.gs: mengenal aksi jalur', /aksi === 'jalur'/.test(gs));
+  ok('code.gs: menulis tab Remedial', /TAB_REMEDIAL = 'Remedial'/.test(gs));
+  ok('code.gs: membuat lembar Rekap Nilai', /LEMBAR_REKAP = 'Rekap Nilai'/.test(gs));
+  ok('code.gs: menjaga batas lulus 80 di server', /BATAS_LULUS = 80/.test(gs));
+  ok('code.gs: PIN disimpan sebagai hash + garam',
+    /SHA_256/.test(gs) && /garam/.test(gs));
+  ok('code.gs: tidak menyimpan PIN sebagai teks biasa',
+    !/appendRow\(\[nama, kelas, pin/.test(gs));
+  ok('code.gs: rekap menyegarkan diri saat nilai/jalur masuk',
+    (gs.match(/try \{ rekapSemua\(\); \} catch/g) ?? []).length === 2);
+  ok('code.gs: rekap mengosongkan lembar sebelum menulis ulang',
+    /s\.clear\(\)/.test(gs));
+  ok('code.gs: nilai terbaik dipakai di rekap, bukan yang terakhir',
+    /terbaik === null \|\| n > terbaik/.test(gs));
+
+  // Konstanta jalur di ilmu.js harus menyebut tab tujuannya, supaya tidak ada
+  // yang "merapikan" pengiriman kembali ke tab Nilai tanpa sadar.
+  const sumberIlmu = baca('src/systems/ilmu.js');
+  ok('ilmu.js: jalur Tasoro menulis ke tab Remedial', /tab: 'Remedial'/.test(sumberIlmu));
+  // Tiga kemunculan: dua di objek jalur, satu di komentar penjelasnya.
+  ok('ilmu.js: jalur Tasoro ditandai bukan nilai sekolah',
+    (sumberIlmu.match(/nilaiSekolah: false/g) ?? []).length >= 2);
+  ok('ilmu.js: jalur Tasoro mengirim semua hasil', /kirim: 'selalu'/.test(sumberIlmu));
+
+  // Jalankan uji perilaku server; satu perintah, dua berkas yang dijaga.
+  const hasil = spawnSync(process.execPath, [join(ROOT, 'tools/uji-rekap.mjs')], { encoding: 'utf8' });
+  ok('code.gs: uji perilaku (tools/uji-rekap.mjs) lulus', hasil.status === 0,
+    (hasil.stderr || hasil.stdout || '').trim().split('\n').slice(-3).join(' | '));
 }
 
 // ------------------------------------------------------------------ laporan
