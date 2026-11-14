@@ -185,8 +185,21 @@ const ContentService = {
 // dalam satu proyek: Code.gs + Obrolan.gs.
 const code = readFileSync(join(ROOT, 'apps-script', 'Code.gs'), 'utf8');
 const obrolan = readFileSync(join(ROOT, 'apps-script', 'Obrolan.gs'), 'utf8');
+// Server-Lengkap.gs adalah berkas yang BENAR-BENAR ditempel guru ke Apps
+// Script. Menguji dua berkas terpisah saja tidak cukup: kalau penggabungnya
+// lupa menyertakan satu fungsi, uji di sini tetap hijau sementara yang dialami
+// murid adalah obrolan yang mati. Jadi yang diuji adalah berkas gabungannya.
+const gabungan = readFileSync(join(ROOT, 'apps-script', 'Server-Lengkap.gs'), 'utf8');
 const pabrik = new Function('SpreadsheetApp', 'Utilities', 'Session', 'ContentService',
-  `${code}\n${obrolan}\nreturn { doPost, doGet, obrolanAmbil, obrolanTulis, obrolanGuru, pangkasObrolan, kelasRuang, rapikanPesan };`);
+  `${gabungan}\nreturn { doPost, doGet, obrolanAmbil, obrolanTulis, obrolanGuru, pangkasObrolan, kelasRuang, rapikanPesan };`);
+
+// Berkas gabungan harus memuat SEMUA yang dibutuhkan, bukan sebagian.
+for (const f of ['doPost', 'doGet', 'daftar', 'masuk', 'tulisNilai', 'tulisJalur',
+  'rekapSemua', 'obrolanAmbil', 'obrolanTulis', 'obrolanGuru', 'cekPin', 'lembar']) {
+  ok(`gabungan: memuat ${f}`, new RegExp(`function ${f}\\b`).test(gabungan));
+}
+ok('gabungan: tidak memuat kepala berkas dua kali',
+  (gabungan.match(/SERVER LEMBAH ILMU/g) ?? []).length === 1);
 const gs = pabrik(SpreadsheetApp, Utilities, Session, ContentService);
 
 // Tiap permintaan memajukan jam 3 detik: melewati jeda 1,2 detik antar-pesan,

@@ -1334,6 +1334,20 @@ for (const k of ['X', 'XI', 'XII']) {
   ok('obrolan: waktu jeda disimpan sebagai epoch, bukan teks jam',
     /Date\.now\(\)\]/.test(ob) && !/waktuMs/.test(ob));
 
+  // Berkas gabungan untuk guru: satu tempel, bukan dua, supaya tidak ada
+  // urutan penempelan yang bisa salah.
+  const gabung = spawnSync(process.execPath, [join(ROOT, 'tools/gabung-server.mjs'), '--periksa'],
+    { encoding: 'utf8' });
+  ok('server lengkap: Server-Lengkap.gs tidak basi (Code.gs + Obrolan.gs)',
+    gabung.status === 0, (gabung.stderr || gabung.stdout || '').trim());
+  const lengkap = baca('apps-script/Server-Lengkap.gs');
+  ok('server lengkap: ada', lengkap.length > 5000);
+  ok('server lengkap: memuat akun, nilai, dan obrolan sekaligus',
+    /function daftar\b/.test(lengkap) && /function tulisNilai\b/.test(lengkap)
+    && /function obrolanTulis\b/.test(lengkap));
+  ok('server lengkap: menyebut langkah Deploy New version',
+    /New version/.test(lengkap));
+
   // Konstanta jalur di ilmu.js harus menyebut tab tujuannya, supaya tidak ada
   // yang "merapikan" pengiriman kembali ke tab Nilai tanpa sadar.
   const sumberIlmu = baca('src/systems/ilmu.js');

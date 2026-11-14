@@ -256,11 +256,15 @@ YANG PERLU DIKETAHUI
     detik antar-pesan per murid supaya satu orang tidak membanjiri ruang.
     Untuk menengok obrolan satu kelas tanpa membuka spreadsheet, buka
     URL /exec?aksi=obrolan&kelas=X di peramban.
-- UNTUK MENGAKTIFKAN OBROLAN: tempel isi `apps-script/Obrolan.gs` ke bagian
-  paling bawah `apps-script/Code.gs` (atau tambahkan sebagai berkas baru di
-  editor Apps Script), lalu Deploy -> Manage deployments -> Edit -> Version:
-  New version. Selama belum, panel obrolan menulis "Obrolan belum dipasang di
-  Apps Script" dan permainan tetap jalan seperti biasa — tidak ada yang rusak.
+- UNTUK MENGAKTIFKAN OBROLAN (dan sekaligus memperbarui server nilai):
+  tempel SELURUH isi `apps-script/Server-Lengkap.gs` ke `Code.gs` di editor
+  Apps Script — hapus isinya dulu, lalu tempel, simpan. Sesudah itu
+  Deploy -> Manage deployments -> Edit -> Version: New version -> Deploy.
+  Satu berkas, satu tempel; tidak ada urutan penempelan yang bisa salah.
+  Selama belum, panel obrolan menulis "Obrolan belum dipasang di Apps Script"
+  dan permainan tetap jalan seperti biasa — tidak ada yang rusak.
+  `Server-Lengkap.gs` adalah GABUNGAN `Code.gs` + `Obrolan.gs`; jangan
+  disunting dengan tangan, buat ulang dengan `node tools/gabung-server.mjs`.
 - Apps Script bukan server real-time: tiap pesan satu permintaan HTTP dan
   pesan sampai dalam ~1-2 detik, bukan seketika. Itu harga yang dibayar karena
   tidak perlu server sendiri, dan untuk sekelas itu cukup.
@@ -380,6 +384,8 @@ kalau jsdom belum terpasang.
   node tools/uji-rekap.mjs           # server spreadsheet (apps-script/Code.gs)
   node tools/uji-obrolan.mjs         # obrolan kelas (apps-script/Obrolan.gs):
                                      # batas 30 baris, ruang per kelas, PIN
+  node tools/gabung-server.mjs       # buat ulang apps-script/Server-Lengkap.gs
+                                     # dari Code.gs + Obrolan.gs
                                      # diuji tanpa Google: nilai di bawah 80
                                      # ditolak untuk ujian bab, DITERIMA untuk
                                      # remedial, dan tab Rekap berisi satu baris
