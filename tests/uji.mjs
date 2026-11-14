@@ -1246,6 +1246,54 @@ for (const k of ['X', 'XI', 'XII']) {
     /return kirimNilai\(/.test(sumberMain));
 }
 
+// -------------------------------------- panjang pilihan tidak membocorkan kunci
+//
+// Dulu kunci hampir selalu pilihan TERPANJANG (273/300 soal; 100% di pengayaan
+// X dan XI), sehingga murid bisa menebak tanpa memahami materi. Aturannya
+// sekarang dijaga di tools/periksa-variasi.mjs, dan blok ini memastikan aturan
+// itu tidak bisa dilanggar diam-diam saat soal diedit lagi.
+{
+  const { periksaIlmu, BATAS_SEBARAN, BATAS_SELISIH, BATAS_KUNCI_PANJANG } =
+    await import(join(ROOT, 'tools/periksa-variasi.mjs'));
+
+  ok('variasi: batas sebaran 12 karakter', BATAS_SEBARAN === 12);
+  ok('variasi: batas selisih kunci-vs-pengecoh 8 karakter', BATAS_SELISIH === 8);
+  ok('variasi: batas kunci-terpanjang 40% per bank', BATAS_KUNCI_PANJANG === 0.4);
+
+  const { hasil, pelanggaran } = periksaIlmu(ilmu);
+
+  for (const [nama, r] of Object.entries(hasil)) {
+    const sebaran = r.melanggar.filter((m) => m.sebaranLewat);
+    const selisih = r.melanggar.filter((m) => m.selisihLewat);
+    ok(`variasi: ${nama} sebaran panjang <= ${BATAS_SEBARAN}`,
+      sebaran.length === 0,
+      sebaran.slice(0, 3).map((m) => `#${m.nomor} [${m.panjang.join('/')}]`).join(', '));
+    ok(`variasi: ${nama} kunci tidak jauh lebih panjang dari pengecoh`,
+      selisih.length === 0,
+      selisih.slice(0, 3).map((m) => `#${m.nomor} selisih ${m.selisih.toFixed(1)}`).join(', '));
+    ok(`variasi: ${nama} kunci paling panjang <= 40%`,
+      r.porsiKunciPanjang <= BATAS_KUNCI_PANJANG,
+      `${r.kunciPanjang}/${r.jumlah}`);
+  }
+
+  ok('variasi: tidak ada pelanggaran di seluruh 300 soal', pelanggaran.length === 0,
+    `${pelanggaran.length} pelanggaran`);
+
+  // Setiap soal masih punya tiga pilihan berbeda dan kunci yang sah — pagar ini
+  // menjaga agar \"meratakan panjang\" tidak berubah menjadi soal rusak.
+  for (const jenis of ['remedial', 'pengayaan']) {
+    for (const kelas of ['X', 'XI', 'XII']) {
+      const bank = ilmu[jenis]?.[kelas] ?? [];
+      ok(`variasi: ${jenis} ${kelas} kunci masih sah`,
+        bank.every((s) => Number.isInteger(s.kunci) && s.kunci >= 0 && s.kunci < s.pilihan.length));
+      ok(`variasi: ${jenis} ${kelas} pilihan tidak ada yang kembar`,
+        bank.every((s) => new Set(s.pilihan).size === s.pilihan.length));
+      ok(`variasi: ${jenis} ${kelas} tidak ada pilihan kosong atau berspasi ganda`,
+        bank.every((s) => s.pilihan.every((t) => t.trim().length > 0 && !/\s{2}/.test(t))));
+    }
+  }
+}
+
 // ------------------------------------------------- server spreadsheet (Code.gs)
 //
 // Berkas server tidak bisa dijalankan di sini tanpa Google, jadi yang diperiksa
@@ -1271,6 +1319,35 @@ for (const k of ['X', 'XI', 'XII']) {
   ok('code.gs: nilai terbaik dipakai di rekap, bukan yang terakhir',
     /terbaik === null \|\| n > terbaik/.test(gs));
 
+  // Obrolan kelas. Yang dijaga di sini adalah hal-hal yang kalau rusak tidak
+  // memunculkan galat, hanya obrolan yang diam-diam salah: batas 30 baris,
+  // ruang per kelas, dan PIN yang diperiksa untuk setiap pesan.
+  const ob = baca('apps-script/Obrolan.gs');
+  ok('obrolan: berkas ada', ob.length > 1500);
+  ok('obrolan: batas 30 baris', /BARIS_OBROLAN = 30/.test(ob));
+  ok('obrolan: baris tertua dihapus, bukan yang terbaru', /deleteRow\(milik\[k\]\)/.test(ob));
+  ok('obrolan: setiap pesan memeriksa PIN', /function obrolanTulis[\s\S]{0,400}cekPin\(/.test(ob));
+  ok('obrolan: ruang diambil dari kelas di tab Akun', /function kelasRuang/.test(ob));
+  ok('obrolan: doPost meneruskan aksi obrolan', /aksi === 'obrolanTulis'/.test(gs));
+  ok('obrolan: tanpa Obrolan.gs, doPost menjawab dengan jelas (tidak melempar)',
+    /tanpaObrolan: true/.test(gs));
+  ok('obrolan: waktu jeda disimpan sebagai epoch, bukan teks jam',
+    /Date\.now\(\)\]/.test(ob) && !/waktuMs/.test(ob));
+
+  // Berkas gabungan untuk guru: satu tempel, bukan dua, supaya tidak ada
+  // urutan penempelan yang bisa salah.
+  const gabung = spawnSync(process.execPath, [join(ROOT, 'tools/gabung-server.mjs'), '--periksa'],
+    { encoding: 'utf8' });
+  ok('server lengkap: Server-Lengkap.gs tidak basi (Code.gs + Obrolan.gs)',
+    gabung.status === 0, (gabung.stderr || gabung.stdout || '').trim());
+  const lengkap = baca('apps-script/Server-Lengkap.gs');
+  ok('server lengkap: ada', lengkap.length > 5000);
+  ok('server lengkap: memuat akun, nilai, dan obrolan sekaligus',
+    /function daftar\b/.test(lengkap) && /function tulisNilai\b/.test(lengkap)
+    && /function obrolanTulis\b/.test(lengkap));
+  ok('server lengkap: menyebut langkah Deploy New version',
+    /New version/.test(lengkap));
+
   // Konstanta jalur di ilmu.js harus menyebut tab tujuannya, supaya tidak ada
   // yang "merapikan" pengiriman kembali ke tab Nilai tanpa sadar.
   const sumberIlmu = baca('src/systems/ilmu.js');
@@ -1284,6 +1361,10 @@ for (const k of ['X', 'XI', 'XII']) {
   const hasil = spawnSync(process.execPath, [join(ROOT, 'tools/uji-rekap.mjs')], { encoding: 'utf8' });
   ok('code.gs: uji perilaku (tools/uji-rekap.mjs) lulus', hasil.status === 0,
     (hasil.stderr || hasil.stdout || '').trim().split('\n').slice(-3).join(' | '));
+
+  const hasilObrolan = spawnSync(process.execPath, [join(ROOT, 'tools/uji-obrolan.mjs')], { encoding: 'utf8' });
+  ok('obrolan: uji perilaku (tools/uji-obrolan.mjs) lulus', hasilObrolan.status === 0,
+    (hasilObrolan.stderr || hasilObrolan.stdout || '').trim().split('\n').slice(-3).join(' | '));
 }
 
 // ------------------------------------------------------------------ laporan

@@ -112,6 +112,17 @@ async function panggil(payload) {
 }
 
 /**
+ * Pintu yang sama, dibuka untuk modul lain.
+ *
+ * Obrolan (`src/systems/chat.js`) memakai Web App yang sama dengan nilai. Ia
+ * tidak boleh menyalin sendiri cara memanggilnya: `Content-Type: text/plain`
+ * di atas bukan pilihan gaya, melainkan syarat supaya permintaannya tidak
+ * gugur di preflight OPTIONS yang tidak dijawab Apps Script. Kalau disalin,
+ * salinan itu akan lupa alasannya dan suatu hari "dirapikan" jadi JSON.
+ */
+export { panggil as panggilServer };
+
+/**
  * Daftarkan murid ke tab `Akun`.
  *
  * Kalau nama ternyata sudah terdaftar (mis. murid pindah peramban), permintaan

@@ -9,6 +9,7 @@
 import { view } from '../render/renderer.js';
 import { panel, text, icon, wrap, UI } from './draw.js';
 import { assets } from '../render/assets.js';
+import { BATAS_BARIS } from '../systems/chat.js';
 
 const BTN = 44;          // bubble button, bottom-left
 const PAD = 12;
@@ -146,14 +147,21 @@ export class ChatUI {
     panel(ctx, p.x, p.y, p.w, p.h);
 
     const headY = p.y + 12;
-    text(ctx, 'OBROLAN DESA', p.x + 16, headY + 2, { font: UI.fontTitle, color: UI.red });
+    // Judul menyebut kelasnya: obrolan ini SATU RUANG PER TINGKAT, dan murid
+    // harus bisa memastikan dengan mata sendiri bahwa ia tidak sedang menulis
+    // di ruang kelas lain.
+    const kelas = this.chat.kelas;
+    text(ctx, kelas ? `OBROLAN KELAS ${kelas}` : 'OBROLAN KELAS', p.x + 16, headY + 2,
+      { font: UI.fontTitle, color: UI.red });
     if (this.chat.status === 'online') {
       icon(ctx, 'ui_chat_icons', 2, p.x + p.w - 16 - 20, headY - 2, 0.625);
-      text(ctx, `${this.chat.online} online`, p.x + p.w - 16 - 26, headY + 2,
+      text(ctx, `${this.chat.messages.length}/${BATAS_BARIS} baris`, p.x + p.w - 16 - 26, headY + 2,
         { font: UI.fontBig, align: 'right', color: '#7a6647' });
     } else {
-      text(ctx, this.chat.status === 'connecting' ? 'menyambung...' : 'terputus',
-        p.x + p.w - 16, headY + 2, { font: UI.fontBig, align: 'right', color: '#7a6647' });
+      const label = this.chat.status === 'tanpaakun' ? 'belum masuk'
+        : (this.chat.status === 'connecting' ? 'menyambung...' : 'terputus');
+      text(ctx, label, p.x + p.w - 16, headY + 2,
+        { font: UI.fontBig, align: 'right', color: '#7a6647' });
     }
 
     const listY = headY + 26;
@@ -182,9 +190,9 @@ export class ChatUI {
     ctx.restore();
 
     if (!rows.length) {
-      const msg = this.chat.status === 'offline'
-        ? 'Server obrolan belum jalan.'
-        : 'Belum ada yang bicara. Sapa duluan!';
+      const msg = this.chat.status === 'tanpaakun' ? 'Masuk dulu untuk ikut obrolan kelas.'
+        : this.chat.status === 'offline' ? 'Server obrolan belum terhubung.'
+          : 'Belum ada yang bicara. Sapa duluan!';
       text(ctx, msg, p.x + p.w / 2, listY + listH / 2 - 8, { font: UI.fontBig, align: 'center', color: '#9a8a72' });
     }
 
@@ -198,8 +206,9 @@ export class ChatUI {
     ctx.strokeStyle = UI.outline;
     ctx.strokeRect(p.x + 12.5, iy + 0.5, iw - 1, inputH - 1);
 
-    const typed = this.input?.value ?? '';
-    const caret = Math.floor(performance.now() / 500) % 2 ? '|' : '';
+    const bisaTulis = this.chat.status !== 'tanpaakun';
+    const typed = bisaTulis ? (this.input?.value ?? '') : '';
+    const caret = bisaTulis && Math.floor(performance.now() / 500) % 2 ? '|' : '';
     const fieldW = iw - 16 - countW;
     ctx.save();
     ctx.beginPath();
@@ -210,14 +219,22 @@ export class ChatUI {
     // real text field does.
     const shown = typed + caret;
     const over = Math.max(0, ctx.measureText(shown).width - fieldW + 4);
-    text(ctx, typed ? shown : 'Ketik pesan...', p.x + 20 - over, iy + 6,
+    // Tanpa akun, kolomnya tetap digambar (supaya panel tidak berubah bentuk)
+    // tetapi diisi alasannya, bukan pura-pura bisa diketik.
+    const kosong = bisaTulis ? 'Ketik pesan...' : 'Masuk dulu untuk menulis';
+    text(ctx, typed ? shown : kosong, p.x + 20 - over, iy + 6,
       { font: UI.fontBig, color: typed ? UI.outline : '#a89878' });
     ctx.restore();
     text(ctx, `${typed.length}/${MAX_LEN}`, p.x + p.w - 20, iy + 9,
       { font: UI.font, align: 'right', color: typed.length >= MAX_LEN ? '#b8432e' : '#a89878' });
 
-    text(ctx, 'Enter kirim  ·  Esc tutup  ·  roda gulir riwayat', p.x + p.w / 2, iy + inputH + 4,
-      { font: UI.font, align: 'center', color: '#7a6647' });
+    // Batas 30 baris ditulis di sini, bukan disembunyikan: murid berhak tahu
+    // bahwa pesan lama memang hilang, bukan gagal tersimpan.
+    const hint = bisaTulis
+      ? `Enter kirim  ·  Esc tutup  ·  hanya ${BATAS_BARIS} baris terakhir tersimpan`
+      : (this.chat.error || 'Masuk dulu untuk ikut obrolan kelas.');
+    text(ctx, hint, p.x + p.w / 2, iy + inputH + 4,
+      { font: UI.font, align: 'center', color: bisaTulis ? '#7a6647' : '#b8432e' });
   }
 
   /** Wrap every message once per draw; the list is short enough for that. */

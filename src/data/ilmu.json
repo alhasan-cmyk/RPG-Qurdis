@@ -10503,8 +10503,8 @@
     "tanya": "Kata \"wahyu\" (وحي) secara bahasa bermakna ...",
     "pilihan": [
      "Pemberitahuan secara rahasia dan cepat",
-     "Bacaan yang panjang",
-     "Kumpulan syair pilihan"
+     "Pemberitahuan lewat mimpi yang panjang",
+     "Bacaan yang dikumpulkan dari syair"
     ],
     "kunci": 0,
     "bahas": "Secara bahasa wahyu berarti pemberitahuan yang tersembunyi dan cepat. Karena itu para ulama membedakan wahyu dari ilham dan dari bisikan."
@@ -10514,8 +10514,8 @@
     "tanya": "Salah satu fungsi Al-Qur'an menurut QS Fussilat 41:44 adalah ...",
     "pilihan": [
      "Petunjuk dan kabar gembira bagi orang beriman",
-     "Catatan silsilah bangsa Arab",
-     "Buku hitung dagang"
+     "Kabar gembira bagi siapa saja tanpa syarat iman",
+     "Petunjuk yang khusus bagi kaum Arab saja"
     ],
     "kunci": 0,
     "bahas": "QS Fussilat 41:44 menyebut Al-Qur'an sebagai petunjuk dan kabar gembira bagi orang beriman. Fungsi inilah yang menjadi dasar definisi Al-Qur'an menurut istilah."
@@ -10524,9 +10524,9 @@
     "bab": "x-wahyu",
     "tanya": "Al-Qur'an diturunkan dalam bahasa Arab. Apa hikmah utamanya?",
     "pilihan": [
-     "Agar mudah dipahami oleh kaum yang pertama menerimanya, lalu disampaikan ke seluruh manusia",
-     "Agar tidak ada yang bisa menerjemahkannya",
-     "Agar hanya orang Arab yang boleh membacanya"
+     "Agar mudah dipahami kaum pertama, lalu disampaikan kepada seluruh manusia",
+     "Agar hanya bangsa Arab saja yang boleh menafsirkan seluruh isi dan hukumnya",
+     "Agar isinya tidak dapat diterjemahkan ke dalam bahasa mana pun di dunia ini"
     ],
     "kunci": 0,
     "bahas": "QS Yusuf 12:2 dan QS az-Zukhruf 43:3 menyebut Al-Qur'an berbahasa Arab agar dapat dipahami. Keterpahaman bagi penerima pertama tidak berarti terbatas untuk mereka."
@@ -10536,8 +10536,8 @@
     "tanya": "Yang membedakan Al-Qur'an dari hadis qudsi adalah ...",
     "pilihan": [
      "Lafal dan maknanya dari Allah, serta menjadi mukjizat dan dibaca dalam ibadah",
-     "Hadis qudsi lebih panjang",
-     "Al-Qur'an hanya berisi kisah"
+     "Lafal dari Allah sedangkan maknanya disusun Nabi saat menyampaikannya kepada sahabat",
+     "Maknanya dari Allah sedangkan lafalnya disusun para sahabat Nabi setelah beliau wafat"
     ],
     "kunci": 0,
     "bahas": "Al-Qur'an: lafal dan makna dari Allah, bernilai ibadah saat dibaca, dan tidak boleh diriwayatkan dengan makna saja. Hadis qudsi: maknanya dari Allah, lafalnya dari Nabi."
@@ -10580,8 +10580,8 @@
     "tanya": "Sebutan lain bagi Al-Qur'an yang menunjukkan fungsinya sebagai pembeda benar dan salah adalah ...",
     "pilihan": [
      "Al-Furqan",
-     "Al-Mizan (tanpa makna pembeda)",
-     "Al-Kitab (tanpa makna pembeda)"
+     "Adz-Dzikr",
+     "Al-Huda"
     ],
     "kunci": 0,
     "bahas": "Al-Furqan berarti pembeda. QS al-Furqan 25:1 menyebut kitab yang diturunkan kepada Nabi sebagai pembeda antara yang hak dan yang batil."
@@ -10590,9 +10590,9 @@
     "bab": "x-wahyu",
     "tanya": "Mengapa seorang murid perlu mengetahui bahwa Al-Qur'an adalah wahyu sebelum mempelajarinya?",
     "pilihan": [
-     "Agar tumbuh sikap hormat dan hati-hati dalam memahami dan menyampaikannya",
-     "Agar bisa merasa lebih pandai dari temannya",
-     "Agar tidak perlu belajar tafsir lagi"
+     "Agar tumbuh sikap hormat dan hati-hati dalam memahami serta menyampaikannya",
+     "Agar bisa merasa lebih pandai daripada teman sekelasnya di sekolah nanti",
+     "Agar tidak perlu belajar tafsir dan hadis lagi setelah lulus dari sekolah dasar"
     ],
     "kunci": 0,
     "bahas": "Mengetahui kedudukan Al-Qur'an sebagai kalam Allah membuat murid membacanya dengan adab dan menafsirkan dengan ilmu, bukan dengan tebakan."
@@ -10613,8 +10613,8 @@
     "tanya": "QS al-Furqan 25:32 menjawab tuduhan orang kafir tentang penurunan berangsur. Jawabannya adalah ...",
     "pilihan": [
      "Agar meneguhkan hati Nabi dan dibaca dengan tartil",
-     "Karena belum ada kertas",
-     "Agar ayatnya lebih sedikit"
+     "Karena waktu itu belum ada kertas untuk menulis seluruh ayat",
+     "Agar jumlah ayat yang diturunkan menjadi lebih sedikit"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut dua alasan: litusabbita bihi fu'adaka (meneguhkan hatimu) dan rattalnahu tartila (dibacakan bertahap dan jelas)."
@@ -10624,8 +10624,8 @@
     "tanya": "Ayat yang pertama turun berisi perintah ...",
     "pilihan": [
      "Membaca dengan nama Tuhan yang mencipta",
-     "Mendirikan salat lima waktu",
-     "Menunaikan zakat"
+     "Mendirikan salat lima waktu dengan tertib",
+     "Menunaikan zakat bagi yang mampu"
     ],
     "kunci": 0,
     "bahas": "QS al-'Alaq 96:1-5 dimulai dengan iqra' bismi rabbika alladzi khalaq — perintah membaca dengan nama Tuhan."
@@ -10635,8 +10635,8 @@
     "tanya": "Surah terakhir yang diturunkan menurut pendapat yang masyhur adalah ...",
     "pilihan": [
      "Al-Ma'idah (atau an-Nasr menurut sebagian ulama)",
-     "Al-'Alaq",
-     "Al-Fatihah"
+     "Al-'Alaq, surah yang pertama diturunkan kepada Nabi",
+     "Al-Fatihah, surah pembuka yang dibaca setiap salat"
     ],
     "kunci": 0,
     "bahas": "Terdapat perbedaan pendapat ulama; yang masyhur menyebut QS al-Ma'idah, dan sebagian menyebut an-Nasr. Perbedaan ini dikenal dalam studi nuzul."
@@ -10657,8 +10657,8 @@
     "tanya": "Apa bedanya ayat Makkiyah dan Madaniyah dari sisi isi?",
     "pilihan": [
      "Makkiyah umumnya menegaskan akidah, Madaniyah banyak mengatur muamalah dan hukum",
-     "Makkiyah hanya tentang kisah, Madaniyah hanya tentang doa",
-     "Tidak ada bedanya sama sekali"
+     "Makkiyah hanya berisi kisah nabi terdahulu, Madaniyah hanya berisi doa harian pendek",
+     "Tidak ada perbedaan isi sama sekali antara ayat Makkiyah dan ayat Madaniyah"
     ],
     "kunci": 0,
     "bahas": "Makkiyah menekankan tauhid, hari akhir, dan akhlak; Madaniyah banyak memuat hukum keluarga, sosial, dan ibadah yang terperinci."
@@ -10689,9 +10689,9 @@
     "bab": "x-nuzul",
     "tanya": "Mengapa mengetahui asbabun nuzul penting bagi penafsir?",
     "pilihan": [
-     "Agar tidak salah memahami ayat yang turun karena peristiwa tertentu",
-     "Agar bisa mengubah urutan surah",
-     "Agar ayat bisa dipilih sesuai selera"
+     "Agar tidak salah memahami ayat yang turun karena suatu peristiwa tertentu",
+     "Agar dapat mengubah urutan surah yang ada di dalam mushaf Al-Qur'an",
+     "Agar setiap ayat dapat ditafsirkan sesuai selera penafsir sendiri tanpa dasar"
     ],
     "kunci": 0,
     "bahas": "Tanpa mengetahui sebab turunnya, sebuah ayat bisa dipahami terlalu umum atau terlalu sempit. Kaidahnya: yang menjadi patokan adalah keumuman lafal, bukan kekhususan sebab — tetapi sebabnya tetap menerangkan konteks."
@@ -10701,7 +10701,7 @@
     "tanya": "Nuzulul Qur'an diperingati pada bulan ...",
     "pilihan": [
      "Ramadan",
-     "Syawal",
+     "Muharram",
      "Rajab"
     ],
     "kunci": 0,
@@ -10723,8 +10723,8 @@
     "tanya": "Bukti keotentikan Al-Qur'an yang paling mudah diamati sampai hari ini adalah ...",
     "pilihan": [
      "Tersebarnya hafalan jutaan orang dari generasi ke generasi",
-     "Banyaknya terjemahan berbayar",
-     "Panjangnya jumlah halaman mushaf"
+     "Banyaknya terjemahan Al-Qur'an yang dijual berbayar di toko",
+     "Tebalnya jumlah halaman pada mushaf yang beredar di masjid"
     ],
     "kunci": 0,
     "bahas": "Hafalan yang berantai dan saling menguatkan membuat satu perubahan kecil pun langsung terdeteksi — berbeda dengan kitab yang hanya mengandalkan salinan tulisan."
@@ -10734,8 +10734,8 @@
     "tanya": "Zaman kodifikasi Al-Qur'an menjadi satu mushaf baku terjadi pada masa khalifah ...",
     "pilihan": [
      "Utsman bin Affan",
-     "Abu Bakar ash-Shiddiq (tanpa peran Utsman)",
-     "Umar bin Khattab (tanpa peran Utsman)"
+     "Abu Bakar ash-Shiddiq",
+     "Umar bin Khattab"
     ],
     "kunci": 0,
     "bahas": "Pengumpulan pada masa Abu Bakar bersifat menghimpun lembaran; penyalinan menjadi mushaf baku dan pengirimannya ke berbagai wilayah terjadi pada masa Utsman, karena itu disebut Mushaf Utsmani."
@@ -10745,8 +10745,8 @@
     "tanya": "Yang dimaksud \"Mushaf Utsmani\" adalah ...",
     "pilihan": [
      "Salinan Al-Qur'an baku yang disalin dan disebarkan pada masa khalifah Utsman",
-     "Mushaf yang ditulis tangan oleh Nabi",
-     "Terjemahan resmi Al-Qur'an"
+     "Mushaf yang ditulis langsung oleh tangan Nabi Muhammad ﷺ sendiri di Madinah",
+     "Terjemahan resmi Al-Qur'an dalam bahasa Indonesia dan bahasa Inggris yang modern"
     ],
     "kunci": 0,
     "bahas": "Mushaf Utsmani adalah naskah baku yang disalin dari himpunan masa Abu Bakar lalu dikirim ke kota-kota Islam agar bacaan manusia bersatu."
@@ -10755,9 +10755,9 @@
     "bab": "x-otentik",
     "tanya": "Mengapa Al-Qur'an tidak mungkin dipalsukan meski ada yang mencoba?",
     "pilihan": [
-     "Karena Allah menjamin penjagaannya, dan umat menghafal serta menulisnya secara berlapis",
-     "Karena bahasanya sulit",
-     "Karena jumlah halamannya banyak"
+     "Karena Allah menjamin penjagaannya, dan umat menghafal serta menulisnya berlapis",
+     "Karena bahasanya sangat sulit ditiru oleh orang biasa yang tinggal di luar Arab",
+     "Karena jumlah halaman mushafnya sangat banyak dan disimpan rapi di sebuah perpustakaan"
     ],
     "kunci": 0,
     "bahas": "Jaminan Allah (QS al-Hijr 15:9) bekerja melalui dua jalur manusia: hafalan dan penulisan. Keduanya saling menguji sehingga penyimpangan cepat diketahui."
@@ -10777,9 +10777,9 @@
     "bab": "x-otentik",
     "tanya": "Al-Qur'an disampaikan dengan dua cara pemeliharaan utama, yaitu ...",
     "pilihan": [
-     "Hafalan (hifz) dan tulisan (kitabah)",
-     "Nyanyian dan tarian",
-     "Cerita rakyat dan puisi"
+     "Hafalan (hifz) dan tulisan (kitabah) yang berjalan bersama sejak masa Nabi",
+     "Nyanyian dan tarian yang diwariskan turun-temurun dari generasi ke generasi",
+     "Cerita rakyat dan puisi yang dibacakan di majelis-majelis kampung setiap malam"
     ],
     "kunci": 0,
     "bahas": "Sejak masa Nabi, wahyu dihafal dan ditulis sekaligus. Dua jalur ini yang membuat teks Al-Qur'an tetap utuh."
@@ -10800,8 +10800,8 @@
     "tanya": "Tanda baca (harakat) pada mushaf sekarang ditambahkan untuk ...",
     "pilihan": [
      "Memudahkan orang non-Arab membaca dengan benar",
-     "Mengubah susunan ayat",
-     "Menambah jumlah ayat"
+     "Mengubah susunan ayat agar lebih mudah dihafal",
+     "Menambah jumlah ayat pada setiap surah"
     ],
     "kunci": 0,
     "bahas": "Pemberian titik dan harakat oleh ulama seperti Abu al-Aswad ad-Du'ali bertujuan menjaga bacaan, bukan mengubah teks."
@@ -10811,8 +10811,8 @@
     "tanya": "Sikap yang tepat ketika menemukan salinan Al-Qur'an yang tampak berbeda susunannya adalah ...",
     "pilihan": [
      "Memeriksa dengan ilmu dan bertanya kepada ahli, tanpa langsung menyimpulkan pemalsuan",
-     "Langsung menyebarkannya di media sosial",
-     "Membakarnya sendiri"
+     "Langsung menyebarkannya di media sosial agar cepat menjadi viral dan ramai dibaca semua",
+     "Membakarnya sendiri karena dianggap sudah tidak sah untuk dipakai beribadah"
     ],
     "kunci": 0,
     "bahas": "Perbedaan yang tampak sering hanya soal rasm, waqaf, atau penomoran. Tabayun (QS al-Hujurat 49:6) menuntut pemeriksaan sebelum menyimpulkan."
@@ -10822,8 +10822,8 @@
     "tanya": "Mukjizat berarti ...",
     "pilihan": [
      "Perkara luar biasa yang terjadi pada nabi sebagai bukti kenabian",
-     "Sihir yang dipelajari",
-     "Keahlian yang bisa dilatih siapa saja"
+     "Sihir yang dipelajari dari seorang guru secara bertahap dan diamalkan",
+     "Keahlian yang bisa dilatih siapa saja tanpa bantuan Allah sama sekali"
     ],
     "kunci": 0,
     "bahas": "Mukjizat adalah hal luar biasa yang menyertai nabi dan tidak dapat ditandingi manusia, menjadi bukti kebenaran risalahnya."
@@ -10833,8 +10833,8 @@
     "tanya": "Mukjizat terbesar Nabi Muhammad ﷺ yang tetap ada sampai sekarang adalah ...",
     "pilihan": [
      "Al-Qur'an",
-     "Terbelahnya bulan (tidak lagi dapat disaksikan)",
-     "Air memancar dari sela jari (tidak lagi dapat disaksikan)"
+     "Terbelahnya bulan",
+     "Membelah lautan"
     ],
     "kunci": 0,
     "bahas": "Mukjizat indrawi Nabi berlangsung pada zamannya; Al-Qur'an tetap ada dan bisa diuji oleh siapa pun hingga hari kiamat."
@@ -10866,8 +10866,8 @@
     "tanya": "Berita masa depan dalam Al-Qur'an, misalnya kemenangan Romawi setelah kekalahan, menunjukkan ...",
     "pilihan": [
      "Kemukjizatan dari sisi pemberitaan gaib (akhbar al-ghayb)",
-     "Kekuatan militer muslim",
-     "Keahlian politik Nabi"
+     "Kekuatan militer pasukan muslim pada masa Nabi berperang",
+     "Keahlian politik Nabi dalam bernegosiasi dengan setiap kabilah"
     ],
     "kunci": 0,
     "bahas": "QS ar-Rum 30:1-5 memberitakan kemenangan Romawi dalam beberapa tahun, dan itu terjadi sebagaimana diberitakan."
@@ -10877,8 +10877,8 @@
     "tanya": "Mukjizat berbeda dengan karomah karena karomah ...",
     "pilihan": [
      "Terjadi pada wali, bukan sebagai bukti kenabian",
-     "Selalu lebih besar dari mukjizat",
-     "Bisa dipelajari dari buku"
+     "Selalu lebih besar dan lebih masyhur daripada mukjizat",
+     "Bisa dipelajari dari buku dan diuji oleh siapa saja"
     ],
     "kunci": 0,
     "bahas": "Mukjizat menyertai nabi sebagai bukti kenabian; karomah diberikan kepada orang saleh, dan ma'unah (pertolongan) kepada orang biasa."
@@ -10887,9 +10887,9 @@
     "bab": "x-mukjizat",
     "tanya": "Kesamaan susunan Al-Qur'an dengan syair Arab justru ...",
     "pilihan": [
-     "Tidak ada; Al-Qur'an memiliki pola sendiri yang tidak dapat ditiru",
-     "Sangat tinggi hingga diakui penyair",
-     "Ditolak seluruh ulama"
+     "Tidak ada; Al-Qur'an punya pola sendiri yang tak bisa ditiru",
+     "Sangat tinggi hingga diakui oleh para penyair Arab terkemuka",
+     "Ditolak seluruh ulama karena dianggap tidak memiliki irama"
     ],
     "kunci": 0,
     "bahas": "Tantangan Al-Qur'an tidak terjawab justru karena polanya berbeda dari syair dan prosa. Ini yang membuat para sastrawan Arab tertegun."
@@ -10900,7 +10900,7 @@
     "pilihan": [
      "Mu'jiz",
      "Mubah",
-     "Mubah (boleh)"
+     "Karomah"
     ],
     "kunci": 0,
     "bahas": "Kata mu'jiz berarti yang melemahkan pihak lain untuk menandinginya. Inilah asal istilah mukjizat."
@@ -10910,8 +10910,8 @@
     "tanya": "Isyarat ilmiah dalam Al-Qur'an sebaiknya dipahami sebagai ...",
     "pilihan": [
      "Petunjuk yang mendorong manusia meneliti, bukan pengganti teori sains",
-     "Rumus pasti yang tidak perlu diuji",
-     "Kebetulan tanpa makna"
+     "Rumus pasti yang tidak membutuhkan diuji lagi kebenarannya oleh ilmuwan",
+     "Kebetulan tanpa makna yang tidak perlu diteliti lebih lanjut"
     ],
     "kunci": 0,
     "bahas": "Banyak ayat memerintahkan mengamati alam (QS Yunus 10:101). Penafsiran ilmiah bisa berubah seiring temuan, sedangkan teks ayat tetap; karena itu isyaratnya dipahami sebagai dorongan, bukan dogma sains."
@@ -10932,8 +10932,8 @@
     "tanya": "Pokok kandungan Al-Qur'an mencakup akidah, ibadah, akhlak, dan ...",
     "pilihan": [
      "Kisah umat terdahulu serta berita gaib",
-     "Daftar harga pasar",
-     "Jadwal pertandingan"
+     "Daftar harga pasar dan upah pepekerjaan",
+     "Jadwal pertandingan dan acara desa"
     ],
     "kunci": 0,
     "bahas": "Para ulama merangkum kandungan Al-Qur'an pada akidah, ibadah, akhlak, muamalah, kisah, dan berita gaib."
@@ -10954,8 +10954,8 @@
     "tanya": "\"Segala sesuatu\" dalam QS an-Nahl 16:89 dipahami sebagai ...",
     "pilihan": [
      "Segala hal yang dibutuhkan dalam urusan agama",
-     "Seluruh rumus ilmu pengetahuan",
-     "Semua ramalan masa depan"
+     "Seluruh rumus ilmu pengetahuan dan teknologi modern",
+     "Semua ramalan masa depan yang akan terjadi"
     ],
     "kunci": 0,
     "bahas": "Cakupannya adalah kebutuhan agama: akidah, ibadah, akhlak, dan muamalah. Rincian teknis seperti rumus fisika diserahkan kepada usaha manusia."
@@ -10965,8 +10965,8 @@
     "tanya": "Bagian Al-Qur'an yang memuat kisah umat terdahulu berfungsi sebagai ...",
     "pilihan": [
      "Pelajaran dan peringatan bagi umat sesudahnya",
-     "Hiburan pengantar tidur",
-     "Catatan sejarah yang bebas tanpa pesan"
+     "Hiburan pengantar tidur bagi anak-anak",
+     "Catatan sejarah yang bebas tanpa pesan apa pun"
     ],
     "kunci": 0,
     "bahas": "QS Hud 11:120 dan QS Yusuf 12:111 menegaskan bahwa kisah dalam Al-Qur'an meneguhkan hati dan memberi pelajaran."
@@ -10976,8 +10976,8 @@
     "tanya": "Ayat-ayat tentang hal gaib seperti hari kiamat mengajarkan bahwa ...",
     "pilihan": [
      "Manusia wajib mempercayai yang diberitakan wahyu walau tak terlihat",
-     "Manusia bebas menolak yang tidak teramati",
-     "Hal gaib tidak penting untuk diketahui"
+     "Manusia bebas menolak apa pun yang tidak dapat teramati oleh indranya",
+     "Hal gaib tidak penting untuk diketahui oleh manusia sama sekali"
     ],
     "kunci": 0,
     "bahas": "Iman kepada yang gaib adalah ciri orang bertakwa (QS al-Baqarah 2:3). Akal dipakai untuk memahami, bukan untuk menolak yang telah diberitakan wahyu."
@@ -10986,9 +10986,9 @@
     "bab": "x-kandungan",
     "tanya": "Persoalan yang paling banyak diatur Al-Qur'an secara terperinci adalah ...",
     "pilihan": [
-     "Hukum keluarga (munakahat) dan waris",
-     "Tata cara bermain",
-     "Resep masakan"
+     "Hukum keluarga (munakahat) dan hukum waris",
+     "Tata cara bermain dan berolahraga bersama-sama",
+     "Resep masakan dan cara menanam sayuran"
     ],
     "kunci": 0,
     "bahas": "Ayat hukum keluarga dan waris termasuk yang paling rinci, misalnya QS an-Nisa' 4:11-12 tentang waris."
@@ -10997,9 +10997,9 @@
     "bab": "x-kandungan",
     "tanya": "Dua fungsi Al-Qur'an yang sering disebut berpasangan dalam ayat adalah ...",
     "pilihan": [
-     "Pemberi petunjuk dan pembeda (furqan)",
-     "Penyair dan penutur",
-     "Pengumpul dan penjual"
+     "Pemberi petunjuk dan pembeda (al-furqan)",
+     "Penyair dan penutur yang fasih berbahasa Arab",
+     "Pengumpul dan penjual barang dagangan di pasar"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:185 menyebut hudan lin-nas wa bayyinat min al-huda wa al-furqan — petunjuk dan pembeda."
@@ -11009,8 +11009,8 @@
     "tanya": "Perbandingan jumlah ayat tentang akidah dan ayat tentang hukum praktis menunjukkan bahwa Al-Qur'an ...",
     "pilihan": [
      "Menekankan pembentukan pandangan hidup sebelum rincian hukum",
-     "Tidak peduli pada hukum",
-     "Hanya berisi cerita"
+     "Tidak peduli pada hukum praktis dan urusan duniawi sama sekali",
+     "Hanya berisi cerita tanpa arahan apa pun bagi umat manusia"
     ],
     "kunci": 0,
     "bahas": "Porsi besar ayat akidah menunjukkan bahwa fondasi keimanan dibangun lebih dulu; hukum praktis tumbuh di atasnya."
@@ -11020,8 +11020,8 @@
     "tanya": "Menghafal ayat tanpa memahami kandungannya berisiko ...",
     "pilihan": [
      "Menjadikan Al-Qur'an hanya bacaan tanpa pengaruh pada perilaku",
-     "Membuat hafalan otomatis bertambah kuat",
-     "Menjadikan seseorang ahli tafsir"
+     "Membuat hafalan otomatis bertambah kuat dan tahan lama",
+     "Menmenjadikan seseseseorang otomatis ahli tafsir tanpa belajar"
     ],
     "kunci": 0,
     "bahas": "QS Sad 38:29 menyebut kitab diturunkan agar manusia merenungkan ayatnya. Hafalan tetap mulia, tetapi tujuan akhirnya adalah pemahaman dan amal."
@@ -11031,8 +11031,8 @@
     "tanya": "Istilah \"muhkamat\" dan \"mutasyabihat\" dalam QS Ali Imran 3:7 berkaitan dengan ...",
     "pilihan": [
      "Ayat yang jelas maknanya dan ayat yang perlu penjelasan lebih lanjut",
-     "Ayat pendek dan ayat panjang",
-     "Ayat Makkiyah dan Madaniyah"
+     "Ayat yang jumlah katanya pendek dan ayat yang jumlah katanya panjang",
+     "Ayat yang turun di Makkah dan ayat yang turun di Madinah"
     ],
     "kunci": 0,
     "bahas": "Muhkamat adalah ayat yang jelas dan menjadi pokok; mutasyabihat memerlukan ilmu dan pengembalian kepada yang muhkam."
@@ -11043,9 +11043,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Kata \"insan\" dalam Al-Qur'an umumnya menunjuk pada manusia dari sisi ...",
     "pilihan": [
-     "Kedekatan dan kelembutannya sebagai makhluk yang diciptakan dengan kasih",
-     "Kekuatan fisiknya",
-     "Jabatan sosialnya"
+     "Kedekatan dan kelembutannya sebagai makhluk ciptaan",
+     "Kekuatan fisik serta ketangguhannya dalam bekerja",
+     "Jabatan sosial dan kedudukannya di tengah masyarakat"
     ],
     "kunci": 0,
     "bahas": "Insan berasal dari akar uns yang bermakna jinak dan dekat; kata ini menggambarkan manusia sebagai makhluk yang diciptakan dengan kelembutan dan dimuliakan."
@@ -11055,8 +11055,8 @@
     "tanya": "Menurut QS al-Mu'minun 23:12-14, manusia pertama diciptakan dari ...",
     "pilihan": [
      "Sari pati tanah (sulalah min thin)",
-     "Cahaya",
-     "Angin"
+     "Cahaya yang dipancarkan dari langit",
+     "Angin yang berembus dari arah timur"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut penciptaan dari sulalah min thin, lalu proses nutfah, 'alaqah, mudghah, sampai tulang dan daging."
@@ -11066,8 +11066,8 @@
     "tanya": "Kata \"basyar\" dalam Al-Qur'an menekankan sisi ...",
     "pilihan": [
      "Kemanusiaan yang tampak secara fisik",
-     "Kedudukan sebagai nabi",
-     "Kemampuan berpikir abstrak"
+     "Kedudukan seorang nabi yang dipilih Allah",
+     "Kemampuan berpikir abstrak dan mendalam"
     ],
     "kunci": 0,
     "bahas": "Basyar menunjuk manusia dari sisi fisiknya yang dapat dilihat dan disentuh, mis. ketika orang kafir menolak rasul karena ia 'manusia biasa'."
@@ -11076,9 +11076,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Tujuan penciptaan manusia menurut QS az-Zariyat 51:56 adalah ...",
     "pilihan": [
-     "Beribadah kepada Allah",
-     "Mengumpulkan harta sebanyak-banyaknya",
-     "Menjadi penguasa bumi"
+     "Beribadah kepada Allah dengan penuh keikhlasan",
+     "Mengumpulkan harta sebanyak mungkin untuk bekal keluarga",
+     "Menjadi penguasa atas seluruh bumi dan isinya"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut tujuan penciptaan jin dan manusia: agar beribadah kepada Allah. Ibadah di sini mencakup seluruh amal saleh."
@@ -11088,8 +11088,8 @@
     "tanya": "Kemuliaan anak Adam ditegaskan dalam ...",
     "pilihan": [
      "QS al-Isra' 17:70",
-     "QS al-Falaq 113:2",
-     "QS an-Nas 114:1"
+     "QS al-Falaq ayat 2",
+     "QS an-Nas ayat 1"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:70 menyebut Allah memuliakan anak Adam, memberi mereka kendaraan dan rezeki yang baik, serta melebihkan mereka atas banyak makhluk."
@@ -11099,8 +11099,8 @@
     "tanya": "Salah satu fungsi penciptaan manusia sebagai khalifah di bumi adalah ...",
     "pilihan": [
      "Mengelola bumi sesuai aturan Allah",
-     "Bebas berbuat apa saja",
-     "Menghindari semua makhluk lain"
+     "Bebas berbuat apa saja tanpa aturan",
+     "Menghindari seluruh makhluk lain"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:30 menyebut manusia sebagai khalifah. Kekhalifahan berarti pengelolaan yang bertanggung jawab, bukan kebebasan tanpa batas."
@@ -11109,9 +11109,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Istilah \"fitrah\" dalam QS ar-Rum 30:30 berkaitan dengan ...",
     "pilihan": [
-     "Kecenderungan asal manusia untuk mengenal dan menyembah Allah",
-     "Warna kulit manusia",
-     "Bentuk tubuh manusia"
+     "Kecenderungan asal untuk mengenal dan menyembah Allah",
+     "Warna kulit manusia yang berbeda-beda di setiap negeri",
+     "Bentuk tubuh manusia yang tinggi atau pendek"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut fitrah Allah yang dengannya manusia diciptakan; Islam sejalan dengan kecenderungan asal itu."
@@ -11121,8 +11121,8 @@
     "tanya": "Perbedaan manusia dengan hewan menurut Al-Qur'an terletak pada ...",
     "pilihan": [
      "Akal dan tanggung jawab taklif",
-     "Bentuk tubuh",
-     "Kemampuan bergerak"
+     "Bentuk tubuh dan warna kulitnya",
+     "Kemampuan bergerak dan berpindah"
     ],
     "kunci": 0,
     "bahas": "Manusia diberi akal, kemampuan memilih, dan taklif (beban syariat). Karena itu ia dimintai pertanggungjawaban."
@@ -11131,9 +11131,9 @@
     "bab": "xi-penciptaan",
     "tanya": "\"Bani Adam\" dalam Al-Qur'an menunjuk pada ...",
     "pilihan": [
-     "Seluruh keturunan Adam, tanpa membedakan suku dan bangsa",
-     "Hanya bangsa Arab",
-     "Hanya para nabi"
+     "Seluruh keturunan Adam tanpa membedakan suku dan bangsa",
+     "Hanya bangsa Arab yang mendiami jazirah Arabia Selatan saja",
+     "Hanya para nabi yang diutus kepada umat manusia"
     ],
     "kunci": 0,
     "bahas": "Karena itu kemuliaan pada QS al-Isra' 17:70 berlaku bagi semua keturunan Adam, dan pembedaan yang sah hanyalah ketakwaan (QS al-Hujurat 49:13)."
@@ -11142,9 +11142,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Mengapa memahami hakikat penciptaan penting bagi pelajar?",
     "pilihan": [
-     "Agar tumbuh kesadaran bahwa hidup ini punya tujuan dan tanggung jawab",
-     "Agar dapat memperdebatkan asal manusia tanpa ilmu",
-     "Agar merasa lebih tinggi dari makhluk lain"
+     "Agar tumbuh kesadaran bahwa hidup punya tujuan dan tanggung jawab",
+     "Agar dapat memperdebatkan asal manusia tanpa dasar ilmu yang kuat itu",
+     "Agar merasa lebih tinggi daripada semua makhluk ciptaan lain"
     ],
     "kunci": 0,
     "bahas": "Pengetahuan tentang asal dan tujuan penciptaan menumbuhkan syukur, adab, dan kesadaran beramal — bukan rasa sombong."
@@ -11153,9 +11153,9 @@
     "bab": "xi-orangtua",
     "tanya": "Perintah berbuat baik kepada orang tua ditempatkan Al-Qur'an ...",
     "pilihan": [
-     "Langsung setelah perintah bertauhid",
-     "Setelah perintah berdagang",
-     "Setelah larangan berlebih-lebihan"
+     "Langsung setelah perintah bertauhid kepada Allah",
+     "Setelah perintah berdagang dengan cara yang jujur",
+     "Setelah larangan berlebih-lebihan dalam memakai harta"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:23 dan QS an-Nisa' 4:36 menempatkan ihsan kepada orang tua sejajar dengan tauhid, menunjukkan betapa tinggi kedudukannya."
@@ -11164,9 +11164,9 @@
     "bab": "xi-orangtua",
     "tanya": "Kata \"uffin\" dalam QS al-Isra' 17:23 dilarang diucapkan kepada orang tua. Artinya ...",
     "pilihan": [
-     "Celakalah / uf, kata yang paling ringan untuk menyatakan keluhan",
-     "Pujian",
-     "Doa kebaikan"
+     "Celakalah / uf, kata paling ringan untuk menyatakan keluhan",
+     "Pujian yang tulus untuk orang tua yang telah mendidik kita",
+     "Doa kebaikan agar orang tua selalu diberi kesehatan dan panjang umur"
     ],
     "kunci": 0,
     "bahas": "Larangan itu menunjukkan bahwa kata paling ringan pun tidak boleh diucapkan; apalagi yang lebih kasar."
@@ -11176,8 +11176,8 @@
     "tanya": "Menurut QS al-Isra' 17:24, doa yang dianjurkan untuk orang tua adalah ...",
     "pilihan": [
      "Rabbi irhamhuma kama rabbayani saghira",
-     "Rabbi zidni 'ilma",
-     "Rabbana atina fid-dunya hasanah"
+     "Rabbi zidni 'ilma warzuqni fahma wa barik",
+     "Rabbana atina fid-dunya wa fil akhirati hasanah"
     ],
     "kunci": 0,
     "bahas": "Doa itu memohon rahmat bagi keduanya dengan alasan mereka telah menyayangi kita saat kecil."
@@ -11186,9 +11186,9 @@
     "bab": "xi-orangtua",
     "tanya": "Batas ketaatan kepada orang tua adalah ...",
     "pilihan": [
-     "Selama tidak menyuruh bermaksiat; bila menyuruh maksiat, tidak dituruti tetapi tetap disikapi baik",
-     "Tidak ada batas, semua harus dituruti",
-     "Batasannya hanya soal uang"
+     "Selama tidak menyuruh maksiat; bila maksiat, tetap disikapi baik",
+     "Tidak ada batas, semua perintah orang tua wajib dituruti oleh anak",
+     "Batasannya hanya menyangkut soal uang dan harta yang diberikan"
     ],
     "kunci": 0,
     "bahas": "Kaedahnya la ta'ata lilmakhluq fi ma'shiyat al-khaliq. Menolak perintah maksiat tetap harus dengan cara yang halus (QS Luqman 31:15)."
@@ -11208,9 +11208,9 @@
     "bab": "xi-orangtua",
     "tanya": "\"Birrul walidain\" bermakna ...",
     "pilihan": [
-     "Berbuat baik kepada kedua orang tua",
-     "Mencari nafkah dari orang tua",
-     "Bersaing dengan orang tua"
+     "Berbuat baik kepada kedua orang tua dengan penuh hormat",
+     "Mencari nafkah dari harta warisan kedua orang tua kita",
+     "Bersaing dengan orang tua sendiri dalam hal harta warisan"
     ],
     "kunci": 0,
     "bahas": "Birr mencakup ketaatan, pelayanan, nafkah bagi yang membutuhkan, dan mendoakan keduanya."
@@ -11220,8 +11220,8 @@
     "tanya": "Seorang guru disebut \"orang tua di sekolah\" karena ...",
     "pilihan": [
      "Ia mendidik dan menumbuhkan ilmu serta adab murid",
-     "Ia menanggung seluruh biaya hidup murid",
-     "Ia pemilik gedung sekolah"
+     "Ia menanggung seluruh biaya hidup murid setiap bulan",
+     "Ia pemilik gedung sekolah tempat murid belajar"
     ],
     "kunci": 0,
     "bahas": "Karena perannya mendidik, adab kepada guru sejajar dengan adab kepada orang tua: santun, mendengar, dan tidak menyakiti hatinya."
@@ -11230,9 +11230,9 @@
     "bab": "xi-orangtua",
     "tanya": "Ketika orang tua sudah meninggal, bakti yang masih dapat dilakukan adalah ...",
     "pilihan": [
-     "Mendoakan, meminta ampun untuknya, dan menyambung kebaikan yang pernah ia lakukan",
-     "Tidak ada, bakti berhenti saat wafat",
-     "Menghapus semua kenangannya"
+     "Mendoakan, meminta ampun, dan menyambung kebaikannya",
+     "Tidak ada, bakti berhenti sejak orang tua meninggal dunia",
+     "Menghapus semua kenangan yang berkaitan dengan dirinya"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Muslim menyebut antara lain doa anak saleh, sedekah jariyah, dan menyambung silaturahmi orang tua sebagai amal yang tetap mengalir."
@@ -11242,8 +11242,8 @@
     "tanya": "Anak yang sombong kepada orang tua setelah sukses menunjukkan ...",
     "pilihan": [
      "Lupa diri karena lupa bahwa keberhasilan itu tak lepas dari doanya",
-     "Kedewasaan yang wajar",
-     "Kemandirian yang dianjurkan"
+     "Kedewasaan yang wajar setelah berhasil dalam usaha kerasnya sendiri",
+     "Kemandirian yang justru dianjurkan bagi setiap orang sukses"
     ],
     "kunci": 0,
     "bahas": "Sikap itu mencerminkan kufur nikmat. Al-Qur'an mengajarkan untuk mengingat jasa orang tua justru ketika keadaan membaik."
@@ -11252,9 +11252,9 @@
     "bab": "xi-orangtua",
     "tanya": "Kaidah \"ridhollahi fi ridhol walidain\" menegaskan bahwa ...",
     "pilihan": [
-     "Keridhaan Allah berkaitan dengan keridhaan orang tua dalam hal yang benar",
-     "Semua permintaan orang tua wajib dituruti walau maksiat",
-     "Orang tua bebas memaksa keyakinan"
+     "Keridhaan Allah berkaitan dengan keridhaan orang tua dalam hal benar",
+     "Semua permintaan orang tua itu wajib dituruti walau isinya maksiat",
+     "Orang tua boleh memaksa anaknya memeluk keyakinan tertentu sejak kecil"
     ],
     "kunci": 0,
     "bahas": "Kaidah ini menekankan keutamaan berbakti, dan tetap dibatasi ketentuan syariat: tidak ada ketaatan dalam maksiat."
@@ -11264,8 +11264,8 @@
     "tanya": "Larangan mendekati zina dalam QS al-Isra' 17:32 memakai kata ...",
     "pilihan": [
      "Wa la taqrabu z-zina (jangan mendekati)",
-     "Wa la yaznun (jangan melakukannya saja)",
-     "Wa la takulu (jangan makan)"
+     "Wa la taznu (jangan melakukannya saja)",
+     "Wa la ta'kulu (jangan memakan harta anak yatim)"
     ],
     "kunci": 0,
     "bahas": "Karena larangannya mendekati, maka semua jalan pendahulunya seperti khalwat, pacaran bebas, dan konten porno juga terlarang."
@@ -11275,8 +11275,8 @@
     "tanya": "Yang dimaksud \"pergaulan bebas\" dalam pembahasan ini adalah ...",
     "pilihan": [
      "Pergaulan tanpa batas aturan syariat antara laki-laki dan perempuan",
-     "Pergaulan sesama jenis",
-     "Pergaulan di tempat kerja"
+     "Pergaulan sesama jenis dalam kegiatan belajar kelompok di kelas",
+     "Pergaulan di tempat kerja yang diawasi oleh aturan perusahaan resmi"
     ],
     "kunci": 0,
     "bahas": "Penekanannya adalah hilangnya batas norma dan syariat, bukan sekadar banyak bergaul. Pergaulan yang sehat tetap dianjurkan."
@@ -11287,7 +11287,7 @@
     "pilihan": [
      "Laki-laki yang beriman",
      "Perempuan yang beriman",
-     "Anak-anak"
+     "Anak-anak yang sudah balig"
     ],
     "kunci": 0,
     "bahas": "Ayat 30 berisi perintah menahan pandangan dan menjaga kemaluan bagi laki-laki; ayat 31 untuk perempuan. Keduanya saling menopang."
@@ -11296,9 +11296,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Kata \"ghaddul bashar\" berarti ...",
     "pilihan": [
-     "Menjaga / menundukkan pandangan dari hal yang haram",
-     "Memalingkan seluruh muka dari manusia",
-     "Menutup mata dengan kain"
+     "Menjaga dan menundukkan pandangan dari hal yang haram",
+     "Memalingkan seluruh muka dari semua orang yang ada di jalan",
+     "Menutup kedua mata dengan kain agar tidak melihat apa pun"
     ],
     "kunci": 0,
     "bahas": "Menahan pandangan berarti menjaga dari tatapan haram, bukan menghindari pergaulan yang dibutuhkan."
@@ -11307,9 +11307,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Dalam pergaulan, \"khalwat\" yang dilarang adalah ...",
     "pilihan": [
-     "Berdua-duaan laki-laki dan perempuan tanpa mahram",
-     "Bertiga di ruang kelas",
-     "Berdiskusi di tempat terbuka"
+     "Berdua-duaan laki-laki dan wanita tanpa mahram",
+     "Bertiga di ruang kelas untuk mengerjakan tugas",
+     "Berdiskusi di tempat terbuka yang ramai orang"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Bukhari-Muslim memperingatkan bahwa dalam khalwat, pihak ketiga adalah setan; yang dilarang adalah kesendirian berdua."
@@ -11319,8 +11319,8 @@
     "tanya": "Dampak sosial pergaulan bebas yang paling nyata adalah ...",
     "pilihan": [
      "Terjadinya kehamilan di luar pernikahan dan rusaknya masa depan remaja",
-     "Bertambahnya prestasi belajar",
-     "Meningkatnya rasa hormat antarwarga"
+     "Bertambahnya prestasi belajar karena waktu luang yang bertambah banyak",
+     "Meningkatnya rasa hormat dan kepedulian antarwarga desa sekitar rumah"
     ],
     "kunci": 0,
     "bahas": "Selain itu timbul stigma, putus sekolah, dan penyakit menular. Al-Qur'an menutup pintunya lebih dulu, bukan hanya mengobati akibatnya."
@@ -11330,8 +11330,8 @@
     "tanya": "Pakaian yang menutup aurat dalam Al-Qur'an disebut dengan istilah ...",
     "pilihan": [
      "Libas at-taqwa dan pakaian penutup aurat",
-     "Pakaian kebesaran",
-     "Pakaian adat"
+     "Pakaian kebesaran yang dipakai saat upacara",
+     "Pakaian adat yang diwariskan turun-temurun"
     ],
     "kunci": 0,
     "bahas": "QS al-A'raf 7:26 menyebut libas dan libas at-taqwa; QS an-Nur 24:31 mengatur cara menutup aurat."
@@ -11340,9 +11340,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Batas pergaulan sehat antara pelajar laki-laki dan perempuan adalah ...",
     "pilihan": [
-     "Menjaga adab, karena pergaulan bukan pelarian dari aturan melainkan jalan mencari ilmu",
-     "Membeli tiket bebas berbuat",
-     "Tidak bertemu sama sekali"
+     "Menjaga adab, sebab pergaulan adalah jalan mencari ilmu",
+     "Membeli tiket agar bebas berbuat apa saja tanpa aturan apa pun",
+     "Tidak bertemu sama sekali dalam kegiatan apa pun di sekolah"
     ],
     "kunci": 0,
     "bahas": "Batasannya adalah adab dan aturan syariat, agar pergaulan tetap produktif dan menjaga kehormatan semua pihak."
@@ -11351,9 +11351,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Istilah \"tabarruj\" dalam QS an-Nur 24:31 dilarang. Artinya ...",
     "pilihan": [
-     "Memperlihatkan perhiasan dan keindahan tubuh dengan sengaja kepada yang bukan mahram",
-     "Memakai wangi-wangian di rumah",
-     "Berdandan untuk suami"
+     "Memperlihatkan perhiasan dan keindahan tubuh kepada nonmahram",
+     "Memakai wangi-wangian saat berada di dalam rumah sendiri juga",
+     "Berdandan rapi untuk menyambut suami yang baru pulang dari kerja"
     ],
     "kunci": 0,
     "bahas": "Tabarruj adalah penampilan yang sengaja memancing perhatian orang lain, berbeda dengan berhias secara wajar di lingkungan aman."
@@ -11363,8 +11363,8 @@
     "tanya": "Sikap tepat ketika ada teman mengajak ke tempat yang berpotensi maksiat adalah ...",
     "pilihan": [
      "Menolak dengan argumen yang baik dan menawarkan kegiatan lain",
-     "Ikut diam-diam agar tidak dianggap sombong",
-     "Mengajak teman lain ikut serta"
+     "Ikut diam-diam agar tidak dianggap sombong oleh teman sekelas",
+     "Mengajak teman-teman lain ikut serta dalam kegiatan itu semua"
     ],
     "kunci": 0,
     "bahas": "QS al-Furqan 25:63 dan hadis tentang memuliakan kawan mengajarkan penolakan yang santun, bukan pembiaran demi popularitas."
@@ -11374,8 +11374,8 @@
     "tanya": "Toleransi dalam Islam secara istilah berarti ...",
     "pilihan": [
      "Menghormati perbedaan tanpa mencampuradukkan akidah",
-     "Mengikuti semua ajaran agama",
-     "Membenci semua yang berbeda"
+     "Mengikuti semua ajaran agama yang ada di masyarakat",
+     "Membenci semua orang yang berbeda keyakinan dengan kita"
     ],
     "kunci": 0,
     "bahas": "Toleransi (tasamuh) adalah sikap menghargai hak orang lain, tanpa mengorbankan akidah dan tanpa memaksa orang lain."
@@ -11384,9 +11384,9 @@
     "bab": "xi-toleransi",
     "tanya": "QS al-Kafirun 109:6 menegaskan bahwa dalam akidah ...",
     "pilihan": [
-     "Tidak ada pencampuran: untukmu agamamu dan untukku agamaku",
-     "Semua agama sama saja",
-     "Semua boleh bertukar Tuhan"
+     "Tidak ada pencampuran: untukmu agamamu, untukku agamaku",
+     "Semua agama pada dasarnya sama saja dan tidak berbeda sedikit pun",
+     "Semua orang boleh bertukar Tuhan sesuai keinginannya sendiri"
     ],
     "kunci": 0,
     "bahas": "Ayat ini menolak kompromi akidah, sekaligus menjadi dasar sikap tegas tanpa memaksa."
@@ -11396,8 +11396,8 @@
     "tanya": "Kata \"lakum dinukum\" dalam QS al-Kafirun menunjukkan ...",
     "pilihan": [
      "Pengakuan atas hak orang lain untuk memegang agamanya",
-     "Perintah untuk memusuhi",
-     "Larangan bekerja sama"
+     "Larangan bekerja sama dalam urusan keduniaan apa pun juga",
+     "Perintah untuk memusuhi pemeluk agama yang berbeda"
     ],
     "kunci": 0,
     "bahas": "Ayat ini memberi garis: akidah tidak dicampur, tetapi umat lain tidak dipaksa. Dalam urusan sosial, kerja sama tetap dianjurkan."
@@ -11407,8 +11407,8 @@
     "tanya": "QS al-Baqarah 2:256 menegaskan ...",
     "pilihan": [
      "Tidak ada paksaan dalam memasuki agama",
-     "Semua orang wajib berhijrah",
-     "Semua dosa dimaafkan tanpa taubat"
+     "Semua orang wajib berhijrah ke kota Madinah",
+     "Semua dosa dimaafkan tanpa perlu taubat"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menegaskan agama dibangun di atas keyakinan, sehingga cara memaksanya justru melahirkan kemunafikan."
@@ -11418,8 +11418,8 @@
     "tanya": "Menghormati tempat ibadah pemeluk agama lain termasuk ...",
     "pilihan": [
      "Toleransi sosial yang dibenarkan selama tidak ikut menyembah",
-     "Kemusyrikan",
-     "Kekafiran"
+     "Kekafiran yang membuat seluruh amal ibadah menjadi sia-sia",
+     "Kemusyrikan yang harus segera dihentikan dengan cara kekerasan"
     ],
     "kunci": 0,
     "bahas": "QS al-Hajj 22:40 menjelaskan bahwa Allah menjaga tempat-tempat ibadah dari penghancuran; umat Islam diperintahkan menjaga ketertiban bersama."
@@ -11429,8 +11429,8 @@
     "tanya": "Perbedaan istilah \"toleransi\" dan \"sinkretisme\" adalah ...",
     "pilihan": [
      "Toleransi menghormati pemeluk lain, sinkretisme mencampur ajaran",
-     "Keduanya sama",
-     "Sinkretisme lebih ringan"
+     "Keduanya sama saja, hanya berbeda istilah dalam bahasa Arab",
+     "Sinkretisme lebih ringan karena hanya mencampur kebiasaan setempat"
     ],
     "kunci": 0,
     "bahas": "Sinkretisme mencampurkan akidah yang seharusnya utuh; toleransi justru menjaga akidah masing-masing. Mencampur keduanya keliru besar."
@@ -11450,9 +11450,9 @@
     "bab": "xi-toleransi",
     "tanya": "Contoh perilaku toleran yang benar seorang pelajar adalah ...",
     "pilihan": [
-     "Tidak mengganggu teman yang beribadah menurut keyakinannya, dan tetap bersikap adil",
-     "Mengikuti ritual ibadah teman",
-     "Menolak bekerjasama dalam tugas sekolah"
+     "Tidak mengganggu teman yang beribadah dan tetap bersikap adil",
+     "Mengikuti ritual ibadah teman agar dianggap menghormatinya",
+     "Menolak bepekerjaan sama dalam tugas sekolah bersama teman itu"
     ],
     "kunci": 0,
     "bahas": "Toleransi mengharuskan bersikap baik dalam urusan dunia (QS al-Mumtahanah 60:8), tanpa ikut mencampur ibadah."
@@ -11461,9 +11461,9 @@
     "bab": "xi-toleransi",
     "tanya": "Mengapa Islam melarang olok-olok terhadap sesembahan agama lain?",
     "pilihan": [
-     "Agar tidak memicu balasan olok-olok terhadap Allah yang lebih besar",
-     "Agar umat Islam tampak ragu",
-     "Agar tidak berdagang"
+     "Agar tidak memicu balasan olok-olok pada Allah yang lebih besar",
+     "Agar umat Islam tampak ragu terhadap kebenaran ajaran agamanya",
+     "Agar umat Islam tidak perlu berdagang dengan pemeluk agama lain"
     ],
     "kunci": 0,
     "bahas": "QS al-An'am 6:108 memberi alasan itu; larangan ini justru menjaga kehormatan Al-Qur'an dan Allah."
@@ -11474,7 +11474,7 @@
     "pilihan": [
      "Memaksa orang lain memeluk agama kita dengan kekerasan",
      "Memberi bantuan kepada tetangga yang berbeda agama",
-     "Menghormati tamu yang berbeda keyakinan"
+     "Menghormati tamu yang datang dengan keyakinan berbeda"
     ],
     "kunci": 0,
     "bahas": "Memaksa bertentangan dengan QS al-Baqarah 2:256 dan QS al-Kahf 18:29, yang menegaskan kebebasan memilih."
@@ -11484,8 +11484,8 @@
     "tanya": "Perintah berkompetisi dalam kebaikan terkandung dalam ...",
     "pilihan": [
      "QS al-Baqarah 2:148 dan QS al-Ma'idah 5:48",
-     "QS al-Kautsar 108:2",
-     "QS al-Lahab 111:1"
+     "QS al-Kautsar 108:2 dan QS al-Ma'un 107:3",
+     "QS al-Lahab 111:1 dan QS an-Nasr 110:2 saat ini"
     ],
     "kunci": 0,
     "bahas": "Keduanya memakai istilah fastabiqul khairat — berlomba dalam kebaikan; perbedaan arah kiblat dipakai sebagai penguat semangat itu."
@@ -11495,8 +11495,8 @@
     "tanya": "Makna \"fastabiqul khairat\" adalah ...",
     "pilihan": [
      "Berlomba-lomba dalam melakukan kebaikan",
-     "Berlomba menumpuk harta",
-     "Menghindari persaingan"
+     "Menghindari persaingan dengan siapa pun juga",
+     "Berlomba menumpuk harta dan kekayaan"
     ],
     "kunci": 0,
     "bahas": "Kompetisi yang dianjurkan adalah pada amal saleh dan manfaat, bukan pada kebanggaan pribadi."
@@ -11506,8 +11506,8 @@
     "tanya": "Bersaing dalam ilmu dengan cara yang benar berarti ...",
     "pilihan": [
      "Belajar lebih giat dan berbagi hasil, bukan menjatuhkan kompetitor",
-     "Menyembunyikan buku pelajaran teman",
-     "Menyontek agar menang"
+     "Menyembunyikan buku pelajaran milik teman agar tertinggal jauh",
+     "Menyontek pekerjaan teman agar sekemudian menang dalam setiap lomba"
     ],
     "kunci": 0,
     "bahas": "QS az-Zumar 39:9 memuliakan orang berilmu. Semangat itu melahirkan kerja keras, bukan curang."
@@ -11517,8 +11517,8 @@
     "tanya": "Motif bersaing yang benar menurut Islam adalah ...",
     "pilihan": [
      "Mencari keridhaan Allah dan bermanfaat bagi orang lain",
-     "Agar dipuji dan dilihat orang",
-     "Agar teman iri"
+     "Agar teman-teman merasa iri terhadap pencapaian kita sendiri",
+     "Agar dipuji dan dilihat banyak orang di media sosial"
     ],
     "kunci": 0,
     "bahas": "QS al-Bayyinah 98:5 menyebut perintah menyembah Allah dengan ikhlas; ikhlas menjaga kompetisi tetap sehat."
@@ -11527,9 +11527,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Sikap yang tepat ketika kalah dalam kompetisi adalah ...",
     "pilihan": [
-     "Menerima hasil dan memperbaiki diri",
-     "Menyalahkan juri dan menuduh curang tanpa bukti",
-     "Berhenti berusaha"
+     "Menerima hasil dan segera memperbaiki diri",
+     "Menyalahkan juri dan menuduh lawan curang",
+     "Berhenti berusaha serta enggan mencoba lagi"
     ],
     "kunci": 0,
     "bahas": "Sabr dan muhasabah menghindarkan pelajar dari iri. QS an-Nisa' 4:32 melarang hasad atas karunia orang lain."
@@ -11539,8 +11539,8 @@
     "tanya": "QS al-Ma'idah 5:2 melarang tolong-menolong dalam ...",
     "pilihan": [
      "Dosa dan permusuhan",
-     "Kebaikan dan takwa",
-     "Ilmu dan amal"
+     "Ilmu dan amal saleh juga",
+     "Kebaikan dan takwa"
     ],
     "kunci": 0,
     "bahas": "Ayat itu memerintahkan tolong-menolong dalam kebaikan dan takwa, serta melarang kerja sama dalam dosa dan permusuhan."
@@ -11549,9 +11549,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Kompetisi yang tercela dalam Islam adalah yang ...",
     "pilihan": [
-     "Membuat seseorang meninggalkan kewajiban dan merugikan orang lain",
-     "Menguji kemampuan diri",
-     "Meningkatkan kualitas kerja"
+     "Membuat orang meninggalkan kewajiban dan merugikan orang lain",
+     "Menguji kemampuan diri dengan tantangan yang jauh lebih berat",
+     "Meningkatkan kualitas kerja serta pelayanan kepada warga desa"
     ],
     "kunci": 0,
     "bahas": "Prinsipnya: sarana menuju kebaikan harus juga halal. Menang dengan cara curang bukan keberhasilan menurut syariat."
@@ -11560,9 +11560,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Yang dimaksud \"ghibthah\" (yang dianjurkan) dalam hadis tentang hasad adalah ...",
     "pilihan": [
-     "Iri positif: ingin seperti orang berilmu atau bersedekah tanpa berharap nikmatnya hilang",
-     "Iri yang mengharapkan nikmat orang lain hilang",
-     "Hasrat memiliki barang mewah"
+     "Iri positif: ingin seperti orang berilmu atau bersedekah",
+     "Iri yang mengharapkan nikmat orang lain hilang sepenuhnya",
+     "Hasrat memiliki barang mewah yang dipamerkan di media sosial"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Bukhari menyebut dua hal yang boleh di-ghibthah: orang yang memakai harta untuk kebaikan dan orang berilmu yang mengamalkannya."
@@ -11572,8 +11572,8 @@
     "tanya": "Seorang pelajar yang menang lomba tetapi merendahkan peserta lain menunjukkan ...",
     "pilihan": [
      "Keberhasilan yang rusak oleh akhlak buruk",
-     "Bukti keunggulan mutlak",
-     "Semangat kompetisi yang benar"
+     "Bukti keunggulan mutlak yang pantas dibanggakan",
+     "Semangat kompetisi yang benar dan sehat"
     ],
     "kunci": 0,
     "bahas": "QS al-Hujurat 49:11 melarang merendahkan orang lain; kemenangan tidak membolehkan takabur."
@@ -11582,9 +11582,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Praktik kompetisi sehat di sekolah yang paling sesuai dengan Al-Qur'an adalah ...",
     "pilihan": [
-     "Lomba karya ilmiah yang dinilai jujur dan hasilnya dibagikan untuk umum",
-     "Menyontek halaman soal teman",
-     "Memberi uang agar dinilai tinggi"
+     "Lomba karya ilmiah yang dinilai jujur dan hasilnya dibagikan",
+     "Menyontek halaman soal milik teman agar mendapat nilai tinggi",
+     "Memberi uang kepada juri agar dinilai tinggi dalam lomba"
     ],
     "kunci": 0,
     "bahas": "Kompetisi yang adil dan bermanfaat menumbuhkan kerja keras serta manfaat bersama, sesuai prinsip fastabiqul khairat."
@@ -11596,8 +11596,8 @@
     "tanya": "\"Israf\" dalam Al-Qur'an berarti ...",
     "pilihan": [
      "Melampaui batas dalam pemakaian sesuatu",
-     "Menabung untuk masa depan",
-     "Membeli barang murah"
+     "Menabung harta untuk masa depan keluarga",
+     "Membeli barang murah di pasar loak"
     ],
     "kunci": 0,
     "bahas": "QS al-A'raf 7:31 melarang berlebih-lebihan. Israf adalah melampaui kadar yang wajar, bukan sekadar membelanjakan uang."
@@ -11606,9 +11606,9 @@
     "bab": "sederhana",
     "tanya": "QS al-Furqan 25:67 menyebut ciri hamba Allah yang baik dalam membelanjakan harta, yaitu ...",
     "pilihan": [
-     "Tidak berlebihan dan tidak kikir, tetapi di tengah-tengah",
-     "Selalu menghabiskan seluruh harta",
-     "Tidak pernah membelanjakan harta"
+     "Tidak lebih dan tidak kikir, tetapi di tengah",
+     "Selalu menghabiskan seluruh harta setiap hari",
+     "Tidak pernah membelanjakan harta sedikit pun"
     ],
     "kunci": 0,
     "bahas": "Ayat itu memakai istilah qawaman (wajar). Sikap ini menjadi inti pola hidup sederhana."
@@ -11617,9 +11617,9 @@
     "bab": "sederhana",
     "tanya": "Perilaku konsumtif bertentangan dengan kesederhanaan karena ...",
     "pilihan": [
-     "Membelanjakan harta untuk keinginan yang tidak dibutuhkan, sering demi gengsi",
-     "Membeli kebutuhan pokok",
-     "Menabung secara teratur"
+     "Membelanjakan harta untuk keinginan yang tidak dibutuhkan",
+     "Membeli kebutuhan pokok keluarga setiap hari di pasar",
+     "Menabung secara teratur untuk keperluan mendadak di rumah"
     ],
     "kunci": 0,
     "bahas": "Konsumtif membuat pengeluaran melebihi kebutuhan nyata, biasanya karena tekanan gaya hidup dan pujian orang lain."
@@ -11628,9 +11628,9 @@
     "bab": "sederhana",
     "tanya": "Kata \"tabdzir\" berarti ...",
     "pilihan": [
-     "Menghambur-hamburkan harta untuk hal yang tidak bermanfaat",
-     "Menyimpan harta untuk ibadah",
-     "Memberi makan orang miskin"
+     "Menghambur-hamburkan harta untuk hal tidak bermanfaat",
+     "Menyimpan harta untuk kemembutuhkanan ibadah dan sedekah",
+     "Memberi makan seseorang miskin di sekitar rumah"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:26-27 melarang tabdzir dan menyebut pemboros sebagai saudara setan — karena hartanya habis tanpa manfaat."
@@ -11640,8 +11640,8 @@
     "tanya": "Yang dimaksud \"duafa\" adalah ...",
     "pilihan": [
      "Orang-orang lemah: fakir, miskin, dan yang perlu ditopang",
-     "Para pedagang besar",
-     "Para pejabat"
+     "Para pedagang besar yang memiliki banyak modal usaha di pasar",
+     "Para pejabat daerah yang memegang jabatan penting"
     ],
     "kunci": 0,
     "bahas": "Menyantuni duafa berarti menguatkan mereka melalui zakat, sedekah, dan pemberdayaan, bukan sekadar memberi sesaat."
@@ -11651,8 +11651,8 @@
     "tanya": "Menyantuni duafa sebaiknya dilakukan dengan cara ...",
     "pilihan": [
      "Menjaga kehormatan mereka dan memberi yang bermanfaat",
-     "Menyebarkan fotonya agar viral",
-     "Memberi dengan mengungkit-ungkit pemberian"
+     "Menyebarkan foto mereka ke media agar viral dan dibantu",
+     "Memberi dengan mengungkit-ungkit pemberian itu nanti"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:264 menyebut sedekah yang diiringi ungkitan menjadi sia-sia. Memberi sambil menjaga harga diri adalah bagian dari ihsan."
@@ -11661,9 +11661,9 @@
     "bab": "sederhana",
     "tanya": "Hikmah utama hidup sederhana adalah ...",
     "pilihan": [
-     "Harta menjadi berkah, jiwa lapang, dan ada sisa untuk menolong orang lain",
-     "Menjadi bahan pamer di lingkungan",
-     "Cepat menjadi kaya dengan cara apa pun"
+     "Harta berkah, jiwa lapang, dan ada sisa untuk menolong",
+     "Menjadi bahan pameran di lingkungan tempat tinggal",
+     "Cepat menmenjadi kaya dengan cara apa pun yang penting"
     ],
     "kunci": 0,
     "bahas": "Sederhana membuat pengeluaran terkendali, menumbuhkan syukur, dan membuka ruang berbagi."
@@ -11673,8 +11673,8 @@
     "tanya": "Sikap yang benar ketika melihat teman membeli barang mahal untuk pamer adalah ...",
     "pilihan": [
      "Tidak iri, dan mengingatkan bila perlu dengan cara santun",
-     "Membeli barang lebih mahal agar tidak kalah",
-     "Menyebarkan kabar buruk tentangnya"
+     "Membeli barang yang jauh lebih mahal agar tidak kalah gengsi",
+     "Menyebarkan kabar buruk tentang dirinya kepada para tetangga"
     ],
     "kunci": 0,
     "bahas": "QS an-Nisa' 4:32 melarang iri terhadap karunia orang lain. Nasihat yang baik disampaikan dengan hikmah."
@@ -11683,9 +11683,9 @@
     "bab": "sederhana",
     "tanya": "Perbedaan \"sederhana\" dan \"kikir\" adalah ...",
     "pilihan": [
-     "Sederhana menahan diri dari pemborosan tetapi tetap berbagi; kikir menahan harta walau mampu",
-     "Keduanya sama saja",
-     "Kikir lebih dianjurkan"
+     "Sederhana menahan pemborosan tetapi tetap berbagi",
+     "Keduanya sama saja, hanya berbeda pada istilahnya saja",
+     "Kikir lebih dianjurkan karena menyimpan banyak harta"
     ],
     "kunci": 0,
     "bahas": "Kikir menghalangi kebaikan, sedangkan sederhana justru memerdekakan harta untuk kebaikan."
@@ -11694,7 +11694,7 @@
     "bab": "sederhana",
     "tanya": "Contoh pola hidup sederhana bagi pelajar adalah ...",
     "pilihan": [
-     "Membawa bekal dan memakai perlengkapan yang masih layak pakai",
+     "Membawa bekal dan memakai barang yang masih layak",
      "Membeli barang baru setiap minggu agar dianggap keren",
      "Meminjam uang untuk membeli gadget terbaru"
     ],
@@ -11706,8 +11706,8 @@
     "tanya": "Dalam QS al-Baqarah 2:155, Allah menyebutkan beberapa ujian, antara lain ...",
     "pilihan": [
      "Ketakutan, kelaparan, kekurangan harta, dan kematian",
-     "Hadiah dan pujian",
-     "Kemenangan dan kekayaan"
+     "Hadiah dan pujian dari orang-orang terdekat di rumah",
+     "Kemenangan dan kekayaan yang berlimpah di dunia"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut ujian berupa rasa takut, lapar, kekurangan harta, jiwa, dan buah-buahan, lalu memberi kabar gembira bagi yang sabar."
@@ -11716,9 +11716,9 @@
     "bab": "sabar",
     "tanya": "Arti \"sabar\" menurut istilah adalah ...",
     "pilihan": [
-     "Menahan diri dari keluh kesah dan tetap taat kepada Allah saat menghadapi ujian",
-     "Menerima keadaan lalu berhenti berusaha",
-     "Menghindari semua masalah"
+     "Menahan diri dari keluh kesah dan tetap taat kepada Allah",
+     "Menerima keadaan lalu berhenti berusaha untuk selamanya",
+     "Menghindari semua masalah agar tidak terbebani sama sekali"
     ],
     "kunci": 0,
     "bahas": "Sabar mencakup menahan lisan (tidak mengeluh), menahan hati (ridha), dan menahan badan (tetap beramal)."
@@ -11728,8 +11728,8 @@
     "tanya": "\"Husnuzan\" berarti ...",
     "pilihan": [
      "Berprasangka baik kepada Allah dan kepada orang lain",
-     "Berprasangka buruk agar waspada",
-     "Berpura-pura baik"
+     "Berprasangka buruk kepada semua orang agar waspada",
+     "Berpura-pura baik di depan orang lain setiap saat"
     ],
     "kunci": 0,
     "bahas": "QS al-Hujurat 49:12 melarang prasangka buruk. Husnuzan menuntun pada tetap berbaik sangka saat keadaan sulit."
@@ -11738,9 +11738,9 @@
     "bab": "sabar",
     "tanya": "Sifat \"sum'ah\" yang harus dihindari pelajar adalah ...",
     "pilihan": [
-     "Memperdengarkan amal agar dipuji orang",
-     "Beramal tanpa diketahui orang",
-     "Mengulang hafalan setiap hari"
+     "Memperdengarkan amal agar dipuji orang banyak",
+     "Beramal tanpa diketahui oleh orang lain di sekitarnya",
+     "Mengulang hafalan setiap hari agar semakin kuat"
     ],
     "kunci": 0,
     "bahas": "Sum'ah (memperdengarkan) dan riya' (memperlihatkan) sama-sama merusak keikhlasan, karena amalnya dilakukan demi penilaian manusia."
@@ -11749,9 +11749,9 @@
     "bab": "sabar",
     "tanya": "Kata \"ujub\" berarti ...",
     "pilihan": [
-     "Membanggakan diri sendiri sehingga amal terasa besar di matanya",
-     "Mengakui kekurangan diri",
-     "Merendahkan orang lain saja"
+     "Membanggakan diri sehingga amal terasa besar di matanya",
+     "Mengakui kekurangan diri di hadapan orang lain setiap hari",
+     "Merendahkan orang lain saja tanpa memandang diri sendiri"
     ],
     "kunci": 0,
     "bahas": "Ujub berbeda dengan takabur: ujub adalah kagum pada diri sendiri, sedangkan takabur menganggap diri lebih tinggi dari orang lain."
@@ -11760,9 +11760,9 @@
     "bab": "sabar",
     "tanya": "Sabar yang salah adalah ...",
     "pilihan": [
-     "Bersabar dalam kemaksiatan",
-     "Bersabar dalam belajar",
-     "Bersabar saat sakit"
+     "Bersabar dalam kemaksiatan yang dilakukan",
+     "Bersabar dalam belajar menghadapi ujian",
+     "Bersabar saat sakit tanpa mengeluh"
     ],
     "kunci": 0,
     "bahas": "Sabar hanya terpuji pada jalan ketaatan dan saat menghadapi musibah, bukan dalam berbuat dosa."
@@ -11772,8 +11772,8 @@
     "tanya": "Ucapan seorang suami kepada istri saat mendengar kabar duka, \"inna lillahi wa inna ilaihi raji'un\", termasuk ...",
     "pilihan": [
      "Isti'rja' (mengembalikan semuanya kepada Allah)",
-     "Israf",
-     "Ghibah"
+     "Israf yang berlebihan dalam berbelanja kebutuhan rumah",
+     "Ghibah yang membicarakan keburukan orang lain"
     ],
     "kunci": 0,
     "bahas": "Kalimat istirja' disebut dalam QS al-Baqarah 2:156 sebagai ucapan orang sabar. Maknanya: semua milik Allah dan kembali kepada-Nya."
@@ -11783,8 +11783,8 @@
     "tanya": "Berpikir positif terhadap musibah termasuk meyakini bahwa ...",
     "pilihan": [
      "Musibah mengandung hikmah dan bisa menjadi penghapus dosa",
-     "Musibah tidak ada gunanya",
-     "Orang lain selalu penyebab musibah"
+     "Musibah tidak ada gunanya bagi kehidupan manusia di dunia",
+     "Orang lain selalu menjadi penyebab setiap musibah yang datang"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Muslim menyebut bahwa tidaklah seorang muslim ditimpa musibah melainkan Allah menghapus dosa-dosanya — bila ia bersabar."
@@ -11794,8 +11794,8 @@
     "tanya": "Balasan bagi orang yang sabar dinyatakan dalam QS al-Baqarah 2:157 sebagai ...",
     "pilihan": [
      "Shalawat dari Allah dan rahmat, serta mereka mendapat petunjuk",
-     "Harta berlipat di dunia",
-     "Jabatan tinggi"
+     "Harta yang berlipat ganda di dunia dan juga di akhirat kelak",
+     "Jabatan tinggi di lingkungan masyarakat sekitar rumah tinggal"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut shalawat, rahmat, dan menjadi orang yang mendapat petunjuk (muhtadun)."
@@ -11804,9 +11804,9 @@
     "bab": "sabar",
     "tanya": "Sabar dalam ketaatan ditunjukkan dengan cara ...",
     "pilihan": [
-     "Teratur dan sungguh-sungguh dalam menjalankan ibadah serta tugas",
-     "Mengerjakan tugas hanya saat dilihat guru",
-     "Menunda kewajiban sampai senggang"
+     "Teratur dan sungguh-sungguh menjalankan ibadah serta tugas",
+     "Mengerjakan tugas hanya saat dilihat oleh guru kelas atau pengawas",
+     "Menunda kewajiban sampai waktu senggang yang tepat tiba"
     ],
     "kunci": 0,
     "bahas": "Istiqamah membutuhkan sabar sejak awal; QS Fussilat 41:30 memuji orang yang mengatakan 'rabbuna Allah' lalu beristiqamah."
@@ -11816,8 +11816,8 @@
     "tanya": "Kerusakan lingkungan dalam QS ar-Rum 30:41 disebut akibat ...",
     "pilihan": [
      "Perbuatan tangan manusia (dusahan)",
-     "Hanya bencana alam",
-     "Hanya hewan liar"
+     "Hanya bencana alam yang datang tiba-tiba",
+     "Hanya hewan liar yang merusak tanaman"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut kerusakan di darat dan laut terjadi karena tangan manusia, agar mereka kembali — menekankan tanggung jawab manusia."
@@ -11826,9 +11826,9 @@
     "bab": "lingkungan",
     "tanya": "QS al-A'raf 7:56 melarang ...",
     "pilihan": [
-     "Berbuat kerusakan di bumi dan melarang pula berputus asa dari rahmat Allah",
-     "Menanam pohon",
-     "Membangun tempat tinggal"
+     "Berbuat kerusakan di bumi dan berputus asa dari rahmat",
+     "Menanam pohon di pekarangan rumah serta di lingkungan sekolah",
+     "Membangun tempat tinggal yang layak bagi keluarga"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menggabungkan larangan berbuat kerusakan dengan doa dan harapan pada rahmat Allah — lingkungan dan spiritualitas menyatu."
@@ -11838,8 +11838,8 @@
     "tanya": "\"Fasad\" dalam ayat tentang lingkungan berarti ...",
     "pilihan": [
      "Kerusakan yang merugikan keseimbangan",
-     "Kemakmuran",
-     "Kebaikan"
+     "Kemakmuran yang dirasakan seluruh warga",
+     "Kebaikan yang menambah pahala"
     ],
     "kunci": 0,
     "bahas": "Fasad mencakup pencemaran, pembakaran hutan, sampah yang merusak ekosistem, dan penebangan liar."
@@ -11848,9 +11848,9 @@
     "bab": "lingkungan",
     "tanya": "Menjaga lingkungan termasuk wujud ...",
     "pilihan": [
-     "Kekhalifahan manusia di bumi yang harus dipertanggungjawabkan",
-     "Hanya tugas pemerintah",
-     "Kebiasaan tanpa dalil"
+     "Kekhalifahan manusia di bumi yang wajib dipertanggungjawabkan",
+     "Hanya tugas pemerintah dan para petugas kebersihan kota besar",
+     "Kebiasaan tanpa dalil yang diwariskan secara turun-temurun"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:30 menyebut manusia sebagai khalifah; menjaga bumi adalah bagian dari menjalankan amanah itu."
@@ -11860,8 +11860,8 @@
     "tanya": "Hadis \"barangsiapa menanam pohon, lalu dimakan burung atau manusia, maka itu sedekah\" menegaskan ...",
     "pilihan": [
      "Menanam dan merawat tumbuhan bernilai ibadah",
-     "Semua pohon harus ditebang",
-     "Kebun tidak boleh dimanfaatkan"
+     "Semua pohon di sekitar harus ditebang seluruhnya",
+     "Kebun tidak boleh dimanfaatkan hasilnya bagi warga"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Bukhari itu menunjukkan bahwa manfaat lingkungan bagi makhluk hidup bernilai sedekah bagi penanamnya."
@@ -11870,9 +11870,9 @@
     "bab": "lingkungan",
     "tanya": "Contoh kebiasaan yang merusak lingkungan adalah ...",
     "pilihan": [
-     "Membuang sampah ke sungai dan membakar sampah di halaman",
-     "Memilah sampah organik dan anorganik",
-     "Menanam tumbuhan di pot"
+     "Membuang sampah ke sungai dan membakarnya di halaman",
+     "Memilah sampah organik dan anorganik di rumah",
+     "Menanam tumbuhan di pot di depan kelas setiap hari"
     ],
     "kunci": 0,
     "bahas": "Membuang sampah ke sungai menyebabkan banjir dan pencemaran air, sedangkan pemilahan sampah sangat dianjurkan."
@@ -11881,9 +11881,9 @@
     "bab": "lingkungan",
     "tanya": "Hubungan antara kebersihan dan iman dalam hadis adalah ...",
     "pilihan": [
-     "Kebersihan adalah sebagian dari iman (at-tuhuru syatrul iman)",
+     "Kebersihan adalah sebagian dari iman",
      "Kebersihan tidak berhubungan dengan iman",
-     "Iman menuntut kita kotor"
+     "Iman menuntut kita hidup dalam keadaan kotor"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Muslim menyebut kebersihan sebagai bagian dari iman; karena itu menjaga lingkungan bersih adalah amal."
@@ -11892,9 +11892,9 @@
     "bab": "lingkungan",
     "tanya": "Sikap seorang murid yang melihat sungai kotor di dekat sekolah adalah ...",
     "pilihan": [
-     "Berinisiatif membersihkan bersama dan mengeduksi teman agar tidak membuang sampah",
-     "Membiarkan karena bukan tugasnya",
-     "Menyalahkan warga tanpa tindakan"
+     "Berinisiatif membersihkan bersama dan mengedukasi teman",
+     "Membiarkan karena itu bukan tugasnya sebagai murid di sekolah",
+     "Menyalahkan warga sekitar tanpa melakukan tindakan apa pun"
     ],
     "kunci": 0,
     "bahas": "Amal jama'i (kerja bersama) lebih berkelanjutan. Kepedulian seperti ini sejalan dengan amar ma'ruf."
@@ -11903,9 +11903,9 @@
     "bab": "lingkungan",
     "tanya": "\"Ekosistem\" dalam pembelajaran lingkungan berarti ...",
     "pilihan": [
-     "Hubungan saling bergantung antara makhluk hidup dan lingkungannya",
-     "Kumpulan benda mati saja",
-     "Kegiatan perdagangan"
+     "Hubungan saling bergantung makhluk hidup dan lingkungan",
+     "Kumpulan benda mati yang tidak memiliki hubungan apa pun",
+     "Kegiatan perdagangan yang menguntungkan warga desa"
     ],
     "kunci": 0,
     "bahas": "Karena saling bergantung, kerusakan satu bagian menimbulkan akibat pada bagian lain — itulah sebabnya Al-Qur'an menekankan keseimbangan."
@@ -11914,8 +11914,8 @@
     "bab": "lingkungan",
     "tanya": "Prinsip \"tabdzir\" berkaitan dengan lingkungan karena ...",
     "pilihan": [
-     "Perilaku boros menyebabkan eksploitasi sumber daya yang berlebihan",
-     "Membeli kebutuhan berlebihan menyehatkan lingkungan",
+     "Perilaku boros menyebabkan eksploitasi sumber daya",
+     "Membeli kebutuhan berlebihan justru menyehatkan lingkungan",
      "Sampah makanan tidak pernah menimbulkan masalah"
     ],
     "kunci": 0,
@@ -11926,8 +11926,8 @@
     "tanya": "Perintah mengamati alam semesta erat kaitannya dengan ...",
     "pilihan": [
      "Pengembangan ilmu pengetahuan dan teknologi",
-     "Penolakan terhadap ilmu baru",
-     "Pengabaian fakta alam"
+     "Penolakan terhadap ilmu baru yang belum dikenal",
+     "Pengabaian fakta alam yang sudah terbukti"
     ],
     "kunci": 0,
     "bahas": "QS Yunus 10:101 memerintahkan memperhatikan apa yang ada di langit dan bumi; pengamatan itu menjadi dasar sains."
@@ -11948,8 +11948,8 @@
     "tanya": "Istilah \"ulul albab\" bermakna ...",
     "pilihan": [
      "Orang yang berakal cerdas dan berzikir serta berpikir",
-     "Para pedagang",
-     "Para penguasa"
+     "Para pedagang yang berkeliling dari kota ke kota lain",
+     "Para penguasa yang memegang tampuk kekuasaan"
     ],
     "kunci": 0,
     "bahas": "Ulul albab adalah orang yang memadukan zikir, pikir, dan amal. Karena itu peneliti dan pelajar yang jujur termasuk di dalamnya."
@@ -11959,8 +11959,8 @@
     "tanya": "Sikap seorang muslim terhadap teknologi baru adalah ...",
     "pilihan": [
      "Menerima dengan selektif dan memanfaatkan untuk kebaikan",
-     "Menolak seluruhnya karena baru",
-     "Menerima seluruhnya tanpa memeriksa"
+     "Menolak seluruh teknologi baru karena dianggap bidah",
+     "Menerima seluruhnya tanpa memeriksa manfaat dan mudaratnya"
     ],
     "kunci": 0,
     "bahas": "Kaidahnya: sarana dinilai dari penggunaannya. Hendaklah kita memilih yang memberi manfaat dan menjauhi yang merusak."
@@ -11969,9 +11969,9 @@
     "bab": "iptek",
     "tanya": "\"Khalq\" dan \"amr\" dalam Al-Qur'an menunjukkan bahwa ...",
     "pilihan": [
-     "Alam dapat dipelajari karena memiliki hukum yang konsisten dan terukur",
-     "Penelitian itu terlarang",
-     "Semua fenomena acak tanpa pola"
+     "Alam dapat dipelajari karena hukumnya konsisten dan terukur",
+     "Penelitian terhadap alam hukumnya terlarang bagi setiap muslim",
+     "Semua fenomena alam terjadi secara acak tanpa pola"
     ],
     "kunci": 0,
     "bahas": "Konsistensi hukum alam (sunnatullah) memungkinkan percobaan diulang dan hasilnya diuji — itulah dasar metodologi sains."
@@ -11981,8 +11981,8 @@
     "tanya": "Etika yang harus dipegang seorang peneliti muslim adalah ...",
     "pilihan": [
      "Jujur melaporkan data dan tidak menyesatkan publik",
-     "Memilih data yang menguntungkan",
-     "Menyembunyikan kesalahan alat"
+     "Memilih data yang menguntungkan hasil penelitian",
+     "Menyembunyikan kesalahan alat agar hasilnya bagus"
     ],
     "kunci": 0,
     "bahas": "QS al-Ahzab 33:70 memerintahkan berkata benar. Kejujuran data adalah bentuk amanah ilmiah dan social."
@@ -11992,8 +11992,8 @@
     "tanya": "Salah satu dampak negatif teknologi komunikasi bagi pelajar yang harus dikendalikan adalah ...",
     "pilihan": [
      "Kecanduan sehingga ibadah dan belajar terganggu",
-     "Bertambahnya wawasan",
-     "Meningkatnya komunikasi dengan guru"
+     "Bertambahnya wawasan karena banyak informasi",
+     "Meningkatnya komunikasi dengan guru dan teman"
     ],
     "kunci": 0,
     "bahas": "Teknologi tidak tercela, tetapi penggunaannya perlu tala'um: dijaga waktunya dan dipilah isinya."
@@ -12003,8 +12003,8 @@
     "tanya": "Tujuan utama menguasai iptek menurut pandangan Islam adalah ...",
     "pilihan": [
      "Memakmurkan bumi dan memudahkan kebaikan manusia",
-     "Mendapatkan pengakuan dunia semata",
-     "Menjajah negara lain"
+     "Mendapatkan pengakuan dari dunia semata",
+     "Menjajah negara lain agar sumber dayanya dikuasai"
     ],
     "kunci": 0,
     "bahas": "Iptek menjadi sarana mengemban tugas kekhalifahan; manfaatnya diarahkan pada kemaslahatan, bukan penindasan."
@@ -12013,9 +12013,9 @@
     "bab": "iptek",
     "tanya": "Kata \"al-'ilm\" dalam Al-Qur'an mencakup ...",
     "pilihan": [
-     "Pengetahuan yang benar, baik lewat wahyu maupun pengamatan akal",
-     "Hanya ilmu agama",
-     "Hanya ilmu dunia"
+     "Pengetahuan yang benar, baik lewat wahyu maupun akal",
+     "Hanya ilmu agama yang bersumber dari wahyu",
+     "Hanya ilmu dunia yang bersumber dari pengamatan indra"
     ],
     "kunci": 0,
     "bahas": "Al-Qur'an tidak memisahkan ilmu agama dan ilmu dunia secara tajam; keduanya dipakai untuk memahami ayat dan alam."
@@ -12024,9 +12024,9 @@
     "bab": "iptek",
     "tanya": "\"Sunnatullah\" berkaitan dengan sains karena ...",
     "pilihan": [
-     "Menunjukkan keberlakuan hukum alam yang dapat diuji dan diprediksi",
-     "Menutup rapat penyelidikan alam",
-     "Menjelaskan bahwa alam tidak berhukum"
+     "Menunjukkan keberlakuan hukum alam yang dapat diuji",
+     "Menutup rapat penyelidikan alam oleh manusia",
+     "Menjelaskan bahwa alam tidak memiliki hukum tetap"
     ],
     "kunci": 0,
     "bahas": "Sunnatullah pada alam bermakna keteraturan hukum yang diberikan Allah, yang dapat dipelajari lewat metode ilmiah."
@@ -12035,9 +12035,9 @@
     "bab": "dakwah",
     "tanya": "\"Dakwah\" secara bahasa berarti ...",
     "pilihan": [
-     "Menyeru / mengajak",
-     "Berdagang",
-     "Bertanya"
+     "Menyeru dan mengajak kepada jalan Allah",
+     "Berdagang untuk memperoleh keuntungan",
+     "Bertanya kepada orang yang lebih pandai"
     ],
     "kunci": 0,
     "bahas": "Dakwah berasal dari da'a-yad'u yang berarti menyeru. Karena itu dakwah tidak identik dengan ceramah saja."
@@ -12047,8 +12047,8 @@
     "tanya": "Tiga metode dakwah disebut dalam QS an-Nahl 16:125, yaitu ...",
     "pilihan": [
      "Hikmah, mau'idzah hasanah, dan mujadalah ahsan",
-     "Tegur, ancam, dan boikot",
-     "Menulis, mencetak, dan menjual"
+     "Tegur, ancam, dan boikot terhadap pelaku dosa",
+     "Menulis, mencetak, dan menjual buku dakwah"
     ],
     "kunci": 0,
     "bahas": "Ketiganya menuntun pendekatan sesuai keadaan: hikmah (bijak), nasihat baik, dan dialog terbaik."
@@ -12057,9 +12057,9 @@
     "bab": "dakwah",
     "tanya": "Makna \"hikmah\" dalam berdakwah adalah ...",
     "pilihan": [
-     "Perkataan dan tindakan yang tepat sasaran sesuai keadaan orangnya",
-     "Kata-kata yang panjang",
-     "Ceramah yang keras"
+     "Perkataan dan tindakan yang tepat sasaran sesuai keadaan",
+     "Kata-kata yang panjang agar terlihat berwibawa di depan orang",
+     "Ceramah yang keras agar jemaah segera berubah dan merasa takut"
     ],
     "kunci": 0,
     "bahas": "Hikmah menuntut pemahaman konteks. Karena itu satu sapaan bisa baik bagi satu orang dan kurang tepat bagi orang lain."
@@ -12068,9 +12068,9 @@
     "bab": "dakwah",
     "tanya": "\"Keramahan Islam\" bisa ditunjukkan seorang pelajar melalui ...",
     "pilihan": [
-     "Sikap santun kepada guru, warga, dan teman yang berbeda latar belakang",
+     "Sikap santun kepada guru, warga, dan teman",
      "Memarahi teman yang berbuat salah agar jera",
-     "Berbicara keras agar disegani"
+     "Berbicara keras agar disegani oleh orang lain"
     ],
     "kunci": 0,
     "bahas": "QS Ali Imran 3:159 menyebut sikap lemah lembut yang membuat orang mendekat; akhlak adalah dakwah paling awal."
@@ -12080,8 +12080,8 @@
     "tanya": "QS Ali Imran 3:159 menyebut \"fa bima rahmatin minallah\" sebagai pengantar ...",
     "pilihan": [
      "Sikap lemah lembut kepada manusia",
-     "Penggunaan kekuatan",
-     "Perintah berperang"
+     "Penggunaan kekuatan untuk menaklukkan musuh",
+     "Perintah berperang melawan kaum kafir"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut bahwa rahmat Allah-lah yang membuat Nabi lemah lembut; lalu andai ia keras, orang akan menjauh."
@@ -12091,8 +12091,8 @@
     "tanya": "Dakwah yang paling utama bagi pelajar dimulai dari ...",
     "pilihan": [
      "Dirinya sendiri: mengerjakan apa yang diucapkan",
-     "Menceramahi orang dewasa",
-     "Menyebarkan kabar tanpa diperiksa"
+     "Menceramahi orang dewasa di lingkungan rumah",
+     "Menyebarkan kabar tanpa diperiksa kebenarannya"
     ],
     "kunci": 0,
     "bahas": "QS as-Saff 61:2-3 mengingatkan tentang berbicara tanpa mengamalkan. Keteladanan mendahului ucapan."
@@ -12101,9 +12101,9 @@
     "bab": "dakwah",
     "tanya": "Bentuk dakwah melalui media digital yang tepat adalah ...",
     "pilihan": [
-     "Membagikan konten yang benar dan memeriksa sumbernya sebelum disebar",
-     "Menyebarkan kabar tanpa memeriksa",
-     "Membuat isi yang merendahkan orang lain"
+     "Membagikan konten yang benar dan memeriksa sumbernya",
+     "Menyebarkan kabar tanpa memeriksa kebenarannya",
+     "Membuat isi yang merendahkan seseorang lain di media"
     ],
     "kunci": 0,
     "bahas": "QS al-Hujurat 49:6 memerintahkan tabayun. Penyebaran hoaks justru merusak citra dakwah."
@@ -12112,9 +12112,9 @@
     "bab": "dakwah",
     "tanya": "Istilah \"mujadalah ahsan\" menunjuk pada ...",
     "pilihan": [
-     "Diskusi dengan cara terbaik, berdalil dan menjaga adab",
-     "Perdebatan yang keras agar menang",
-     "Menghindari semua diskusi"
+     "Diskusi dengan cara terbaik, berdalil serta menjaga adab",
+     "Perdebatan yang keras agar lawan bicara kalah dan menyerah",
+     "Menghindari semua diskusi agar tidak terjadi berselisih pendapat"
     ],
     "kunci": 0,
     "bahas": "QS an-Nahl 16:125 memerintahkan dialog yang menghormati lawan bicara, karena tujuan dakwah adalah tersampaikannya kebenaran."
@@ -12124,8 +12124,8 @@
     "tanya": "\"Mau'idzah hasanah\" berarti ...",
     "pilihan": [
      "Nasihat yang baik dan menyentuh tanpa menyakitkan hati",
-     "Teguran yang keras dan pedas",
-     "Ceramah yang penuh ancaman"
+     "Teguran yang keras dan pedas agar orang jera seketika",
+     "Ceramah yang penuh ancaman dan menakut-nakuti jemaah"
     ],
     "kunci": 0,
     "bahas": "Nasihat yang baik memperhatikan waktu dan cara, menyentuh perasaan tanpa merendahkan."
@@ -12134,9 +12134,9 @@
     "bab": "dakwah",
     "tanya": "Tujuan akhir dakwah dalam QS an-Nahl 16:125 adalah ...",
     "pilihan": [
-     "Agar manusia mengenal dan taat kepada Allah, bukan demi nama pendakwah",
-     "Agar dakwah menjadi terkenal",
-     "Agar pendakwah mendapat harta"
+     "Agar manusia mengenal dan taat kepada Allah",
+     "Agar nama pendakwah terkenal di masyarakat",
+     "Agar pendakwah memperoleh harta dari jemaah"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menutup dengan penjelasan bahwa Allah lebih mengetahui siapa yang sesat dan siapa yang mendapat petunjuk — hasil dakwah milik Allah."
@@ -12149,9 +12149,9 @@
     "bab": "x-wahyu",
     "tanya": "Seorang peneliti membandingkan Al-Qur'an dengan hadis qudsi. Pernyataan yang paling tepat adalah ...",
     "pilihan": [
-     "Keduanya sama-sama wahyu, tetapi hanya Al-Qur'an yang lafal dan maknanya dari Allah serta menjadi mukjizat",
-     "Hadis qudsi lebih tinggi karena disabdakan Nabi",
-     "Al-Qur'an tidak boleh ditafsirkan sedangkan hadis qudsi boleh"
+     "Hanya Al-Qur'an yang lafal dan maknanya dari Allah serta bernilai mukjizat",
+     "Hadis qudsi lebih tinggi kedudukannya karena disabdakan langsung oleh Nabi",
+     "Lafal hadis qudsi dari Allah, tetapi maknanya disusun oleh para perawi"
     ],
     "kunci": 0,
     "bahas": "Kedudukan keduanya berbeda: Al-Qur'an adalah kalam Allah dengan lafal dan makna dari-Nya, sedangkan hadis qudsi maknanya dari Allah dan lafalnya dari Nabi. Konsekuensinya berbeda dalam ibadah, riwayat, dan kemukjizatan."
@@ -12160,9 +12160,9 @@
     "bab": "x-wahyu",
     "tanya": "Seseorang berkata, \"Karena Al-Qur'an berbahasa Arab, terjemahan tidak berguna.\" Bantahan yang paling tepat adalah ...",
     "pilihan": [
-     "Terjemahan berguna untuk memahami makna, sedangkan lafal Arab tetap menjadi teks wahyu yang dibaca",
-     "Terjemahan sama kedudukannya dengan Al-Qur'an",
-     "Semua orang wajib menghafal kamus Arab"
+     "Terjemahan hanya membantu memahami makna; lafal Arab tetap teks wahyu",
+     "Terjemahan memiliki kedudukan yang sama dengan teks Al-Qur'an berbahasa Arab",
+     "Setiap orang wajib menghafal kamus bahasa Arab sebelum membaca terjemahan"
     ],
     "kunci": 0,
     "bahas": "Teks wahyu tetap Arab, tetapi pesannya untuk seluruh manusia. Terjemahan adalah pintu masuk pemahaman (QS Ibrahim 14:4 tentang rasul berbicara dengan bahasa kaumnya), bukan pengganti teks."
@@ -12171,9 +12171,9 @@
     "bab": "x-wahyu",
     "tanya": "Wahyu turun berangsur dalam 23 tahun. Implikasi paling penting bagi pemahaman hukum syariat adalah ...",
     "pilihan": [
-     "Hukum dibangun bertahap dan memperhatikan kesiapan umat",
-     "Semua hukum turun sekaligus tanpa konteks",
-     "Hukum tidak perlu dipahami konteksnya"
+     "Hukum dibangun bertahap dan memperhatikan kesiapan umat yang menerimanya",
+     "Semua hukum turun sekaligus tanpa memperhatikan konteks dan kesiapan umat",
+     "Hukum tidak perlu dipahami konteksnya karena berlaku sepanjang masa"
     ],
     "kunci": 0,
     "bahas": "Penurunan bertahap menunjukkan metode pendidikan: akidah dulu, lalu ibadah, lalu hukum sosial. Ini juga menjadi rujukan metode dakwah bertahap pada QS al-Furqan 25:32."
@@ -12182,9 +12182,9 @@
     "bab": "x-wahyu",
     "tanya": "QS asy-Syu'ara' 26:192-195 menyebut wahyu turun melalui ar-Ruh al-Amin ke dalam hati Nabi. Konsekuensi akidahnya adalah ...",
     "pilihan": [
-     "Al-Qur'an terjaga dari kesalahan dalam penyampaiannya",
-     "Al-Qur'an hasil renungan Nabi",
-     "Nabi bebas mengubah isi wahyu"
+     "Al-Qur'an terjaga dari kesalahan di penyampaiannya pada manusia",
+     "Al-Qur'an adalah hasil renungan mendalam Nabi Muhammad ﷺ sendiri",
+     "Nabi bebas mengubah isi dan susunan wahyu sesuai kehendaknya"
     ],
     "kunci": 0,
     "bahas": "Karena penyampaiannya melalui perantara terpercaya, teks wahyu sampai tanpa cacat. Inilah dasar bahwa Al-Qur'an ma'shum (terjaga) dalam penurunannya."
@@ -12193,9 +12193,9 @@
     "bab": "x-wahyu",
     "tanya": "Mengapa Al-Qur'an disebut sebagai \"asy-syifa\" (penyembuh) padahal tidak menggantikan pengobatan medis?",
     "pilihan": [
-     "Karena ia menyembuhkan penyakit hati dan memberi ketenangan, sedangkan pengobatan medis tetap menjadi usaha wajib",
-     "Karena ia menyembuhkan semua penyakit fisik tanpa obat",
-     "Karena pengobatan medis haram"
+     "Karena ia menyembuhkan penyakit hati, sedangkan pengobatan medis tetap wajib diusahakan",
+     "Karena ia menyembuhkan semua penyakit fisik tanpa perlu obat dari dokter sama sekali",
+     "Karena pengobatan medis tidak diperlukan lagi bagi seseorang beriman yang rajin membaca"
     ],
     "kunci": 0,
     "bahas": "QS Yunus 10:57 dan QS al-Isra' 17:82 menyebut Al-Qur'an sebagai syifa dan rahmat bagi mukmin. Memahami sebagai penyembuh hati menjaga keseimbangan antara doa dan ikhtiar medis."
@@ -12204,9 +12204,9 @@
     "bab": "x-wahyu",
     "tanya": "Seorang murid menganggap semua ayat Al-Qur'an mudah dipahami tanpa bantuan ilmu. Kelemahan anggapan itu adalah ...",
     "pilihan": [
-     "Mengabaikan adanya ayat mutasyabihat dan ilmu alat seperti bahasa serta tafsir",
-     "Anggapan itu benar sepenuhnya",
-     "Ilmu tafsir hanya untuk ulama besar"
+     "Mengabaikan ayat mutasyabihat dan ilmu alat seperti bahasa serta tafsir",
+     "Anggapan itu benar karena setiap pembaca pasti memahami seluruh ayat sendiri",
+     "Ilmu tafsir hanya dibutuhkan oleh ulama besar di perguruan tinggi"
     ],
     "kunci": 0,
     "bahas": "QS Ali Imran 3:7 membedakan muhkamat dan mutasyabihat. Tanpa ilmu alat, pembaca berisiko salah makna — karena itu Al-Qur'an memerintahkan berpikir dengan ilmu."
@@ -12215,9 +12215,9 @@
     "bab": "x-wahyu",
     "tanya": "Pernyataan \"Al-Qur'an diturunkan sebagai hudan lin-nas\" berimplikasi bahwa ...",
     "pilihan": [
-     "Pesan Al-Qur'an dapat disampaikan kepada seluruh manusia, bukan hanya satu kelompok",
-     "Hanya orang Arab yang boleh membacanya",
-     "Al-Qur'an hanya untuk para nabi"
+     "Pesan Al-Qur'an bisa disampaikan pada semua manusia, bukan satu kelompok saja",
+     "Hanya orang Arab saja yang boleh membaca dan merenungkan seluruh pesannya",
+     "Al-Qur'an hanya ditujukan kepada para nabi terdahulu beserta kaum pengikutnya"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:185 bersifat universal. Konsekuensinya, dakwah dilakukan dengan bahasa kaum yang dituju (QS Ibrahim 14:4) agar pesannya dapat dipahami."
@@ -12226,9 +12226,9 @@
     "bab": "x-wahyu",
     "tanya": "Sebuah artikel menyebut Al-Qur'an \"ditulis oleh Nabi\". Kesalahan mendasar pernyataan ini adalah ...",
     "pilihan": [
-     "Menolak hakikat wahyu: Al-Qur'an adalah kalam Allah yang disampaikan, bukan karangan manusia",
-     "Menganggap Al-Qur'an ditulis tangan",
-     "Menganggap Nabi bisa menulis"
+     "Menolak hakikat wahyu: Al-Qur'an adalah kalam Allah yang disampaikan",
+     "Menganggap Al-Qur'an ditulis tangan oleh para sahabat Nabi di Madinah",
+     "Menganggap Nabi tidak mampu menulis dan membaca sama sekali seumur hidup"
     ],
     "kunci": 0,
     "bahas": "QS al-An'am 6:19 dan QS al-Isra' 17:88 menegaskan Al-Qur'an berasal dari Allah. Nabi menyampaikan, bukan mengarang. Kesalahan ini meruntuhkan seluruh bangunan akidah tentang wahyu."
@@ -12237,9 +12237,9 @@
     "bab": "x-wahyu",
     "tanya": "Mengapa hadis memiliki kedudukan yang berbeda dari Al-Qur'an dalam hal ibadah tilawah?",
     "pilihan": [
-     "Al-Qur'an dibaca sebagai ibadah dengan lafalnya, sedangkan hadis tidak disyaratkan dibaca sebagai ibadah tilawah",
-     "Hadis tidak boleh dibaca sama sekali",
-     "Al-Qur'an boleh diubah lafalnya"
+     "Al-Qur'an dibaca sebagai ibadah dengan lafalnya, sedangkan hadis tidak",
+     "Hadis sama sekali tidak boleh dibaca oleh orang beriman dalam keadaan apa pun",
+     "Lafal Al-Qur'an boleh diubah oleh siapa pun agar lebih mudah dibaca"
     ],
     "kunci": 0,
     "bahas": "Yang menjadi dasar perbedaan adalah status lafalnya. Karena lafal Al-Qur'an dari Allah, membacanya bernilai ibadah; hadis lafalnya dari Nabi sehingga dibaca untuk memahami, bukan sebagai tilawah."
@@ -12248,9 +12248,9 @@
     "bab": "x-wahyu",
     "tanya": "Jika ada klaim bahwa Al-Qur'an memuat semua rumus ilmiah secara rinci, jawaban kritisnya adalah ...",
     "pilihan": [
-     "Al-Qur'an memberi petunjuk dan dorongan meneliti; rincian ilmiah menjadi wilayah usaha manusia",
-     "Al-Qur'an memang memuat semua rumus",
-     "Al-Qur'an tidak memuat isyarat ilmiah apa pun"
+     "Al-Qur'an memberi dorongan meneliti, sedangkan rincian ilmiah menjadi usaha manusia",
+     "Al-Qur'an memang memuat seluruh rumus ilmiah secara lengkap serta terperinci di dalamnya",
+     "Al-Qur'an sama sekali tidak memuat satu pun isyarat ilmiah tentang alam di dalamnya"
     ],
     "kunci": 0,
     "bahas": "QS an-Nahl 16:89 menyebut Al-Qur'an sebagai penjelas segala sesuatu dalam urusan agama. Menempatkan sains di wilayah ijtihad manusia menjaga teks wahyu tetap lurus dan sains tetap teruji."
@@ -12259,9 +12259,9 @@
     "bab": "x-nuzul",
     "tanya": "Fungsi asbabun nuzul terhadap pemahaman ayat bersifat ...",
     "pilihan": [
-     "Menerangkan konteks, sedangkan keumuman lafal tetap menjadi patokan (al-'ibrah bi 'umum al-lafzh)",
-     "Membatasi makna ayat hanya pada satu peristiwa",
-     "Mengganti lafal ayat"
+     "Menerangkan konteks, sedangkan keumuman lafal tetap menjadi patokan",
+     "Membatasi makna ayat hanya pada satu peristiwa yang melatarbelakanginya",
+     "Mengganti lafal ayat dengan susunan kata yang lebih mudah dipahami"
     ],
     "kunci": 0,
     "bahas": "Kaidah tersebut menjaga ayat tidak dipersempit hanya karena satu peristiwa, tetapi konteksnya tetap penting agar maksudnya tidak salah dipahami."
@@ -12270,9 +12270,9 @@
     "bab": "x-nuzul",
     "tanya": "Perbedaan pendapat tentang surah terakhir yang turun menunjukkan bahwa ...",
     "pilihan": [
-     "Sebagian ulama menilai berdasarkan peristiwa, sebagian berdasarkan urutan penyampaian",
-     "Semua ulama sepakat tanpa perbedaan",
-     "Teks Al-Qur'an rusak"
+     "Sebagian ulama menilai berdasarkan peristiwa, sebagian dari urutan penyampaian",
+     "Semua ulama sepakat tanpa ada perbedaan pendapat sedikit pun di kalangan mereka",
+     "Teks Al-Qur'an rusak karena tidak ada kesepakatan tentang surah terakhir"
     ],
     "kunci": 0,
     "bahas": "Perbedaan itu lahir dari cara penilaian, bukan dari keraguan atas teks. Ini contoh bahwa ikhtilaf dalam ilmu bukan kelemahan, asalkan rujukannya jelas."
@@ -12282,8 +12282,8 @@
     "tanya": "QS al-Furqan 25:32 menyebut dua alasan penurunan bertahap. Implikasi pedagogis bagi guru adalah ...",
     "pilihan": [
      "Materi disampaikan bertahap, diulang, dan disesuaikan kesiapan murid",
-     "Semua materi disampaikan sekali secara penuh",
-     "Murid tidak perlu pengulangan"
+     "Seluruh materi disampaikan sekali secara penuh dan tidak diulang lagi",
+     "Murid tidak perlu pengulangan karena sudah memahami materinya"
     ],
     "kunci": 0,
     "bahas": "Ayat menyebut penguatan hati dan pembacaan bertahap (tartil). Dalam pendidikan, pengulangan dan pentahapan adalah metode yang berdalil."
@@ -12292,9 +12292,9 @@
     "bab": "x-nuzul",
     "tanya": "Seorang pengkaji menemukan satu ayat yang turun karena pertanyaan sahabat. Maksud ayat itu paling tepat dipahami dengan cara ...",
     "pilihan": [
-     "Memeriksa sebab turunnya dan konteks pertanyaannya, tanpa meninggalkan keumuman lafal",
-     "Membatasi hanya untuk penanya",
-     "Menganggap pertanyaan itu tidak penting"
+     "Memeriksa sebab turunnya dan konteksnya, tanpa meninggalkan keumuman lafal",
+     "Membatasi makna ayat hanya untuk orang yang bertanya pada peristiwa itu saja",
+     "Menganggap pertanyaan sahabat tidak penting untuk memahami makna ayat"
     ],
     "kunci": 0,
     "bahas": "Seperti ayat tentang khomr dan pertanyaan tentang ruh (QS al-Isra' 17:85). Konteks menerangkan, lafal tetap berlaku umum sesuai kaidah yang disepakati ulama ushul."
@@ -12303,9 +12303,9 @@
     "bab": "x-nuzul",
     "tanya": "Apa perbedaan Makkiyah dan Madaniyah dari sisi gaya penyampaian?",
     "pilihan": [
-     "Makkiyah banyak memakai gaya ringkas, irama kuat, dan pertanyaan retoris; Madaniyah lebih panjang dan merinci hukum",
-     "Makkiyah selalu panjang",
-     "Tidak ada perbedaan gaya"
+     "Makkiyah ringkas dan bertenaga, Madaniyah lebih panjang dan merinci hukum",
+     "Makkiyah selalu panjang, sedangkan Madaniyah selalu sangat pendek sekali",
+     "Keduanya memakai gaya yang persis sama, tanpa ciri penyampaian yang khas"
     ],
     "kunci": 0,
     "bahas": "Perbedaan gaya mengikuti audiens: masyarakat Makkah menekankan kesadaran akidah, masyarakat Madinah sudah membangun tatanan sosial sehingga hukum dirinci."
@@ -12315,8 +12315,8 @@
     "tanya": "QS al-Isra' 17:106 menyebut Al-Qur'an diturunkan \"ala muktsin\". Maknanya adalah ...",
     "pilihan": [
      "Diturunkan dengan jeda dan berangsur",
-     "Diturunkan dalam satu malam",
-     "Diturunkan tanpa urutan"
+     "Diturunkan sekaligus dalam satu malam",
+     "Diturunkan tanpa urutan yang jelas"
     ],
     "kunci": 0,
     "bahas": "Muqatta'ah atau tartil pada ayat ini menegaskan penurunan bertahap. Ayat ini menjadi rujukan kuat bagi pembahasan nuzul."
@@ -12325,9 +12325,9 @@
     "bab": "x-nuzul",
     "tanya": "Kenapa urutan surah dalam mushaf berbeda dari urutan turunnya?",
     "pilihan": [
-     "Mushaf disusun sesuai tuntunan penyusunannya, sedangkan urutan turun berkaitan dengan kronologi wahyu",
-     "Karena kesalahan penulis mushaf",
-     "Karena urutan turun tidak diketahui sama sekali"
+     "Mushaf disusun sesuai tuntunan, sedangkan urutan turun berkaitan dengan waktu",
+     "Karena ada kesalahan penulis mushaf pada masa pemerintahan seorang khalifah",
+     "Karena urutan turunnya sama sekali tidak diketahui oleh para sahabat Nabi"
     ],
     "kunci": 0,
     "bahas": "Urutan mushaf bersifat tauqifi (mengikuti tuntunan) sehingga tidak boleh diubah; urutan turun dipakai dalam kajian sejarah dan tafsir."
@@ -12336,9 +12336,9 @@
     "bab": "x-nuzul",
     "tanya": "Seorang murid menyimpulkan, \"Ayat yang turun belakangan selalu membatalkan ayat yang lebih dulu.\" Koreksi yang tepat adalah ...",
     "pilihan": [
-     "Tidak semua ayat yang belakangan menghapus; naskh hanya terjadi bila memenuhi syarat dan diketahui dalilnya",
-     "Semua ayat belakangan menghapus",
-     "Tidak ada ayat yang mungkin menghapus"
+     "Naskh hanya terjadi bila memenuhi syarat dan diketahui dalilnya",
+     "Semua ayat yang turun belakangan menghapus ayat yang turun lebih dulu",
+     "Tidak ada satu ayat pun yang mungkin menghapus ayat lain mana pun"
     ],
     "kunci": 0,
     "bahas": "Naskh memerlukan syarat ketat dan pengetahuan tentang urutan turun. Menyamakan \"belakangan\" dengan \"menghapus\" adalah kesalahan metodologis yang dikenal dalam ulumul Qur'an."
@@ -12347,9 +12347,9 @@
     "bab": "x-nuzul",
     "tanya": "QS al-Baqarah 2:185 menyebut Ramadan sebagai bulan turunnya Al-Qur'an. Pemahaman yang menyatukan ayat ini dengan penurunan bertahap adalah ...",
     "pilihan": [
-     "Penurunan sekaligus ke langit dunia terjadi pada Ramadan, lalu diturunkan berangsur kepada Nabi",
-     "Ayat itu bertentangan dengan sejarah",
-     "Al-Qur'an hanya diturunkan pada Ramadan"
+     "Sekaligus ke langit dunia pada Ramadan, lalu berangsur kepada Nabi",
+     "Ayat itu bertentangan dengan catatan sejarah perjalanan wahyu Nabi",
+     "Al-Qur'an hanya diturunkan pada bulan Ramadan sepanjang masa, kata mereka"
     ],
     "kunci": 0,
     "bahas": "Penyatuan itu dikenal dalam pembahasan inzal dan tanzil: sekaligus ke Bayt al-'Izzah, kemudian berangsur selama 23 tahun."
@@ -12358,9 +12358,9 @@
     "bab": "x-nuzul",
     "tanya": "Mengapa konteks sosial Makkah membuat ayat tentang akidah lebih dominan?",
     "pilihan": [
-     "Karena masyarakatnya masih memerlukan penanaman dasar keimanan sebelum tatanan hukum",
-     "Karena belum ada bahasa Arab",
-     "Karena hukum belum diperlukan manusia"
+     "Masyarakatnya perlu penanaman dasar keimanan sebelum tatanan hukum",
+     "Karena pada masa itu bahasa Arab belum digunakan oleh penduduk Makkah",
+     "Karena hukum belum diperlukan oleh umat manusia pada masa itu"
     ],
     "kunci": 0,
     "bahas": "Akidah adalah fondasi; hukum sosial dibangun di atas kesadaran beriman. Inilah logika dakwah bertahap yang tercermin dalam urutan turun."
@@ -12369,9 +12369,9 @@
     "bab": "x-otentik",
     "tanya": "Seorang orientalis menyebut Al-Qur'an banyak versi karena ada beberapa qira'at. Jawaban ilmiahnya adalah ...",
     "pilihan": [
-     "Qira'at adalah variasi bacaan yang bersumber dari Nabi dengan sanad, bukan perbedaan teks mushaf",
-     "Qira'at membuktikan teks berubah",
-     "Qira'at hanya karangan ulama"
+     "Qira'at adalah variasi bacaan bersanad dari Nabi, bukan beda teks",
+     "Qira'at membuktikan bahwa teks Al-Qur'an sudah berubah sejak dahulu kala",
+     "Qira'at hanyalah karangan ulama beberapa abad setelah Nabi Muhammad wafat"
     ],
     "kunci": 0,
     "bahas": "Qira'at mutawatir berpangkal pada bacaan Nabi dan tetap merujuk pada satu rasm mushaf. Perbedaan cara baca tidak berarti perbedaan isi."
@@ -12380,9 +12380,9 @@
     "bab": "x-otentik",
     "tanya": "Mengapa pemeliharaan Al-Qur'an lewat hafalan dinilai lebih kuat daripada pemeliharaan lewat tulisan saja?",
     "pilihan": [
-     "Hafalan berantai melalui banyak orang sehingga penyimpangan cepat terdeteksi",
-     "Karena tulisan tidak diperlukan",
-     "Karena hafalan tidak bisa salah"
+     "Hafalan berantai melalui banyak orang sehingga penyimpangan cepat ketahuan",
+     "Karena tulisan tidak diperlukan lagi dalam menjaga kelestarian Al-Qur'an",
+     "Karena hafalan manusia tidak mungkin mengalami kesalahan apa pun"
     ],
     "kunci": 0,
     "bahas": "Kombinasi hafalan dan tulisan saling menguji. Jika hanya tulisan, kesalahan salin sulit diketahui; jika hanya hafalan, variasi lisan sulit dibakukan."
@@ -12391,9 +12391,9 @@
     "bab": "x-otentik",
     "tanya": "Fungsi penambahan titik dan harakat pada mushaf oleh Abu al-Aswad ad-Du'ali adalah ...",
     "pilihan": [
-     "Menjaga bacaan agar tidak salah ketika orang non-Arab makin banyak masuk Islam",
-     "Mengubah susunan surah",
-     "Menambah jumlah ayat"
+     "Menjaga bacaan agar tak salah ketika pemeluk Islam makin bertambah",
+     "Mengubah susunan surah agar lebih mudah dihafal oleh beberapa murid",
+     "Menambah jumlah ayat pada setiap surah yang ada dalam mushaf"
     ],
     "kunci": 0,
     "bahas": "Penambahan itu bersifat teknis baca, bukan penambahan wahyu. Karena itu teks Al-Qur'an tetap sama, hanya cara membacanya dibakukan."
@@ -12403,8 +12403,8 @@
     "tanya": "Seseorang menemukan mushaf dengan penomoran ayat sedikit berbeda. Penilaian kritis adalah ...",
     "pilihan": [
      "Perbedaan penomoran bisa berasal dari metode penghitungan, bukan perubahan ayat",
-     "Berarti mushaf itu palsu",
-     "Berarti ayat Al-Qur'an berkurang"
+     "Perbedaan itu pasti berarti mushaf tersebut sudah dipalsukan oleh orang lain",
+     "Perbedaan itu berarti jumlah ayat dalam Al-Qur'an telah berkurang satu ayat pun"
     ],
     "kunci": 0,
     "bahas": "Ulama berbeda dalam menetapkan batas ayat pada beberapa tempat, tetapi jumlah dan isi wahyu tetap sama. Perbedaan seperti ini dicatat dalam ilmu fawatih dan 'adad."
@@ -12413,9 +12413,9 @@
     "bab": "x-otentik",
     "tanya": "Pernyataan \"Al-Qur'an terjaga karena Allah, dan manusia menjadi sarana penjagaannya\" bermakna ...",
     "pilihan": [
-     "Jaminan Ilahi bekerja melalui hafalan serta penulisan umat, sehingga keduanya wajib dirawat",
-     "Manusia tidak berperan dalam penjagaan",
-     "Allah tidak menjamin"
+     "Jaminan Ilahi bekerja melalui hafalan serta penulisan umat yang wajib dirawat",
+     "Manusia tidak berperan sama sekali dalam menjaga kelestarian Al-Qur'an di muka bumi",
+     "Allah tidak menjamin kelestarian Al-Qur'an bagi umat Nabi Muhammad sampai kiamat"
     ],
     "kunci": 0,
     "bahas": "QS al-Hijr 15:9 berisi jaminan; hadis dan sejarah menunjukkan sarana manusiawi berupa hifz dan kitabah. Memahami keduanya mencegah sikap pasif."
@@ -12425,8 +12425,8 @@
     "tanya": "Apa dampak penulisan mushaf baku terhadap penyebaran Islam ke luar Arab?",
     "pilihan": [
      "Bacaan menjadi seragam sehingga memudahkan pengajaran di wilayah baru",
-     "Membuat bacaan makin beragam tanpa kendali",
-     "Menyebabkan hilangnya bahasa Arab"
+     "Bacaan justru makin beragam dan tidak dapat dikendalikan lagi oleh siapa pun",
+     "Bahasa Arab hilang karena sepenuhnya diganti bahasa daerah setempat"
     ],
     "kunci": 0,
     "bahas": "Mushaf Utsmani dikirim ke kota-kota besar bersama para qari. Keseragaman itu mempercepat pengajaran dan mencegah perselisihan bacaan."
@@ -12435,9 +12435,9 @@
     "bab": "x-otentik",
     "tanya": "Mengapa hadis-hadis tentang keutamaan surah tidak dapat dipakai untuk mengubah teks Al-Qur'an?",
     "pilihan": [
-     "Kedudukan hadis adalah penjelas, bukan penentu lafal wahyu",
-     "Hadis lebih tinggi dari Al-Qur'an",
-     "Hadis tidak ada hubungannya"
+     "Kedudukan hadis adalah penjelas, bukan penentu lafal wahyu Al-Qur'an",
+     "Kedudukan hadis lebih tinggi daripada Al-Qur'an dalam menentukan lafal wahyu",
+     "Hadis tidak ada hubungannya sama sekali dengan Al-Qur'an dan ajarannya"
     ],
     "kunci": 0,
     "bahas": "Hadis menjelaskan makna dan keutamaan amal, tetapi tidak menambah atau mengurangi lafal wahyu. Ini konsisten dengan QS al-Hijr 15:9."
@@ -12446,9 +12446,9 @@
     "bab": "x-otentik",
     "tanya": "Seorang murid menemukan klaim \"ayat rajam dihapus dari Al-Qur'an\". Sikap ilmiahnya adalah ...",
     "pilihan": [
-     "Menguji klaim dengan sumber otoritatif, sebab lafal Al-Qur'an terjaga dan klaim tanpa sanad tidak diterima",
-     "Menerimanya karena ada di internet",
-     "Menyebarkannya sebagai bahan diskusi"
+     "Menguji klaim dengan sumber otoritatif, sebab lafal Al-Qur'an terjaga",
+     "Menerimanya begitu saja karena sudah banyak ditulis orang di internet",
+     "Menyebarkannya sebagai bahan diskusi tanpa memeriksa sumbernya lebih dahulu"
     ],
     "kunci": 0,
     "bahas": "Klaim semacam itu bertentangan dengan QS al-Hijr 15:9. Metode ilmiah menuntut bukti dan sanad, bukan sekadar penyebaran informasi."
@@ -12457,9 +12457,9 @@
     "bab": "x-otentik",
     "tanya": "Mengapa penerjemahan Al-Qur'an tidak dapat disebut \"Al-Qur'an\"?",
     "pilihan": [
-     "Karena terjemahan adalah penafsiran makna, sedangkan Al-Qur'an adalah teks wahyu berbahasa Arab",
-     "Karena terjemahan lebih rendah nilainya sama sekali",
-     "Karena bahasa Arab lebih penting dari makna"
+     "Terjemahan adalah penafsiran makna, sedangkan Al-Qur'an adalah teks wahyu berbahasa Arab",
+     "Terjemahan lebih rendah nilainya dari buku apa pun dan tidak berguna bagi umat",
+     "Bahasa Arab sekemudian lebih penting dariterhadap makna yang dikandung oleh setiap ayatnya"
     ],
     "kunci": 0,
     "bahas": "Menyebut terjemahan sebagai Al-Qur'an akan mencampur teks wahyu dengan karya manusia. Karena itu ditulis \"terjemah\" dan tidak dipakai sebagai pengganti tilawah."
@@ -12468,9 +12468,9 @@
     "bab": "x-otentik",
     "tanya": "Dalam kajian keotentikan, \"tawatur\" berarti ...",
     "pilihan": [
-     "Periwayatan oleh banyak orang pada setiap tingkat sehingga mustahil sepakat berdusta",
-     "Periwayatan oleh satu orang terpercaya",
-     "Penyebaran tanpa jalur"
+     "Periwayatan oleh banyak orang pada setiap tingkat sehingga mustahil berdusta",
+     "Periwayatan oleh satu orang yang dianggap terpercaya dan paling terpandai",
+     "Penyebaran berita tanpa jalur periwayatan yang dapat diperiksa kebenarannya"
     ],
     "kunci": 0,
     "bahas": "Tawatur menjadi dasar keyakinan bahwa teks sampai utuh. Karena itu Al-Qur'an bersifat qath'i al-wurud (pasti sumbernya)."
@@ -12479,9 +12479,9 @@
     "bab": "x-mukjizat",
     "tanya": "Seorang ilmuwan menyebut Al-Qur'an memuat rumus yang pasti tentang embriologi. Penilaian ulama yang paling tepat adalah ...",
     "pilihan": [
-     "Ayat memberi isyarat yang sejalan dengan temuan, tetapi bukan buku kedokteran; penafsiran ilmiah bisa berubah",
-     "Ayat adalah rumus kedokteran yang tidak boleh ditafsirkan lagi",
-     "Tidak ada isyarat ilmiah sama sekali"
+     "Ayat hanya isyarat yang sejalan, bukan buku kedokteran; tafsirnya bisa berubah",
+     "Ayat adalah rumus kedokteran yang tidak boleh ditafsirkan lagi oleh siapa pun juga",
+     "Tidak ada isyarat ilmiah sama sekali di dalam ayat-ayat kauniyah Al-Qur'an"
     ],
     "kunci": 0,
     "bahas": "Isyarat ilmiah mendorong penelitian, tetapi tafsir ilmiah bersifat ijtihadi. Menjaga beda antara teks qath'i dan penafsiran zhanni mencegah klaim berlebihan."
@@ -12491,8 +12491,8 @@
     "tanya": "Mengapa tantangan tahaddi tidak dapat dijawab oleh sastrawan Arab yang paling fasih?",
     "pilihan": [
      "Karena susunan Al-Qur'an berada di luar pola syair dan prosa yang mereka kuasai",
-     "Karena mereka tidak berani mencoba",
-     "Karena mereka buta huruf seluruhnya"
+     "Karena mereka sebenarnya tidak berani mencoba menandingi Al-Qur'an sama sekali",
+     "Karena para sastrawan Arab pada masa itu seluruhnya masih buta huruf"
     ],
     "kunci": 0,
     "bahas": "Keunikan pola itulah inti i'jaz balaghi. Sejarah mencatat upaya penentangan lebih banyak berupa peperangan dan tuduhan sihir daripada menjawab tantangan."
@@ -12501,9 +12501,9 @@
     "bab": "x-mukjizat",
     "tanya": "Perbedaan mukjizat dan sihir terletak pada ...",
     "pilihan": [
-     "Sumbernya: mukjizat dari Allah untuk menguatkan nabi, sihir dari bantuan jin dan usaha manusia",
-     "Jumlah penontonnya",
-     "Kekuatan fisik pelakunya"
+     "Sumbernya: mukjizat dari Allah untuk nabi, sedangkan sihir dari bantuan jin",
+     "Jumlah penonton yang menyaksikan peristiwa luar biasa tersebut terjadi",
+     "Kekuatan fisik dan keberanian pelaku dalam mempertunjukkan kejadian itu juga"
     ],
     "kunci": 0,
     "bahas": "Sihir dapat dipelajari dan diperjualbelikan, sedangkan mukjizat tidak dapat dipelajari. Selain itu mukjizat membawa kebenaran, sedangkan sihir menyesatkan."
@@ -12512,9 +12512,9 @@
     "bab": "x-mukjizat",
     "tanya": "Berita Al-Qur'an tentang kekalahan Romawi lalu kemenangannya dalam QS ar-Rum 30:1-5 termasuk mukjizat ...",
     "pilihan": [
-     "Akhbar al-ghayb: berita gaib yang terbukti terjadi",
-     "I'jaz balaghi murni",
-     "I'jaz tasyri' murni"
+     "Akhbar al-ghayb: berita gaib yang kemudian terbukti terjadi",
+     "I'jaz balaghi murni: keindahan susunan bahasanya yang memukau",
+     "I'jaz tasyri' murni: kesempurnaan hukum yang dikandungnya"
     ],
     "kunci": 0,
     "bahas": "Jenis mukjizat ini adalah pemberitaan masa depan. Kebenarannya menjadi bukti bahwa sumber berita itu mengetahui yang gaib."
@@ -12523,9 +12523,9 @@
     "bab": "x-mukjizat",
     "tanya": "Jika ada penemuan sains yang tampak bertentangan dengan satu penafsiran ayat, sikap yang tepat adalah ...",
     "pilihan": [
-     "Memeriksa penafsiran dan bukti sains, karena teks tetap benar dan penafsiran manusia bisa salah",
-     "Meninggalkan Al-Qur'an",
-     "Menolak sains tanpa membaca"
+     "Memeriksa penafsiran dan bukti sains, karena teks benar dan tafsir bisa salah",
+     "Meninggalkan Al-Qur'an karena dianggap bertentangan dengan temuan sains",
+     "Menolak sains tanpa membaca penjelasan para ilmuwan dan mufasir lebih dahulu"
     ],
     "kunci": 0,
     "bahas": "Prinsipnya: teks qath'i tidak bertentangan dengan fakta yang pasti. Yang sering bertentangan adalah penafsiran zhanni dengan klaim sains yang belum matang."
@@ -12535,8 +12535,8 @@
     "tanya": "Apa hikmah mukjizat indrawi Nabi bersifat sementara sedangkan Al-Qur'an abadi?",
     "pilihan": [
      "Al-Qur'an dapat diuji oleh setiap generasi sehingga buktinya terus hidup",
-     "Mukjizat indrawi tidak penting",
-     "Al-Qur'an hanya untuk satu masa"
+     "Mukjizat indrawi tidak penting dan tidak perlu diketahui oleh umat",
+     "Al-Qur'an hanya berlaku untuk satu masa, yaitu masa Nabi Muhammad saja"
     ],
     "kunci": 0,
     "bahas": "Mukjizat indrawi menyaksikan kebenaran pada zamannya; Al-Qur'an memberi bukti yang dapat diperiksa ulang kapan saja. Keduanya sah, hanya jangkauan waktunya berbeda."
@@ -12545,9 +12545,9 @@
     "bab": "x-mukjizat",
     "tanya": "Mengapa Al-Qur'an menyebut dirinya \"kitab yang tidak ada keraguan di dalamnya\" (QS al-Baqarah 2:2)?",
     "pilihan": [
-     "Karena kebenarannya dapat diuji dari sisi isi, bahasa, dan pemenuhan beritanya",
-     "Karena tidak ada yang boleh bertanya",
-     "Karena hanya dibaca orang beriman"
+     "Karena kebenarannya dapat diuji dari isi, bahasa, dan pemenuhan beritanya",
+     "Karena tidak ada seorang pun yang boleh bertanya tentang ayat-ayat Al-Qur'an",
+     "Karena Al-Qur'an hanya dibaca oleh orang yang sudah beriman dengan yakin"
     ],
     "kunci": 0,
     "bahas": "Klaim itu bersifat terbuka untuk diuji. Sejarah menunjukkan ujian terhadap Al-Qur'an justru memperkuat keyakinan akan kemukjizatannya."
@@ -12556,9 +12556,9 @@
     "bab": "x-mukjizat",
     "tanya": "Seorang dai memakai ayat-ayat kauniyah untuk menyakinkan pelajar. Pendekatan itu tepat selama ...",
     "pilihan": [
-     "Tidak memaksakan tafsir ilmiah yang belum pasti dan tetap menempatkan ayat sebagai petunjuk",
-     "Mengklaim semua temuan sebagai isi ayat",
-     "Menolak semua penjelasan sains"
+     "Tidak memaksakan tafsir ilmiah yang belum pasti dan menempatkan ayat sebagai petunjuk",
+     "Mengklaim semua temuan sains modern sebagai isi ayat secara pasti serta sudah final",
+     "Menolak semua penjelasan sains tanpa memeriksa bukti dan penjelasannya lebih dahulu"
     ],
     "kunci": 0,
     "bahas": "Ayat kauniyah efektif untuk menumbuhkan iman, tetapi memaksakan korelasi dapat merusak kredibilitas dakwah bila sainsnya keliru."
@@ -12568,8 +12568,8 @@
     "tanya": "Kesamaan antara mukjizat dan karomah adalah ...",
     "pilihan": [
      "Keduanya perkara luar biasa yang terjadi dengan izin Allah",
-     "Keduanya menjadi bukti kenabian",
-     "Keduanya dapat dipelajari"
+     "Keduanya menjadi bukti kenabian bagi orang yang menyaksikannya",
+     "Keduanya dapat dipelajari dari buku lalu dikuasai manusia"
     ],
     "kunci": 0,
     "bahas": "Pembedanya adalah fungsi: mukjizat sebagai bukti kenabian dan harus disaksikan publik, sedangkan karomah terjadi pada wali tanpa klaim kenabian."
@@ -12578,9 +12578,9 @@
     "bab": "x-mukjizat",
     "tanya": "Apa implikasi i'jaz tasyri' bagi pembentukan hukum?",
     "pilihan": [
-     "Syariat Al-Qur'an dinilai sempurna dan seimbang sehingga mampu menjawab persoalan baru melalui ijtihad",
-     "Hukum harus selalu baru",
-     "Syariat tidak mengatur kehidupan"
+     "Syariat dinilai sempurna dan seimbang sehingga menjawab persoalan baru lewat ijtihad",
+     "Hukum harus sekemudian diperbarui tanpa merujuk keterhadap Al-Qur'an dan sunnah Nabi",
+     "Syariat tidak mengatur kehidupan manusia karena hanya mengurus ibadah ritual"
     ],
     "kunci": 0,
     "bahas": "I'jaz tasyri' menunjuk kesempurnaan aturan. Karena itu ijtihad berfungsi menggali hukum dari prinsip yang ada, bukan mencipta aturan yang lepas dari wahyu."
@@ -12589,9 +12589,9 @@
     "bab": "x-kandungan",
     "tanya": "QS an-Nahl 16:89 menyebut Al-Qur'an \"tibyanan likulli syai'\". Pemahaman yang tepat adalah ...",
     "pilihan": [
-     "Penjelas bagi kebutuhan agama; rincian teknis kehidupan diserahkan kepada ijtihad dan keahlian manusia",
-     "Memuat semua rumus teknik",
-     "Hanya menjelaskan ibadah ritual"
+     "Penjelas kebutuhan agama; rincian teknis diserahkan kepada ijtihad dan keahlian manusia",
+     "Al-Qur'an memuat semua rumus teknik dan ilmu pengetahuan secara lengkap dan terperinci",
+     "Al-Qur'an hanya menjelaskan tata cara ibadah ritual serta tidak mengurus hal lain"
     ],
     "kunci": 0,
     "bahas": "Kata \"segala sesuatu\" dibatasi oleh konteks kerasulan dan kebutuhan hidayah. Pemahaman ini menjaga Al-Qur'an tetap relevan tanpa mengklaim melebihi fungsinya."
@@ -12601,8 +12601,8 @@
     "tanya": "Mengapa ayat tentang akidah jauh lebih banyak daripada ayat hukum praktis?",
     "pilihan": [
      "Karena akidah adalah fondasi yang menentukan arah seluruh amal",
-     "Karena hukum tidak penting",
-     "Karena hukum belum lengkap"
+     "Karena hukum praktis dianggap tidak penting dalam Islam",
+     "Karena hukum praktis belum lengkap saat Al-Qur'an diturunkan"
     ],
     "kunci": 0,
     "bahas": "Al-Qur'an membangun cara pandang lebih dulu, lalu merinci hukum yang dibutuhkan. Banyak hukum praktis dijelaskan melalui sunnah Nabi."
@@ -12611,9 +12611,9 @@
     "bab": "x-kandungan",
     "tanya": "Kisah-kisah Al-Qur'an berbeda dengan dongeng karena ...",
     "pilihan": [
-     "Berfungsi sebagai pelajaran dan peringatan yang bersumber dari wahyu serta berkaitan dengan misi kenabian",
-     "Selalu berakhir bahagia",
-     "Tidak memuat nama tokoh"
+     "Berfungsi sebagai pelajaran dan peringatan dari wahyu yang berkaitan dengan misi kenabian",
+     "Selalu berakhir dengan bahagia sehingga menghibur setiap pembaca yang sedang bersedih hati",
+     "Tidak memuat nama tokoh sehingga sangat mirip dengan dongeng rakyat di kampung halaman"
     ],
     "kunci": 0,
     "bahas": "QS Yusuf 12:111 menyebut kisah terbaik dan pelajaran bagi orang berakal. Fungsinya mendidik, bukan menghibur tanpa makna."
@@ -12622,9 +12622,9 @@
     "bab": "x-kandungan",
     "tanya": "Seorang murid bertanya, \"Kalau Al-Qur'an penjelas segala sesuatu, mengapa masalah teknis seperti lalu lintas tidak diatur?\" Jawaban tepatnya ...",
     "pilihan": [
-     "Karena Al-Qur'an memberi prinsip (keadilan, keselamatan, amanah) yang dijabarkan manusia melalui aturan teknis",
-     "Karena Al-Qur'an tidak lengkap",
-     "Karena lalu lintas bukan urusan agama"
+     "Karena Al-Qur'an memberi prinsip yang dijabarkan manusia lewat aturan teknis",
+     "Karena Al-Qur'an memang tidak lengkap dan perlu dilengkapi oleh manusia",
+     "Karena kemudian lintas sama sekali bukan urusan agama bagi seseseorang muslim"
     ],
     "kunci": 0,
     "bahas": "Prinsip-prinsip itu menjadi rujukan pembuatan aturan. Inilah cara Al-Qur'an bekerja: memberi nilai dan arah, bukan SOP teknis."
@@ -12634,8 +12634,8 @@
     "tanya": "Ayat tentang berita gaib menuntut sikap ...",
     "pilihan": [
      "Iman dan tawaquf (tidak memaksakan detail yang tidak dijelaskan)",
-     "Menolak karena tidak teramati",
-     "Mengarang detail agar jelas"
+     "Menolak berita gaib karena tidak dapat diamati oleh pancaindra",
+     "Mengarang detail agar berita gaib tampak jelas dan masuk akal"
     ],
     "kunci": 0,
     "bahas": "Sikap Ahlus Sunnah adalah menerima yang diberitakan dan tidak memaksakan rincian yang tidak disebut. Ini menjaga ibadah dari takhayul."
@@ -12644,9 +12644,9 @@
     "bab": "x-kandungan",
     "tanya": "Mengapa Al-Qur'an menyebut dirinya \"mubin\" (terang)?",
     "pilihan": [
-     "Karena maknanya dijelaskan, dan yang samar dijelaskan oleh bagian lain Al-Qur'an atau sunnah",
-     "Karena semua orang langsung paham tanpa ilmu",
-     "Karena ditulis dengan tinta terang"
+     "Karena maknanya dijelaskan, dan yang samar dijelaskan bagian lain atau sunnah",
+     "Karena semua orang langsung paham tanpa perlu mempelajari ilmu apa pun",
+     "Karena ditulis dengan tinta berwarna terang pada setiap lembar mushafnya itu juga"
     ],
     "kunci": 0,
     "bahas": "QS an-Nahl 16:89 dan QS al-Ma'idah 5:15 menyebut kitab yang menerangkan. Penjelasan itu bekerja secara internal (ayat dengan ayat) dan melalui sunnah."
@@ -12655,9 +12655,9 @@
     "bab": "x-kandungan",
     "tanya": "Apa kaitan antara kandungan Al-Qur'an tentang akhlak dan pembentukan karakter pelajar?",
     "pilihan": [
-     "Akhlak dalam Al-Qur'an memberi standar perilaku yang terukur, seperti jujur, adil, dan menjaga lisan",
-     "Akhlak hanya teori tanpa contoh",
-     "Akhlak hanya untuk orang dewasa"
+     "Akhlak dalam Al-Qur'an memberi standar terukur, seperti jujur, adil, serta menjaga lisan",
+     "Akhlak hanya teori tanpa contoh nyata yang bisa diteladani oleh seorang pelajar sekolah",
+     "Akhlak hanya berlaku bagi orang dewasa, tidak berlaku bagi pelajar di sekolah dasar"
     ],
     "kunci": 0,
     "bahas": "Al-Qur'an tidak hanya memerintahkan, tetapi memberi teladan (uswah) melalui Nabi. Karena itu pendidikan karakter berakar pada sirah dan ayat akhlak."
@@ -12666,9 +12666,9 @@
     "bab": "x-kandungan",
     "tanya": "Pernyataan \"Al-Qur'an hanya membahas akhirat\" dapat dibantah dengan ...",
     "pilihan": [
-     "Banyaknya ayat tentang muamalah, keluarga, ekonomi, dan lingkungan",
-     "Adanya surah pendek",
-     "Adanya ayat sajdah"
+     "Banyaknya ayat tentang muamalah, keluarga, ekonomi, lingkungan",
+     "Adanya surah-surah pendek yang ada di bagian akhir mushaf Al-Qur'an",
+     "Adanya ayat sajdah yang dibaca dalam ibadah salat fardu setiap hari"
     ],
     "kunci": 0,
     "bahas": "Ayat waris, jual beli, dan lingkungan menunjukkan Al-Qur'an mengatur kehidupan dunia sekaligus menyiapkan akhirat."
@@ -12677,9 +12677,9 @@
     "bab": "x-kandungan",
     "tanya": "Bagaimana menyikapi orang yang menafsirkan ayat mutasyabihat untuk memancing perpecahan?",
     "pilihan": [
-     "Mengembalikan kepada ayat muhkam dan ilmu ahli, serta menolak ta'wil yang menyimpang",
-     "Mengikutinya agar tidak dianggap fanatik",
-     "Membiarkannya tanpa penjelasan"
+     "Mengembalikan kepada ayat muhkam dan ilmu ahli, menolak ta'wil menyimpang",
+     "Mengikutinya agar tidak dianggap fanatik oleh teman-teman sekelas di sekolah",
+     "Membiarkannya tanpa penjelasan agar tidak terjadi perdebatan panjang di kelas"
     ],
     "kunci": 0,
     "bahas": "QS Ali Imran 3:7 menyebut orang yang berhati condong mengikuti mutasyabihat untuk mencari fitnah. Sikap benar adalah rujuk kepada yang muhkam dan ahli ilmu."
@@ -12689,8 +12689,8 @@
     "tanya": "Kandungan Al-Qur'an tentang berita umat terdahulu berfungsi sebagai ...",
     "pilihan": [
      "Bukti kerasulan sekaligus peringatan agar tidak mengulang kesalahan",
-     "Cerita rakyat",
-     "Catatan arkeologi"
+     "Cerita rakyat yang diwariskan turun-temurun untuk menghibur pendengarnya",
+     "Catatan arkeologi tentang peninggalan bangsa-bangsa kuno di dunia"
     ],
     "kunci": 0,
     "bahas": "Nabi tidak membaca kitab sebelumnya, sehingga berita itu menjadi bukti wahyu sekaligus pelajaran. QS Hud 11:120 menegaskan fungsi peneguh hati."
@@ -12701,9 +12701,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Istilah insan, basyar, dan bani Adam dalam Al-Qur'an menunjukkan bahwa ...",
     "pilihan": [
-     "Setiap istilah menekankan sisi berbeda dari manusia, sehingga pemakaiannya mengikuti konteks ayat",
-     "Ketiganya sama sekali tanpa perbedaan",
-     "Hanya satu istilah yang benar"
+     "Setiap istilah menonjolkan sisi manusia yang berbeda sesuai konteks",
+     "Ketiga istilah itu sama sekali tidak memiliki perbedaan makna apa pun",
+     "Hanya satu istilah yang benar, sedangkan dua istilah lainnya salah"
     ],
     "kunci": 0,
     "bahas": "Insan menekankan sisi psikis dan kelembutan, basyar menekankan fisik, bani Adam menekankan keturunan dan kemuliaan. Ketelitian istilah membantu tafsir yang tepat."
@@ -12712,9 +12712,9 @@
     "bab": "xi-penciptaan",
     "tanya": "QS al-Mu'minun 23:12-14 menyebut tahapan penciptaan. Implikasi bagi sikap manusia adalah ...",
     "pilihan": [
-     "Tumbuh kesadaran bahwa manusia berasal dari bahan sederhana sehingga tidak pantas sombong",
-     "Manusia bebas karena tidak ada pencipta",
-     "Manusia lebih rendah dari hewan"
+     "Manusia berasal dari bahan sederhana sehingga tidak pantas sombong",
+     "Manusia bebas berbuat karena alam semesta tidak memiliki pencipta",
+     "Manusia lebih rendah daripada hewan karena berasal dari tanah"
     ],
     "kunci": 0,
     "bahas": "Ayat menutup dengan pujian bahwa Allah sebaik-baik pencipta. Kesadaran asal-usul menumbuhkan tawaduk dan syukur."
@@ -12724,8 +12724,8 @@
     "tanya": "Konsep khalifah di bumi berarti manusia ...",
     "pilihan": [
      "Mengelola bumi dengan aturan Allah dan bertanggung jawab atasnya",
-     "Bebas mengeksploitasi alam",
-     "Tidak punya kewajiban apa pun"
+     "Bebas mengeksploitasi alam sebanyak mungkin untuk kesejahteraan",
+     "Tidak punya kewajiban apa pun terhadap alam dan makhluk lain"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:30 menempatkan manusia sebagai pengelola. Tanggung jawab ini melahirkan etika lingkungan dan keadilan antargenerasi."
@@ -12735,8 +12735,8 @@
     "tanya": "Mengapa taklif (beban syariat) hanya dibebankan kepada manusia dan jin, bukan hewan?",
     "pilihan": [
      "Karena keduanya memiliki akal dan kemampuan memilih",
-     "Karena hewan tidak hidup",
-     "Karena hewan lebih kuat"
+     "Karena keduanya tidak pernah mati dan hidup selamanya",
+     "Karena keduanya memiliki kekuatan fisik paling besar"
     ],
     "kunci": 0,
     "bahas": "Tanggung jawab menuntut kemampuan memahami dan memilih. Karena itu pahala dan dosa berkaitan dengan niat dan pilihan, bukan sekadar perilaku lahir."
@@ -12745,9 +12745,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Pernyataan \"manusia adalah makhluk paling sempurna\" perlu dipahami dengan ...",
     "pilihan": [
-     "Kesempurnaan dalam bentuk dan potensi, yang bisa jatuh lebih rendah dari hewan bila salah memilih jalan",
-     "Kesempurnaan mutlak tanpa kemungkinan salah",
-     "Kesempurnaan fisik semata"
+     "Kesempurnaan bentuk dan potensi yang bisa jatuh di bawah hewan",
+     "Kesempurnaan mutlak yang tidak mungkin salah dalam memilih jalan hidup",
+     "Kesempurnaan fisik semata yang diukur dari tinggi serta berat badannya"
     ],
     "kunci": 0,
     "bahas": "QS at-Tin 95:4-5 menyebut manusia diciptakan dalam bentuk terbaik, lalu bisa menjadi rendah. Karena itu potensi harus dijaga dengan iman dan amal."
@@ -12756,9 +12756,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Fitrah dalam QS ar-Rum 30:30 berhubungan dengan pendidikan agama karena ...",
     "pilihan": [
-     "Pendidikan menumbuhkan dan merawat kecenderungan asal, bukan menanamkan dari nol",
-     "Pendidikan menghapus fitrah",
-     "Fitrah tidak perlu dirawat"
+     "Pendidikan merawat kecenderungan asal, bukan menanamkan dari nol",
+     "Pendidikan menghapus fitrah lalu menggantinya dengan aturan baru",
+     "Fitrah tidak perlu dirawat karena sudah sempurna sejak lahir"
     ],
     "kunci": 0,
     "bahas": "Fitrah adalah potensi; ia bisa tumbuh atau tertutup oleh lingkungan. Karena itu hadis tentang setiap anak dilahirkan dalam fitrah menekankan peran pendidikan."
@@ -12767,9 +12767,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Mengapa Islam menolak anggapan bahwa manusia hanya hasil kebetulan?",
     "pilihan": [
-     "Karena penciptaan dinyatakan dalam wahyu dan alam menunjukkan keteraturan yang bertujuan",
-     "Karena sains tidak boleh dipakai",
-     "Karena manusia tidak meneliti alam"
+     "Wahyu menyatakan penciptaan dan alam menunjukkan keteraturan",
+     "Sains tidak boleh dipakai untuk menjelaskan apa pun di alam ini",
+     "Manusia tidak pernah meneliti asal usul makhluk di alam raya"
     ],
     "kunci": 0,
     "bahas": "QS Ali Imran 3:191 menyebut penciptaan langit dan bumi tidak sia-sia. Keteraturan dan tujuan menjadi dasar pandangan hidup yang bermakna."
@@ -12778,9 +12778,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Kesadaran akan hari akhir berkaitan dengan hakikat penciptaan karena ...",
     "pilihan": [
-     "Hidup menjadi ujian yang harus dipertanggungjawabkan, bukan permainan tanpa tujuan",
-     "Hari akhir tidak berhubungan",
-     "Manusia tidak dimintai tanggung jawab"
+     "Hidup adalah ujian yang harus dipertanggungjawabkan, bukan permainan",
+     "Hari akhir tidak berhubungan sama sekali dengan asal penciptaan manusia",
+     "Manusia tidak akan dimintai pertanggungjawaban atas amalnya"
     ],
     "kunci": 0,
     "bahas": "QS al-Mulk 67:2 menyebut hidup dan mati sebagai ujian. Kesadaran ini mengarahkan pilihan manusia pada amal yang bernilai."
@@ -12789,9 +12789,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Seorang murid berkata, \"Karena berasal dari tanah, manusia tidak mulia.\" Koreksi tepatnya adalah ...",
     "pilihan": [
-     "Kemuliaan datang dari ruh, akal, dan takwa, bukan dari bahan asalnya",
-     "Manusia memang tidak mulia",
-     "Kemuliaan diukur dari kekuatan fisik"
+     "Kemuliaan datang dari ruh, akal, dan takwa, bukan bahan asal",
+     "Manusia memang tidak mulia karena seluruhnya berasal dari tanah",
+     "Kemuliaan manusia hanya diukur dari kekuatan fisik dan harta"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:70 dan QS al-Hujurat 49:13 menyebut kemuliaan dari Allah dan ukuran takwa. Bahan asal justru mengajarkan tawaduk."
@@ -12800,9 +12800,9 @@
     "bab": "xi-penciptaan",
     "tanya": "Kaitan antara penciptaan bertahap dan sikap terhadap proses belajar adalah ...",
     "pilihan": [
-     "Manusia diciptakan melalui tahapan, sehingga belajar pun menuntut kesabaran bertahap",
-     "Belajar harus seketika",
-     "Tahapan hanya berlaku pada fisik"
+     "Manusia diciptakan bertahap, jadi belajar menuntut kesabaran",
+     "Belajar harus seketika dan langsung tuntas dalam satu pertemuan",
+     "Tahapan hanya berlaku pada fisik, tidak pada cara belajar"
     ],
     "kunci": 0,
     "bahas": "QS al-Mu'minun 23:12-14 dan QS al-'Alaq memakai kata khalq dan 'alaq yang bertahap. Pola ini mengajarkan kesabaran proses."
@@ -12811,9 +12811,9 @@
     "bab": "xi-orangtua",
     "tanya": "Mengapa Al-Qur'an menyebut bakti kepada orang tua setelah tauhid, bukan sesudah ibadah lain?",
     "pilihan": [
-     "Karena kedudukan orang tua sebagai perantara keberadaan manusia dan pendidikan awal",
-     "Karena orang tua setara dengan Allah",
-     "Karena ibadah lain tidak penting"
+     "Karena orang tua perantara keberadaan dan pendidikan awal manusia",
+     "Karena kedudukan seseorang tua setara dengan Allah dalam ketaatan",
+     "Karena ibadah-ibadah lain tidak penting dibanding bakti itu"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:23 dan QS al-An'am 6:151 memakai urutan tauhid lalu birrul walidain. Urutan ini menunjukkan penekanan, bukan penyetaraan."
@@ -12822,9 +12822,9 @@
     "bab": "xi-orangtua",
     "tanya": "Seorang anak menolak seluruh nasihat orang tua karena berbeda pandangan. Penilaian tepatnya adalah ...",
     "pilihan": [
-     "Menolak yang salah tetap boleh, tetapi harus dengan cara santun dan tetap berbuat baik",
-     "Boleh kasar karena berbeda pandangan",
-     "Wajib menuruti semua"
+     "Menolak yang salah boleh, tetapi tetap santun dan berbuat baik",
+     "Boleh bersikap kasar karena berbeda pandangan dengan orang tua",
+     "Wajib menuruti semua nasihat walau isinya bertentangan syariat"
     ],
     "kunci": 0,
     "bahas": "QS Luqman 31:15 memberi patokan: jangan mengikuti perintah maksiat, tetapi pergauli keduanya dengan baik (wa shahibhuma fid-dunya ma'rufa)."
@@ -12833,9 +12833,9 @@
     "bab": "xi-orangtua",
     "tanya": "Kaidah \"la ta'ata lilmakhluq fi ma'shiyat al-khaliq\" berimplikasi pada ...",
     "pilihan": [
-     "Semua perintah orang tua yang bertentangan dengan syariat tidak wajib dituruti",
-     "Semua perintah harus dituruti",
-     "Orang tua tidak boleh menasihati"
+     "Perintah orang tua yang bertentangan dengan syariat tidak wajib dituruti",
+     "Semua perintah orang tua wajib dituruti tanpa memandang isi perintahnya",
+     "Orang tua tidak boleh menasihati anaknya dalam urusan agama apa pun"
     ],
     "kunci": 0,
     "bahas": "Ketaatan bersyarat pada kebaikan. Penolakan dilakukan dengan cara yang tidak menyakiti, sesuai adab ihsan."
@@ -12844,9 +12844,9 @@
     "bab": "xi-orangtua",
     "tanya": "Mengapa doa anak untuk orang tua yang wafat disebut amal yang tetap mengalir?",
     "pilihan": [
-     "Karena doa bermanfaat bagi orang yang telah wafat sesuai hadis, dan anak saleh adalah hasil didikannya",
-     "Karena orang tua masih hidup",
-     "Karena doa mengubah takdir orang lain tanpa izin Allah"
+     "Doa bermanfaat bagi yang wafat dan anak saleh hasil didikannya",
+     "Karena orang tua yang sudah wafat sebenarnya masih hidup di alam",
+     "Karena doa dapat mengubah takdir orang lain tanpa izin Allah"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Muslim menyebut doa anak saleh sebagai amal yang tidak terputus. Maknanya dihubungkan dengan kasih dan didikan orang tua."
@@ -12856,8 +12856,8 @@
     "tanya": "Istilah \"birr\" lebih luas dari \"tha'ah\" karena ...",
     "pilihan": [
      "Birr mencakup ketaatan plus kebaikan sikap, nafkah, dan doa",
-     "Birr hanya berarti patuh",
-     "Tha'ah mencakup semuanya"
+     "Birr hanya berarti patuh pada perintah tanpa memperhatikan sikap",
+     "Tha'ah mencakup semua bentuk kebaikan sikap, nafkah, dan doa"
     ],
     "kunci": 0,
     "bahas": "Karena birr adalah puncak kebaikan; ia mencakup perbuatan, sikap, dan doa, sedangkan tha'ah lebih khusus pada kepatuhan."
@@ -12866,9 +12866,9 @@
     "bab": "xi-orangtua",
     "tanya": "Sikap adab kepada guru yang paling sesuai dengan adab kepada orang tua adalah ...",
     "pilihan": [
-     "Mendengarkan penjelasan, tidak memotong, dan mengakui kekhilafan",
-     "Menguji guru di depan kelas",
-     "Menyebarkan kesalahan guru"
+     "Mendengarkan keterangan, tak memotong, dan mengakui kekhilafan diri",
+     "Menguji guru di depan kelas agar terlihat lebih pandai dari guru",
+     "Menyebarkan kesalahan guru keterhadap teman-teman sekelas dan warga"
     ],
     "kunci": 0,
     "bahas": "Ilmu diperoleh dengan hormat. Hadis tentang memuliakan guru dan adab murid menunjukkan bahwa keberkahan ilmu berkaitan dengan adab."
@@ -12877,9 +12877,9 @@
     "bab": "xi-orangtua",
     "tanya": "Seseorang berkata bahwa bakti kepada orang tua berhenti ketika ia sibuk bekerja. Bantahan yang tepat adalah ...",
     "pilihan": [
-     "Bakti tetap bisa diwujudkan lewat perhatian, komunikasi, dan doa meski waktu terbatas",
-     "Bakti memang harus berhenti",
-     "Bakti hanya bisa berupa uang"
+     "Bakti tetap bisa diwujudkan lewat perhatian, komunikasi, dan doa",
+     "Bakti memang harus berhenti ketika seseorang mulai sibuk bekerja",
+     "Bakti kepada orang tua hanya bisa diwujudkan dalam bentuk uang"
     ],
     "kunci": 0,
     "bahas": "Bentuk bakti beragam. Menelantarkan komunikasi bukan alasan pekerjaan, karena QS Luqman 31:15 tetap memerintahkan pergaulan yang baik."
@@ -12888,9 +12888,9 @@
     "bab": "xi-orangtua",
     "tanya": "Bagaimana menakar sikap bijak ketika orang tua menginginkan berbeda dengan aspirasi anak?",
     "pilihan": [
-     "Menyampaikan aspirasi dengan adab, mencari titik temu, dan mendahulukan keridhaan dalam hal yang benar",
-     "Memaksa kehendak sendiri",
-     "Meninggalkan rumah"
+     "Menyampaikan aspirasi dengan adab dan mendahulukan yang benar",
+     "Memaksa kehendak sendiri agar cita-cita pribadi tetap tercapai",
+     "Meninggalkan rumah agar terbebas dari nasihat orang tua"
     ],
     "kunci": 0,
     "bahas": "QS asy-Syura 42:38 tentang musyawarah dapat diterapkan dalam keluarga. Komunikasi yang baik menjaga birr sekaligus penghormatan pada aspirasi."
@@ -12899,9 +12899,9 @@
     "bab": "xi-orangtua",
     "tanya": "Mengapa merawat orang tua yang sakit termasuk ujian kesabaran?",
     "pilihan": [
-     "Karena menuntut sabar, lembut, dan konsisten dalam waktu panjang",
-     "Karena tidak ada pahala",
-     "Karena sakit menular selalu"
+     "Menuntut sabar, lembut, dan konsisten dalam waktu panjang",
+     "Tidak ada pahala yang didapat dari merawat orang tua sakit",
+     "Penyakit selalu menular sehingga berbahaya bagi perawatnya"
     ],
     "kunci": 0,
     "bahas": "Hadis menyebut keutamaan merawat orang tua, dan sikap lembut diperintahkan dalam QS al-Isra' 17:23. Ujian ini mengasah akhlak paling halus."
@@ -12910,9 +12910,9 @@
     "bab": "xi-orangtua",
     "tanya": "Kaitan antara birrul walidain dan perbaikan masyarakat adalah ...",
     "pilihan": [
-     "Keluarga yang menghormati orang tua cenderung menumbuhkan warga yang menghormati aturan dan orang lain",
-     "Tidak ada kaitan",
-     "Bakti membuat orang lemah"
+     "Keluarga yang menghormati orang tua menumbuhkan warga taat aturan",
+     "Tidak ada kaitan sama sekali antara bakti dan masyarakat",
+     "Bakti membuat seseseseorang lemah dan tidak berdaya di masyarakat"
     ],
     "kunci": 0,
     "bahas": "Pendidikan pertama adalah keluarga. Sikap hormat yang tumbuh di rumah menjadi modal bagi tata sosial yang sehat."
@@ -12921,9 +12921,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Mengapa larangan zina dalam Al-Qur'an disampaikan sebagai \"jangan mendekati\"?",
     "pilihan": [
-     "Karena pencegahan dilakukan pada tahap sebab, sebelum terjadi perbuatan",
-     "Karena zina tidak berdosa",
-     "Karena sebab tidak penting"
+     "Pencegahan dilakukan pada tahap sebab, sebelum amal terjadi",
+     "Zina tidak termasuk dosa bila dilakukan tanpa unsur paksaan",
+     "Sebab dan perantara tidak penting diperhatikan dalam agama"
     ],
     "kunci": 0,
     "bahas": "Pendekatan preventif ini tercermin dalam larangan khalwat, tabarruj, dan konten yang membangkitkan syahwat. Mencegah sebab lebih ringan dari mengobati akibat."
@@ -12932,9 +12932,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Perbedaan \"ghaddul bashar\" bagi laki-laki dan perempuan terletak pada ...",
     "pilihan": [
-     "Konteks ayat dan keadaan yang dihadapi, sedangkan prinsipnya sama: menjaga pandangan",
-     "Laki-laki tidak wajib menjaga pandangan",
-     "Perempuan bebas menjaga pandangan"
+     "Konteks dan keadaan berbeda, tetapi prinsipnya sama: menjaga pandangan",
+     "Laki-laki tidak wajib menjaga pandangan karena kodratnya memang berbeda",
+     "Perempuan bebas menjaga pandangan karena tidak ada perintahnya"
     ],
     "kunci": 0,
     "bahas": "QS an-Nur 24:30 dan 31 memakai prinsip yang sama dengan penekanan berbeda pada rincian. Keduanya menuntut menjaga kehormatan."
@@ -12943,9 +12943,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Seorang pelajar mengikuti tren berpacaran agar tidak dianggap kuno. Analisis yang tepat adalah ...",
     "pilihan": [
-     "Ia mengikuti tekanan kelompok, bukan pertimbangan syariat — perlu kesadaran dan lingkungan yang mendukung",
-     "Ia benar karena zaman berubah",
-     "Ia harus dijauhi tanpa penjelasan"
+     "Ia mengikuti tekanan kelompok, bukan pertimbangan syariat",
+     "Ia benar karena zaman berubah dan aturan agama ikut berubah",
+     "Ia harus dijauhi tanpa diberi penjelasan dan bimbingan apa pun"
     ],
     "kunci": 0,
     "bahas": "Peer pressure adalah sebab utama perilaku berisiko. Solusinya bukan hanya larangan, tetapi pembinaan lingkungan dan keterampilan menolak dengan santun."
@@ -12954,9 +12954,9 @@
     "bab": "xi-pergaulan",
     "tanya": "\"Libas at-taqwa\" dalam QS al-A'raf 7:26 dipahami sebagai ...",
     "pilihan": [
-     "Pakaian takwa: kesadaran menjaga diri yang melandasi cara berpakaian",
-     "Pakaian termahal",
-     "Warna pakaian tertentu"
+     "Pakaian takwa: kesadaran menjaga diri yang melandasi berpakaian",
+     "Pakaian termahal yang dipakai untuk menunjukkan status sosialnya",
+     "Warna pakaian tertentu yang diwajibkan bagi setiap muslim"
     ],
     "kunci": 0,
     "bahas": "Ayat menyebut pakaian lahir dan pakaian takwa; yang terbaik adalah takwa. Kesadaran batin inilah yang membuat pakaian dan perilaku sejalan."
@@ -12965,9 +12965,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Dampak pornografi bagi pelajar paling tepat dijelaskan sebagai ...",
     "pilihan": [
-     "Merusak cara pandang terhadap manusia dan menurunkan empati, sehingga berpotensi mendorong perbuatan menyimpang",
-     "Meningkatkan konsentrasi belajar",
-     "Tidak berpengaruh sama sekali"
+     "Merusak cara pandang terhadap manusia dan menurunkan empati",
+     "Meningkatkan konsentrasi belajar karena menghilangkan stres",
+     "Tidak berpengaruh sama sekali terhadap perilaku seorang pelajar"
     ],
     "kunci": 0,
     "bahas": "Objektifikasi manusia bertentangan dengan QS al-Isra' 17:70. Karena itu pencegahan mencakup literasi digital dan pembinaan iman."
@@ -12976,9 +12976,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Mengapa batas pergaulan bukan berarti memutus interaksi sosial?",
     "pilihan": [
-     "Karena Islam mengatur cara bergaul, bukan melarang kerja sama dalam kebaikan",
-     "Karena semua interaksi haram",
-     "Karena perempuan tidak boleh belajar"
+     "Islam mengatur cara bergaul, bukan melarang kerja sama kebaikan",
+     "Semua interaksi antara laki-laki dan perempuan hukumnya haram",
+     "Perempuan tidak boleh belajar bersama laki-laki di sekolah"
     ],
     "kunci": 0,
     "bahas": "QS al-Ma'idah 5:2 memerintahkan tolong-menolong dalam kebaikan. Batas syariat mengatur adab agar interaksi bermanfaat dan terjaga."
@@ -12987,9 +12987,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Sanksi hukum bagi zina dalam Islam bertujuan ...",
     "pilihan": [
-     "Menjaga keturunan dan ketertiban masyarakat, bukan sekadar membalas",
-     "Menghibur publik",
-     "Menambah jumlah tahanan"
+     "Menjaga keturunan dan ketertiban masyarakat, bukan balas dendam",
+     "Menghibur publik dengan vonis yang diumumkan di depan banyak orang",
+     "Menambah jumlah tahanan agar lembaga pemasyarakatan semakin sibuk"
     ],
     "kunci": 0,
     "bahas": "Maqashid syariah menjaga keturunan (hifzh an-nasl). Karena itu hukumannya berat dan pembuktiannya pun sangat ketat, agar tidak mudah menjatuhkan."
@@ -12998,9 +12998,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Peran keluarga dalam mencegah pergaulan bebas yang paling efektif adalah ...",
     "pilihan": [
-     "Membangun kedekatan dan komunikasi sehingga anak punya ruang bercerita",
-     "Membiarkan anak tanpa pengawasan",
-     "Melarang tanpa penjelasan"
+     "Membangun kedekatan dan komunikasi agar anak punya ruang cerita",
+     "Membiarkan anak tanpa pengawasan agar tumbuh mandiri dan bebas",
+     "Melarang tanpa penjelasan agar anak takut dan tidak bertanya"
     ],
     "kunci": 0,
     "bahas": "Pendekatan yang berlandaskan kasih lebih bertahan daripada larangan semata. Hadis tentang mendidik dengan lemah lembut mendukung hal ini."
@@ -13009,9 +13009,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Seorang siswa melihat teman berduaan di tempat sepi. Tindakan terbaik menurut amar ma'ruf adalah ...",
     "pilihan": [
-     "Mengingatkan dan melaporkan kepada guru pembina dengan niat memperbaiki, bukan mempermalukan",
-     "Memfoto dan menyebarkan",
-     "Membiarkan agar tidak dianggap ikut campur"
+     "Mengingatkan dan melaporkan kepada guru dengan niat memperbaiki",
+     "Memfoto lalu menyebarkan ke media sosial agar diberi pelajaran",
+     "Membiarkan agar tidak dianggap ikut campur urusan orang lain"
     ],
     "kunci": 0,
     "bahas": "Amar ma'ruf dilakukan dengan cara hikmah dan menjaga kehormatan orang. Menyebarkan foto justru melanggar larangan ghibah dan tabayun."
@@ -13020,9 +13020,9 @@
     "bab": "xi-pergaulan",
     "tanya": "Pernyataan \"pergaulan bebas hanya soal pergaulan, bukan akidah\" keliru karena ...",
     "pilihan": [
-     "Perbuatan maksiat berkaitan dengan iman dan tanggung jawab di hadapan Allah",
-     "Akidah tidak berhubungan dengan amal",
-     "Maksiat tidak berdosa"
+     "Maksiat berkaitan dengan iman dan tanggung jawab di hadapan Allah",
+     "Akidah tidak berhubungan sama sekali dengan amal perbuatan sehari-hari",
+     "Maksiat yang dilakukan remaja tidak mengandung dosa apa pun"
     ],
     "kunci": 0,
     "bahas": "QS al-Mu'minun 23:1-7 mengaitkan keberuntungan mukmin dengan menjaga kemaluan. Karena itu akhlak sosial adalah bagian dari iman."
@@ -13031,9 +13031,9 @@
     "bab": "xi-toleransi",
     "tanya": "Batas toleransi dalam akidah dan muamalah dapat dirumuskan sebagai ...",
     "pilihan": [
-     "Akidah tidak dicampur, sedangkan muamalah sosial dibangun dengan keadilan dan kerja sama",
-     "Semua boleh dicampur",
-     "Tidak ada kerja sama sama sekali"
+     "Akidah tidak dicampur, muamalah dibangun dengan keadilan",
+     "Semua ajaran boleh dicampur agar tercipta kerukunan warga",
+     "Tidak ada bentuk kerja sama apa pun dengan pemeluk lain"
     ],
     "kunci": 0,
     "bahas": "QS al-Kafirun menegaskan batas akidah, QS al-Mumtahanah 60:8 membuka kerja sama sosial. Dua ayat ini bekerja pada level berbeda."
@@ -13043,8 +13043,8 @@
     "tanya": "Menghadiri undangan tetangga yang berbeda agama selama tidak mengandung ritual keyakinan termasuk ...",
     "pilihan": [
      "Toleransi sosial yang dibolehkan karena menjaga hubungan baik",
-     "Kemusyrikan",
-     "Perbuatan haram"
+     "Kemusyrikan yang harus dijauhi oleh setiap muslim yang taat",
+     "Perbuatan haram yang membatalkan seluruh amal ibadah salatnya"
     ],
     "kunci": 0,
     "bahas": "Ulama membedakan kehadiran sosial dari partisipasi ritual. Prinsipnya menjaga silaturahmi tanpa merusak akidah."
@@ -13053,9 +13053,9 @@
     "bab": "xi-toleransi",
     "tanya": "Mengapa memaksa orang masuk Islam justru bertentangan dengan tujuan dakwah?",
     "pilihan": [
-     "Karena keimanan menuntut keyakinan; paksaan melahirkan kemunafikan, bukan hidayah",
-     "Karena dakwah tidak penting",
-     "Karena Islam tidak ingin bertambah pemeluknya"
+     "Keimanan menuntut keyakinan; paksaan melahirkan kemunafikan",
+     "Dakwah tidak penting dilakukan kepada seseorang yang berbeda",
+     "Islam tidak ingin menambah jumlah pemeluknya di dunia"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:256 dan QS al-Kahf 18:29 menegaskan pilihan. Tugas dai adalah menyampaikan, bukan memaksa hasil (QS ar-Ra'd 13:40)."
@@ -13064,9 +13064,9 @@
     "bab": "xi-toleransi",
     "tanya": "Perbedaan \"tasamuh\" dan \"tasyabbuh\" adalah ...",
     "pilihan": [
-     "Tasamuh menghormati perbedaan, tasyabbuh meniru ciri ibadah/keyakinan agama lain",
-     "Keduanya sama",
-     "Tasyabbuh lebih dianjurkan"
+     "Tasamuh menghormati, tasyabbuh meniru ciri ibadah agama lain",
+     "Keduanya sama saja, hanya berbeda pengucapan dalam bahasa Arab",
+     "Tasyabbuh lebih dianjurkan karena menunjukkan akhlak yang mulia"
     ],
     "kunci": 0,
     "bahas": "Batasnya adalah peniruan yang bersifat ibadah atau keyakinan. Adapun urusan teknis kehidupan sehari-hari tidak termasuk tasyabbuh."
@@ -13075,9 +13075,9 @@
     "bab": "xi-toleransi",
     "tanya": "Seorang murid menolak berkelompok dengan teman beda agama. Koreksi yang tepat adalah ...",
     "pilihan": [
-     "Kerja sama dalam urusan dunia dibolehkan dan justru menunjukkan akhlak Islam",
-     "Penolakan itu benar",
-     "Kerja sama merusak akidah"
+     "Kerja sama urusan dunia dibolehkan dan menunjukkan akhlak Islam",
+     "Penolakan itu benar agar akidah tidak tercampur sedikit pun juga",
+     "Kerja sama dengan pemeluk lain merusak akidah kita secara langsung"
     ],
     "kunci": 0,
     "bahas": "QS al-Mumtahanah 60:8 membolehkan berbuat baik dan adil kepada non-muslim yang tidak memerangi. Kerja kelompok termasuk muamalah dunia."
@@ -13086,9 +13086,9 @@
     "bab": "xi-toleransi",
     "tanya": "Mengapa penghormatan terhadap tempat ibadah lain merupakan bagian dari menjaga ketertiban umum?",
     "pilihan": [
-     "Karena saling menjaga memberi rasa aman dan mencegah konflik, sesuai QS al-Hajj 22:40",
-     "Karena kita menyembah di sana",
-     "Karena semua agama sama"
+     "Saling menjaga memberi rasa aman dan mencegah konflik",
+     "Karena kita ikut menyembah di tempat ibadah mereka",
+     "Karena seluruh agama terhadap dasarnya sama dan setara"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menyebut Allah menjaga tempat ibadah dari penghancuran. Menjaga keamanan bersama adalah wujud keadilan sosial, bukan pengakuan akidah."
@@ -13097,9 +13097,9 @@
     "bab": "xi-toleransi",
     "tanya": "\"Islamofobia\" dan \"kebencian terhadap umat lain\" sebaiknya direspons dengan ...",
     "pilihan": [
-     "Penjelasan yang jujur, dialog, dan akhlak baik, bukan balasan kebencian",
-     "Membalas dengan kekerasan",
-     "Menyebarkan ujaran kebencian"
+     "Penjelasan jujur, dialog, dan akhlak baik, bukan balas kebencian",
+     "Membalas dengan kekerasan agar pihak lain merasa takut dan jera",
+     "Menyebarkan ujaran kebencian kepada kelompok agama lain di media"
     ],
     "kunci": 0,
     "bahas": "QS Fussilat 41:34 memerintahkan membalas keburukan dengan kebaikan. Akhlak yang baik sering lebih efektif daripada argumen panjang."
@@ -13108,9 +13108,9 @@
     "bab": "xi-toleransi",
     "tanya": "Kaidah \"al-muwalat\" dan \"al-mu'adah\" berhubungan dengan toleransi karena ...",
     "pilihan": [
-     "Kecintaan dan permusuhan karena agama tidak boleh mengarah pada kezaliman terhadap orang lain",
-     "Semua non-muslim harus dimusuhi",
-     "Tidak ada aturan"
+     "Cinta dan permusuhan sebab agama tak boleh jadi kezaliman",
+     "Semua orang non-muslim wajib dimusuhi tanpa terkecuali",
+     "Tidak ada aturan agama yang mengatur sikap terhadap mereka"
     ],
     "kunci": 0,
     "bahas": "Prinsip keadilan tetap berlaku (QS al-Ma'idah 5:8), sehingga perbedaan akidah tidak menjadi alasan menzalimi seseorang."
@@ -13119,9 +13119,9 @@
     "bab": "xi-toleransi",
     "tanya": "Seorang dai menyampaikan kritik terhadap keyakinan lain dengan olok-olok. Dampaknya adalah ...",
     "pilihan": [
-     "Memperkuat penolakan dan memicu balasan serupa, sesuai peringatan QS al-An'am 6:108",
-     "Membuat orang simpati",
-     "Tidak berdampak"
+     "Memperkuat penolakan dan memicu balasan serupa",
+     "Membuat orang lain simpati dan tertarik memeluk Islam",
+     "Tidak berdampak apa pun terhadap sikap masyarakat"
     ],
     "kunci": 0,
     "bahas": "Ayat itu melarang mencela sesembahan mereka karena akan memicu celaan kepada Allah. Hikmah menuntut penyampaian yang menjaga kemuliaan."
@@ -13130,9 +13130,9 @@
     "bab": "xi-toleransi",
     "tanya": "Kesimpulan yang paling tepat tentang toleransi dalam Islam adalah ...",
     "pilihan": [
-     "Menghormati hak orang lain tanpa mengorbankan prinsip akidah, dibarengi keadilan dalam muamalah",
-     "Mencampur ajaran agar damai",
-     "Memusuhi semua perbedaan"
+     "Menghormati hak orang lain tanpa mengorbankan prinsip akidah",
+     "Mencampur ajaran agar tercipta kedamaian tanpa perselisihan",
+     "Memusuhi semua perbedaan agar akidah tetap murni dan kuat"
     ],
     "kunci": 0,
     "bahas": "Toleransi bukan relativisme. Ia berdiri bersama keadilan (QS al-Ma'idah 5:8) dan kejelasan akidah (QS al-Kafirun 109:6)."
@@ -13141,9 +13141,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Semangat fastabiqul khairat dalam QS al-Ma'idah 5:48 muncul setelah penyebutan perbedaan arah kiblat. Hikmahnya adalah ...",
     "pilihan": [
-     "Perbedaan tidak menjadi alasan berhenti beramal, justru memacu amal yang lebih baik",
-     "Perbedaan harus dihapus dengan paksaan",
-     "Amal tidak perlu dinilai"
+     "Perbedaan tidak menjadi alasan berhenti beramal, justru memacu",
+     "Perbedaan pendapat harus dihapus dengan cara paksaan dan tekanan",
+     "Amal kebaikan tidak perlu dinilai oleh manusia maupun Allah"
     ],
     "kunci": 0,
     "bahas": "Ayat menutup dengan \"agar Dia menguji kamu pada apa yang telah Dia berikan\". Perbedaan menjadi medan ujian, bukan alasan perpecahan."
@@ -13152,9 +13152,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Mengapa kompetisi yang sehat memerlukan transparansi penilaian?",
     "pilihan": [
-     "Karena keadilan menuntut ukuran yang jelas, sesuai perintah berlaku adil (QS an-Nahl 16:90)",
-     "Karena juri tidak dipercaya",
-     "Karena kompetisi tidak perlu dinilai"
+     "Keadilan menuntut ukuran yang jelas, sesuai perintah berlaku adil",
+     "Juri memang tidak boleh dipercaya sehingga keputusannya ditolak",
+     "Kompetisi tidak perlu dinilai karena semua peserta adalah juara"
     ],
     "kunci": 0,
     "bahas": "Keadilan adalah prinsip syariat. Penilaian transparan mencegah kezaliman dan menjaga semangat fastabiqul khairat."
@@ -13163,9 +13163,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Perbedaan \"hasad\" dan \"ghibthah\" terletak pada ...",
     "pilihan": [
-     "Hasad mengharapkan nikmat orang lain hilang, ghibthah ingin meraih kebaikan serupa",
-     "Keduanya sama",
-     "Ghibthah lebih buruk"
+     "Hasad ingin nikmat orang hilang, ghibthah ingin meraih serupa",
+     "Keduanya sama saja, hanya berbeda istilah dalam bahasa Arab",
+     "Ghibthah lebih buruk daripada hasad karena lebih tersembunyi"
     ],
     "kunci": 0,
     "bahas": "Hasad dilarang dalam QS an-Nisa' 4:32, sedangkan ghibthah pada urusan kebaikan dipuji dalam hadis riwayat Bukhari."
@@ -13174,9 +13174,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Seorang murid menyontek untuk menang lomba. Analisis syariatnya adalah ...",
     "pilihan": [
-     "Tujuannya baik tetapi sarana yang haram membuat hasilnya tidak sah dan keberkahannya hilang",
-     "Boleh karena tujuannya baik",
-     "Tidak masalah jika tidak ketahuan"
+     "Tujuan baik, tetapi sarana haram membuat hasil tidak sah",
+     "Boleh karena tujuannya baik dan tidak merugikan siapa pun",
+     "Tidak masalah selama tidak diketahui oleh guru dan juri"
     ],
     "kunci": 0,
     "bahas": "Kaidah \"al-ghayah la tubarrir al-wasilah\" menolak cara buruk demi tujuan baik. Kejujuran adalah bagian dari amal itu sendiri."
@@ -13185,9 +13185,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Kaitan antara kompetisi dan amanah ilmiah adalah ...",
     "pilihan": [
-     "Menghasilkan karya yang dapat diuji dan tidak menyesatkan orang lain",
-     "Menyembunyikan data agar menang",
-     "Mengklaim karya orang lain"
+     "Menghasilkan karya yang bisa diuji dan tak menyesatkan",
+     "Menyembunyikan data agar menang dalam perlombaan",
+     "Mengklaim karya orang lain sebagai hasil kerja sendiri"
     ],
     "kunci": 0,
     "bahas": "QS al-Ahzab 33:70 memerintahkan berkata benar. Amanah ilmiah melindungi masyarakat dari informasi palsu."
@@ -13196,9 +13196,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Mengapa berkompetisi dalam kebaikan tidak menimbulkan permusuhan?",
     "pilihan": [
-     "Karena tujuannya menambah kebaikan, bukan merebut milik orang lain",
-     "Karena semua orang menang",
-     "Karena penilaian dihapus"
+     "Tujuannya menambah kebaikan, bukan merebut milik orang lain",
+     "Karena semua peserta otomatis menang dalam setiap perlombaan",
+     "Karena penilaian hasil lomba dihapus dari sistem sekolah"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:148 memerintahkan berlomba dalam kebaikan, bukan saling menjatuhkan. Semangatnya berbagi kebaikan, bukan monopoli."
@@ -13208,8 +13208,8 @@
     "tanya": "Sikap tepat seorang juara yang ingin mempertahankan prestasinya adalah ...",
     "pilihan": [
      "Terus belajar dan berlatih serta menolong teman agar ikut maju",
-     "Merendahkan pesaing",
-     "Menyembunyikan sumber belajar"
+     "Merendahkan pesaing agar posisi juara tetap aman dan terjaga",
+     "Menyembunyikan sumber belajar dari teman sekelas dan dari guru"
     ],
     "kunci": 0,
     "bahas": "QS al-Ma'idah 5:2 mengajak tolong-menolong dalam kebaikan. Prestasi yang baik memancarkan manfaat bagi sekitar."
@@ -13218,9 +13218,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Bagaimana menghindari \"ujub\" saat meraih prestasi?",
     "pilihan": [
-     "Menyadari bahwa kemampuan adalah karunia Allah dan hasil usaha bersama",
-     "Menganggap diri paling hebat",
-     "Menyembunyikan prestasi dari orang tua"
+     "Menyadari kemampuan adalah karunia Allah dan hasil usaha",
+     "Menganggap diri paling hebat di antara semua teman sekelas",
+     "Menyembunyikan prestasi dari kedua orang tua dan guru"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:20 dan hadis tentang bersyukur mengajarkan bahwa keberhasilan menuntut syukur, bukan kebanggaan yang melampaui batas."
@@ -13229,9 +13229,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Motif \"riya'\" pada kegiatan sosial membuat amal ...",
     "pilihan": [
-     "Kehilangan nilai di sisi Allah meski manfaat sosialnya tetap ada",
-     "Bertambah pahalanya",
-     "Wajib diulang"
+     "Kehilangan nilai di sisi Allah meski manfaat sosialnya ada",
+     "Bertambah pahalanya karena kegiatan sosial itu bermanfaat",
+     "Wajib diulang agar kegiatan sosial itu sah menurut ajaran agama"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:264 menyebut amal yang diiringi riya' menjadi sia-sia pahalanya. Ikhlas menjaga amal tetap bernilai."
@@ -13240,9 +13240,9 @@
     "bab": "xi-kompetisi",
     "tanya": "Kesimpulan tepat tentang kompetisi dalam Islam adalah ...",
     "pilihan": [
-     "Kompetisi diperbolehkan dan dianjurkan pada kebaikan, dengan cara yang halal dan niat ikhlas",
-     "Semua kompetisi haram",
-     "Kompetisi hanya untuk dunia"
+     "Kompetisi dianjurkan pada kebaikan yang halal dan ikhlas",
+     "Semua bentuk kompetisi hukumnya haram bagi seorang muslim",
+     "Kompetisi hanya pantas dilakukan untuk urusan duniawi semata"
     ],
     "kunci": 0,
     "bahas": "Prinsipnya: sarana, cara, dan tujuan harus sama-sama benar. Bila ketiganya terpenuhi, kompetisi menjadi ibadah."
@@ -13253,9 +13253,9 @@
     "bab": "sederhana",
     "tanya": "Mengapa kesederhanaan disebut sebagai jalan tengah antara israf dan bukhl?",
     "pilihan": [
-     "Karena keduanya merusak: israf menghabiskan harta tanpa manfaat, bukhl menahan harta dari kebaikan",
-     "Karena keduanya sama-sama baik",
-     "Karena kesederhanaan berarti tidak punya harta"
+     "Israf menghabiskan harta, bukhl menahan harta dari kebaikan",
+     "Keduanya sama-sama baik karena sama-sama mengatur pemakaian harta",
+     "Kesederhanaan berarti tidak punya harta sama sekali untuk dibagikan"
     ],
     "kunci": 0,
     "bahas": "QS al-Furqan 25:67 memakai istilah qawaman untuk posisi tengah. Ukurannya bukan jumlah uang, melainkan kesesuaian dengan kebutuhan dan maslahat."
@@ -13264,9 +13264,9 @@
     "bab": "sederhana",
     "tanya": "\"Konsumtif\" dan \"konsumtif berlebihan\" berbeda karena ...",
     "pilihan": [
-     "Konsumsi untuk kebutuhan itu wajar; yang tercela adalah melampaui kebutuhan demi gengsi",
-     "Semua konsumsi haram",
-     "Konsumsi tidak pernah wajar"
+     "Konsumsi untuk kebutuhan wajar, tercela bila melampaui",
+     "Semua konsumsi hukumnya haram bagi setiap muslim di dunia",
+     "Konsumsi tidak pernah wajar dalam keadaan apa pun juga"
     ],
     "kunci": 0,
     "bahas": "Israf ditentukan oleh niat dan kadarnya. Membeli makanan untuk keluarga bukan israf, sedangkan membeli demi pujian sosial adalah pemborosan."
@@ -13275,9 +13275,9 @@
     "bab": "sederhana",
     "tanya": "Seorang pejabat memamerkan kemewahan di tengah warga miskin. Analisis syariatnya adalah ...",
     "pilihan": [
-     "Bertentangan dengan keadilan sosial dan dapat melukai perasaan duafa, meski hartanya halal",
-     "Boleh karena hartanya halal",
-     "Wajib dilakukan pemimpin"
+     "Bertentangan dengan keadilan sosial dan melukai perasaan duafa",
+     "Boleh karena hartanya halal dan diperoleh dari hasil usaha sendiri",
+     "Wajib dilakukan setiap pemimpin agar selalu dipercaya oleh rakyatnya"
     ],
     "kunci": 0,
     "bahas": "QS al-Humazah 104:1-3 mencela orang yang mengumpulkan harta dan menghitung-hitungnya. Kepekaan sosial adalah bagian dari akhlak pemimpin."
@@ -13286,9 +13286,9 @@
     "bab": "sederhana",
     "tanya": "Zakat berbeda dari sedekah biasa karena ...",
     "pilihan": [
-     "Zakat wajib, memiliki nisab, dan merupakan hak mustahik yang ditetapkan syariat",
-     "Zakat hanya untuk keluarga",
-     "Sedekah lebih wajib"
+     "Zakat wajib, bernisab, dan hak mustahik yang ditetapkan syariat",
+     "Zakat hanya untuk keluarga dekat dan kerabat sendiri saja",
+     "Sedekah lebih wajib daripada zakat bagi setiap muslim di dunia"
     ],
     "kunci": 0,
     "bahas": "QS at-Taubah 9:60 merinci delapan golongan penerima zakat. Statusnya hak, bukan sekadar kebaikan sukarela, sehingga negara/lembaga mengelolanya."
@@ -13298,8 +13298,8 @@
     "tanya": "\"Menyantuni\" duafa lebih tepat daripada \"menyantuni dengan mengungkit\". Hikmahnya adalah ...",
     "pilihan": [
      "Menjaga kehormatan penerima dan memurnikan niat pemberi",
-     "Agar pemberian diingat penerima",
-     "Agar pemberi terkenal"
+     "Agar pemberian itu selalu diingat dan dibalas oleh penerimanya",
+     "Agar pemberi terkenal sebagai orang yang dermawan di kampungnya"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:263-264 menyebut perkataan yang baik dan pemberian tanpa mengungkit lebih utama. Kehormatan penerima adalah bagian dari ibadah."
@@ -13308,9 +13308,9 @@
     "bab": "sederhana",
     "tanya": "Mengapa gaya hidup sederhana berkaitan dengan ketahanan keluarga?",
     "pilihan": [
-     "Karena pengeluaran terkendali, ada tabungan, dan keluarga siap menghadapi musibah",
-     "Karena keluarga sederhana tidak pernah sakit",
-     "Karena sederhana berarti tidak bekerja"
+     "Pengeluaran terkendali, ada tabungan, dan siap hadapi musibah",
+     "Karena keluarga sederhana tidak pernah sakit seumur hidupnya",
+     "Karena sederhana berarti tidak bekerja dan tidak berusaha lagi"
     ],
     "kunci": 0,
     "bahas": "Pengelolaan harta yang wajar memberikan stabilitas. Islam mengajarkan keseimbangan antara kebutuhan sekarang dan cadangan masa depan."
@@ -13319,9 +13319,9 @@
     "bab": "sederhana",
     "tanya": "Pernyataan \"orang sederhana itu pelit\" keliru karena ...",
     "pilihan": [
-     "Kesederhanaan tetap membuka pintu berbagi, sedangkan pelit menutupnya",
-     "Keduanya sama",
-     "Orang sederhana tidak punya uang"
+     "Kesederhanaan tetap membuka pintu berbagi, pelit menutupnya",
+     "Keduanya sama saja karena sama-sama menahan diri dari harta",
+     "Orang sederhana tidak punya uang untuk dibagikan kepada warga"
     ],
     "kunci": 0,
     "bahas": "Ciri kesederhanaan adalah hemat untuk diri dan ringan untuk berbagi. Kikir justru menahan harta dari hak orang lain."
@@ -13330,9 +13330,9 @@
     "bab": "sederhana",
     "tanya": "Bagaimana menerapkan kesederhanaan di media sosial?",
     "pilihan": [
-     "Menghindari pamer dan gaya hidup konsumtif yang mendorong iri",
-     "Mengunggah setiap pembelian untuk motivasi",
-     "Membandingkan hidup dengan orang lain"
+     "Menghindari pamer dan gaya konsumtif yang mendorong iri",
+     "Mengunggah setiap pembelian agar teman ikut termotivasi",
+     "Membandingkan hidup sendiri dengan hidup orang lain"
     ],
     "kunci": 0,
     "bahas": "Pamer (riya') dalam bermedia dapat merusak niat dan melukai orang lain. Menjadi teladan kesederhanaan justru lebih bermanfaat."
@@ -13341,9 +13341,9 @@
     "bab": "sederhana",
     "tanya": "Kaitan antara sederhana dan syukur adalah ...",
     "pilihan": [
-     "Orang bersyukur merasa cukup sehingga tidak mengejar yang berlebihan",
-     "Syukur menuntut gaya hidup mewah",
-     "Sederhana berarti tidak bersyukur"
+     "Orang bersyukur merasa cukup hingga tak mengejar lebih",
+     "Syukur menuntut gaya kehidupan mewah sebagai tanda nikmat",
+     "Sederhana berarti tidak bersyukur atas nikmat Allah"
     ],
     "kunci": 0,
     "bahas": "QS Ibrahim 14:7 menyebut syukur menambah nikmat. Rasa cukup menghentikan perlombaan gaya hidup yang tak berujung."
@@ -13352,9 +13352,9 @@
     "bab": "sederhana",
     "tanya": "Kebijakan sekolah yang paling mendukung pola hidup sederhana adalah ...",
     "pilihan": [
-     "Membiasakan seragam sederhana dan kegiatan berbagi yang rutin",
-     "Mewajibkan barang bermerek",
-     "Menilai siswa dari penampilan"
+     "Membiasakan seragam sederhana dan kegiatan berbagi rutin",
+     "Mewajibkan barang bermerek agar siswa tampil percaya diri",
+     "Menilai siswa dari penampilan dan merek barang bawaan"
     ],
     "kunci": 0,
     "bahas": "Lingkungan membentuk kebiasaan. Aturan yang adil mencegah perlombaan gengsi dan menumbuhkan kepedulian."
@@ -13363,9 +13363,9 @@
     "bab": "sabar",
     "tanya": "Mengapa sabar bukan berarti pasif?",
     "pilihan": [
-     "Karena sabar diiringi ikhtiar dan doa, bukan berhenti berusaha",
-     "Karena sabar berarti diam saja",
-     "Karena sabar hanya soal perasaan"
+     "Sabar diiringi ikhtiar dan doa, bukan berhenti berusaha",
+     "Karena sabar berarti diam saja tanpa melakukan apa pun juga",
+     "Karena sabar hanya soal perasaan tanpa tindakan nyata apa pun"
     ],
     "kunci": 0,
     "bahas": "QS Yusuf 12:87 menggabungkan sabar dengan tidak berputus asa dari rahmat Allah. Nabi mengajarkan sabar sambil berusaha dan berdoa."
@@ -13374,9 +13374,9 @@
     "bab": "sabar",
     "tanya": "Perbedaan sabar, syukur, dan ridha adalah ...",
     "pilihan": [
-     "Sabar menahan saat sulit, syukur menerima nikmat, ridha menerima ketetapan dengan lapang",
-     "Ketiganya sama",
-     "Ridha hanya saat senang"
+     "Sabar menahan saat sulit, syukur menerima nikmat, ridha lapang",
+     "Ketiganya sama saja, hanya berbeda istilah dalam bahasa Arab",
+     "Ridha hanya berlaku saat keadaan sedang senang dan lapang saja"
     ],
     "kunci": 0,
     "bahas": "Ketiganya maqam yang saling menopang. Ridha berada pada puncak penerimaan, sedangkan sabar adalah upaya menahan diri."
@@ -13385,9 +13385,9 @@
     "bab": "sabar",
     "tanya": "Seorang siswa gagal seleksi olimpiade lalu menuduh juri tidak adil. Analisis yang tepat adalah ...",
     "pilihan": [
-     "Ia perlu bersabar dan mengevaluasi diri, sambil tetap menempuh jalur keberatan yang benar jika ada bukti",
-     "Tuduhan tanpa bukti adalah sikap sabar",
-     "Ia harus berhenti belajar"
+     "Ia perlu bersabar dan mengevaluasi diri, tetap menempuh jalur benar",
+     "Tuduhan tanpa bukti keterhadap juri termasuk sikap sabar yang mulia",
+     "Ia harus berhenti belajar karena sudah gagal dalam seleksi"
     ],
     "kunci": 0,
     "bahas": "Sabar mencakup tidak berprasangka buruk (QS al-Hujurat 49:12) dan tetap berusaha. Keberatan ditempuh dengan prosedur dan bukti, bukan tuduhan."
@@ -13396,9 +13396,9 @@
     "bab": "sabar",
     "tanya": "Husnuzan kepada Allah saat sakit bermakna ...",
     "pilihan": [
-     "Meyakini sakit ini mengandung hikmah dan tetap berobat serta berdoa",
-     "Menganggap sakit tidak perlu diobati",
-     "Menyalahkan diri terus-menerus"
+     "Meyakini sakit mengandung hikmah dan tetap berobat serta berdoa",
+     "Menganggap sakit tidak membutuhkan diobati karena sudah tidakdir",
+     "Menyalahkan diri terus-menerus atas sakit yang diderita"
     ],
     "kunci": 0,
     "bahas": "Hadis menyebut setiap musibah menghapus dosa bila disabari. Ikhtiar medis adalah bagian dari tawakal, bukan lawannya."
@@ -13407,9 +13407,9 @@
     "bab": "sabar",
     "tanya": "Mengapa sum'ah dan riya' sulit dideteksi?",
     "pilihan": [
-     "Karena keduanya bersarang di niat, bukan pada bentuk amal yang tampak",
-     "Karena keduanya terlihat jelas",
-     "Karena keduanya hanya diucapkan"
+     "Keduanya bersarang di niat, bukan pada bentuk amal yang tampak",
+     "Keduanya terlihat jelas di depan orang banyak setiap saat",
+     "Keduanya hanya diucapkan lisan tanpa melibatkan hati di sekolah"
     ],
     "kunci": 0,
     "bahas": "Amal bisa sama, niatnya berbeda. Karena itu muhasabah dan doa agar dijauhkan dari riya' menjadi penting."
@@ -13418,9 +13418,9 @@
     "bab": "sabar",
     "tanya": "Kaitan ujub dengan kegagalan belajar adalah ...",
     "pilihan": [
-     "Ujub membuat siswa berhenti belajar karena merasa sudah cukup",
-     "Ujub membuat siswa tekun",
-     "Ujub tidak berpengaruh"
+     "Ujub membuat siswa berhenti belajar karena merasa cukup",
+     "Ujub membuat siswa semakin tekun dan rajin dalam belajar",
+     "Ujub tidak berpengaruh apa pun terhadap hasil belajar siswa"
     ],
     "kunci": 0,
     "bahas": "Rasa cukup yang berlebihan menutup pintu perbaikan. Ilmu menuntut kesadaran bahwa masih banyak yang belum diketahui."
@@ -13429,9 +13429,9 @@
     "bab": "sabar",
     "tanya": "Sabar menghadapi orang yang menyakiti termasuk ...",
     "pilihan": [
-     "Menahan balasan dan memilih memperbaiki keadaan dengan cara baik",
-     "Membalas dendam",
-     "Menyimpan dendam diam-diam"
+     "Menahan balasan dan memilih memperbaiki keadaan dengan baik",
+     "Membalas dendam agar pelaku merasakan hal yang sama juga nanti",
+     "Menyimpan dendam diam-diam sampai waktu yang tepat tiba"
     ],
     "kunci": 0,
     "bahas": "QS Fussilat 41:34 memerintahkan membalas dengan kebaikan. Ini bentuk sabar yang paling menuntut kekuatan jiwa."
@@ -13440,9 +13440,9 @@
     "bab": "sabar",
     "tanya": "Kalimat istirja' bukan sekadar ucapan, tetapi ...",
     "pilihan": [
-     "Pengakuan bahwa hidup dan harta milik Allah serta kembali kepada-Nya",
-     "Doa meminta kekayaan",
-     "Ucapan penolakan takdir"
+     "Pengakuan bahwa hidup dan harta milik Allah serta kembali",
+     "Doa meminta kekayaan agar keluarga menjadi kaya raya",
+     "Ucapan penolakan terhadap takdir yang menimpa diri sendiri"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:156 mengaitkannya dengan orang sabar. Maknanya mengubah musibah menjadi jalan tazkiyah."
@@ -13451,9 +13451,9 @@
     "bab": "sabar",
     "tanya": "Sebuah kebijakan sekolah memberi penghargaan pada siswa yang berusaha keras meski nilainya belum tinggi. Kebijakan ini sejalan dengan ...",
     "pilihan": [
-     "Pengakuan atas usaha dan pembinaan mental sabar serta tumbuh kembang",
-     "Penyamaan mutlak semua hasil",
-     "Penilaian tanpa dasar"
+     "Pengakuan atas usaha dan pembinaan mental sabar siswa",
+     "Penyamaan mutlak semua hasil tanpa melihat usaha siswa",
+     "Penilaian tanpa dasar yang merugikan siswa lain di kelas"
     ],
     "kunci": 0,
     "bahas": "Empat pilar pendidikan (ki hajar dewantara) menekankan proses. Menghargai usaha menumbuhkan motivasi yang lebih tahan lama daripada pujian hasil semata."
@@ -13462,9 +13462,9 @@
     "bab": "sabar",
     "tanya": "Kesimpulan tentang sabar menurut Al-Qur'an adalah ...",
     "pilihan": [
-     "Kekuatan jiwa yang menopang ketaatan, mencegah maksiat, dan menerima musibah dengan lapang",
-     "Sikap lemah tanpa usaha",
-     "Sifat yang bertentangan dengan ikhtiar"
+     "Kekuatan jiwa yang menopang ketaatan dan menerima musibah",
+     "Sikap lemah yang menyerah tanpa melakukan usaha apa pun",
+     "Sifat yang bertentangan dengan ikhtiar dan doa seorang muslim"
     ],
     "kunci": 0,
     "bahas": "Sabar meliputi tiga wilayah: taat, menjauhi maksiat, dan menerima takdir. Semuanya diiringi usaha dan doa, bukan kemalasan."
@@ -13473,9 +13473,9 @@
     "bab": "lingkungan",
     "tanya": "Mengapa kerusakan lingkungan disebut dalam QS ar-Rum 30:41 sebagai akibat tangan manusia?",
     "pilihan": [
-     "Karena perilaku manusia, termasuk yang tidak tampak langsung, memicu kerusakan ekosistem",
-     "Karena manusia tidak berperan",
-     "Karena bumi tua"
+     "Perilaku manusia memicu kerusakan ekosistem secara langsung",
+     "Karena manusia sama sekali tidak berperan dalam kerusakan alam",
+     "Karena bumi sudah tua sehingga rusak dengan sendirinya"
     ],
     "kunci": 0,
     "bahas": "Ayat menyebut fasad di darat dan laut muncul karena perbuatan manusia agar mereka kembali. Penegasan ini menuntut pertanggungjawaban ekologis."
@@ -13484,9 +13484,9 @@
     "bab": "lingkungan",
     "tanya": "Konsep khalifah dalam menjaga lingkungan bermakna ...",
     "pilihan": [
-     "Manusia sebagai pengelola yang bertanggung jawab, bukan pemilik yang bebas merusak",
-     "Manusia pemilik mutlak bumi",
-     "Manusia tidak boleh memanfaatkan alam"
+     "Manusia pengelola yang bertanggung jawab, bukan pemilik",
+     "Manusia pemilik mutlak bumi dan bebas memanfaatkannya",
+     "Manusia tidak boleh memanfaatkan alam untuk kebutuhan apa pun"
     ],
     "kunci": 0,
     "bahas": "QS al-Baqarah 2:30 menempatkan manusia sebagai pengelola. Pemanfaatan alam dibolehkan sejauh menjaga keseimbangan."
@@ -13495,9 +13495,9 @@
     "bab": "lingkungan",
     "tanya": "Mengapa hemat energi termasuk ibadah?",
     "pilihan": [
-     "Karena meninggalkan pemborosan (tabdzir) dan menjaga sumber daya untuk makhluk lain",
-     "Karena hemat membuat miskin",
-     "Karena energi tidak bermanfaat"
+     "Meninggalkan pemborosan dan menjaga sumber daya bersama",
+     "Hemat membuat seseorang jatuh miskin dan kehilangan rezeki",
+     "Energi tidak bermanfaat bagi kehidupan manusia di bumi"
     ],
     "kunci": 0,
     "bahas": "Israf dilarang (QS al-Isra' 17:26). Menahan diri dari pemborosan adalah bentuk syukur atas nikmat energi."
@@ -13506,9 +13506,9 @@
     "bab": "lingkungan",
     "tanya": "Perbedaan \"pencemaran\" dan \"kerusakan\" lingkungan adalah ...",
     "pilihan": [
-     "Pencemaran memasukkan bahan berbahaya, kerusakan menghilangkan fungsi ekosistem",
-     "Keduanya identik",
-     "Pencemaran hanya soal suara"
+     "Pencemaran memasukkan bahan berbahaya, kerusakan hilang fungsi",
+     "Keduanya identik dan tidak memiliki perbedaan sama sekali",
+     "Pencemaran hanya berkaitan dengan suara bising kendaraan bermotor"
     ],
     "kunci": 0,
     "bahas": "Keduanya termasuk fasad dan saling berkaitan. Penanganannya menuntut perubahan perilaku dan kebijakan."
@@ -13517,9 +13517,9 @@
     "bab": "lingkungan",
     "tanya": "Kebijakan \"3R\" (reduce, reuse, recycle) sejalan dengan syariat karena ...",
     "pilihan": [
-     "Mengurangi israf dan menjaga amanah kekhalifahan",
-     "Menghambat pembangunan",
-     "Tidak berdasar"
+     "Mengurangi israf dan menjaga amanah kekhalifahan manusia",
+     "Menghambat pembangunan dan pertumbuhan ekonomi warga desa",
+     "Tidak berdasar pada ajaran agama maupun ilmu lingkungan hidup"
     ],
     "kunci": 0,
     "bahas": "Prinsip ini menekan pemborosan dan memperpanjang manfaat barang. Karena itu bisa dijadikan gerakan di sekolah dan masjid."
@@ -13528,9 +13528,9 @@
     "bab": "lingkungan",
     "tanya": "Bagaimana menghubungkan hadis menanam pohon dengan isu iklim?",
     "pilihan": [
-     "Menanam dan merawat pohon mengurangi kerusakan lingkungan dan bernilai sedekah",
-     "Pohon sumber bencana",
-     "Isu iklim tidak berkaitan"
+     "Menanam dan merawat pohon mengurangi kerusakan dan bernilai sedekah",
+     "Pohon justru menmenjadi sumber bencana bagi lingkungan sekitar kita",
+     "Isu iklim tidak berkaitan sama sekali dengan ajaran agama Islam"
     ],
     "kunci": 0,
     "bahas": "Hadis riwayat Bukhari menjadikan manfaat pohon bagi makhluk sebagai sedekah. Nilai ini menjadi landasan pembinaan kesadaran iklim."
@@ -13540,8 +13540,8 @@
     "tanya": "Peran masjid dalam pelestarian lingkungan dapat berupa ...",
     "pilihan": [
      "Gerakan bersih masjid, pengelolaan sampah, dan edukasi warga",
-     "Menutup masjid dari warga",
-     "Membakar sampah di halaman masjid"
+     "Menutup masjid bagi warga agar tidak ada sampah masuk ke sana",
+     "Membakar sampah di halaman masjid agar cepat hilang tanpa sisa"
     ],
     "kunci": 0,
     "bahas": "Masjid sebagai pusat komunitas strategis untuk perubahan perilaku. Kebersihan itu bagian dari iman, dan edukasi memperluas manfaatnya."
@@ -13551,8 +13551,8 @@
     "tanya": "Kritik terhadap pembangunan yang merusak lingkungan harus disampaikan dengan cara ...",
     "pilihan": [
      "Berlandaskan fakta, tanpa merusak, dan mengusulkan solusi",
-     "Dengan menyebar tuduhan",
-     "Dengan merusak fasilitas"
+     "Dengan menyebar tuduhan agar pihak lain segera berubah",
+     "Dengan merusak fasilitas agar pembangunan segera dihentikan"
     ],
     "kunci": 0,
     "bahas": "QS an-Nahl 16:125 menuntut hikmah dan nasihat baik. Advokasi lingkungan yang jujur dan santun lebih efektif."
@@ -13561,9 +13561,9 @@
     "bab": "lingkungan",
     "tanya": "Kaitan antara pola makan berlebihan dan lingkungan adalah ...",
     "pilihan": [
-     "Makanan terbuang menyia-nyiakan air, lahan, dan energi yang dipakai untuk produksinya",
-     "Keduanya tidak berkaitan",
-     "Makan berlebihan menjaga lingkungan"
+     "Makanan terbuang menyia-nyiakan air, lahan, dan energi",
+     "Keduanya tidak berkaitan sama sekali dalam ilmu lingkungan",
+     "Makan berlebihan justru menjaga kelestarian lingkungan"
     ],
     "kunci": 0,
     "bahas": "Hadis larangan menyia-nyiakan makanan dan ayat larangan israf menunjukkan bahwa berhemat makanan adalah ibadah sekaligus menjaga sumber daya."
@@ -13572,9 +13572,9 @@
     "bab": "lingkungan",
     "tanya": "Kesimpulan tentang menjaga lingkungan dalam Islam adalah ...",
     "pilihan": [
-     "Bagian dari kekhalifahan dan amanah yang dipertanggungjawabkan, dengan hemat sebagai sikap dasarnya",
-     "Sekadar tugas pemerintah",
-     "Kebiasaan tanpa dasar"
+     "Bagian kekhalifahan dan amanah dengan hemat sebagai dasarnya",
+     "Sekadar tugas pemerintah tanpa kewajiban bagi warga sekitar",
+     "Kebiasaan tanpa dasar agama yang diwariskan turun-temurun"
     ],
     "kunci": 0,
     "bahas": "QS al-A'raf 7:56 dan QS ar-Rum 30:41 menyatukan larangan merusak dengan perintah memperbaiki. Karena itu menjaga bumi adalah ibadah."
@@ -13583,9 +13583,9 @@
     "bab": "iptek",
     "tanya": "Mengapa Al-Qur'an mendorong pengamatan alam tetapi tidak merinci rumus ilmiah?",
     "pilihan": [
-     "Karena fungsinya memberi petunjuk, sedangkan rincian teknis menjadi wilayah ijtihad manusia",
-     "Karena sains tidak penting",
-     "Karena rumus ilmiah sudah lengkap di kitab lain"
+     "Fungsinya memberi petunjuk, rincian teknis jadi wilayah ijtihad",
+     "Karena sains tidak penting dipelajari oleh umat Islam di sekolah",
+     "Karena rumus ilmiah sudah lengkap di kitab-kitab terdahulu"
     ],
     "kunci": 0,
     "bahas": "QS Yunus 10:101 memerintahkan pengamatan. Penempatan sains di wilayah manusia menjaga keduanya: wahyu tetap terjaga, sains tetap teruji."
@@ -13594,9 +13594,9 @@
     "bab": "iptek",
     "tanya": "Konsep \"sunnatullah\" memungkinkan sains karena ...",
     "pilihan": [
-     "Menunjukkan hukum alam yang konsisten, sehingga gejala dapat diuji dan diprediksi",
-     "Menutup semua penyelidikan",
-     "Membuat alam tidak beraturan"
+     "Hukum alam konsisten sehingga gejala dapat diuji dan diprediksi",
+     "Menutup semua penyelidikan ilmiah terhadap gejala alam yang tampak",
+     "Membuat alam tidak beraturan sehingga mustahil diteliti oleh manusia"
     ],
     "kunci": 0,
     "bahas": "Konsistensi hukum alam menjadi asumsi dasar metode ilmiah. Al-Qur'an menyebutnya sebagai ketetapan Allah yang tidak berubah."
@@ -13606,8 +13606,8 @@
     "tanya": "Perbedaan \"iptek\" dan \"teknologi\" dalam pembahasan ini adalah ...",
     "pilihan": [
      "Iptek menekankan pengetahuan dan penerapannya untuk kemaslahatan",
-     "Keduanya sama persis",
-     "Teknologi tanpa nilai"
+     "Keduanya sama persis dan tidak memiliki perbedaan makna apa pun",
+     "Teknologi bebas nilai sehingga tidak perlu pertimbangan agama"
     ],
     "kunci": 0,
     "bahas": "Islam menilai iptek dari manfaat dan dampaknya. Karena itu kemajuan teknis harus diikuti pertimbangan etis."
@@ -13616,9 +13616,9 @@
     "bab": "iptek",
     "tanya": "Mengapa belajar sains dapat menjadi ibadah?",
     "pilihan": [
-     "Karena menyingkap keteraturan ciptaan Allah dan memudahkan kebaikan manusia",
-     "Karena sains menggantikan ibadah",
-     "Karena sains hanya untuk dunia"
+     "Menyingkap keteraturan ciptaan Allah dan memudahkan kebaikan",
+     "Karena sains dapat menggantikan ibadah dalam kehidupan kita",
+     "Karena sains hanya berguna untuk urusan dunia semata"
     ],
     "kunci": 0,
     "bahas": "QS Ali Imran 3:190 menyebut pengamatan alam sebagai jalan bagi ulul albab. Ilmu yang manfaat dan ikhlas bernilai ibadah."
@@ -13628,8 +13628,8 @@
     "tanya": "Dampak kecanduan gadget bagi kesehatan mental pelajar paling tepat dijelaskan sebagai ...",
     "pilihan": [
      "Mengganggu tidur dan konsentrasi serta menurunkan interaksi sosial",
-     "Meningkatkan prestasi otomatis",
-     "Tidak berpengaruh"
+     "Meningkatkan prestasi belajar secara otomatis tanpa usaha keras",
+     "Tidak berpengaruh sama sekali terhadap kesehatan mental pelajar itu"
     ],
     "kunci": 0,
     "bahas": "Penggunaan yang berlebihan mengubah pola hidup. Karena itu perlu pengelolaan waktu, bukan penolakan total terhadap teknologi."
@@ -13639,8 +13639,8 @@
     "tanya": "Bagaimana menerapkan etika digital dalam berbagi informasi?",
     "pilihan": [
      "Memeriksa kebenaran sumber sebelum menyebar dan menjaga adab",
-     "Menyebar cepat agar viral",
-     "Menyebar tanpa memeriksa"
+     "Menyebar secepat mungkin agar konten menjadi viral di media",
+     "Menyebar tanpa memeriksa kebenaran isi dan sumbernya sama sekali"
     ],
     "kunci": 0,
     "bahas": "QS al-Hujurat 49:6 memerintahkan tabayun. Informasi palsu dapat menimbulkan konflik dan merusak kepercayaan."
@@ -13649,9 +13649,9 @@
     "bab": "iptek",
     "tanya": "Peran teknologi dalam dakwah harus dibarengi ...",
     "pilihan": [
-     "Ilmu yang benar dan akhlak penyampai",
-     "Selebritas semata",
-     "Konten yang kontroversial agar ramai"
+     "Ilmu yang benar dan akhlak mulia penyampai pesan",
+     "Popularitas selebritas tanpa memperhatikan isi pesan",
+     "Menyebar konten tanpa memeriksa sumber dan kebenarannya"
     ],
     "kunci": 0,
     "bahas": "Teknologi hanya sarana. Isi yang benar dan akhlak penyampai menentukan keberhasilan dakwah."
@@ -13660,9 +13660,9 @@
     "bab": "iptek",
     "tanya": "Kaitan antara iptek dan pengurangan kemiskinan adalah ...",
     "pilihan": [
-     "Teknologi tepat guna dapat meningkatkan produktivitas dan pendapatan masyarakat",
-     "Teknologi tidak berpengaruh",
-     "Kemiskinan tidak dapat dikurangi"
+     "Teknologi tepat guna meningkatkan produktivitas dan pendapatan",
+     "Teknologi tidak berpengaruh terhadap ekonomi masyarakat desa",
+     "Kemiskinan tidak dapat dikurangi dengan cara apa pun yang ada"
     ],
     "kunci": 0,
     "bahas": "Iptek yang diarahkan pada maslahat membantu mewujudkan keadilan. Ini sejalan dengan tugas kekhalifahan memakmurkan bumi."
@@ -13671,9 +13671,9 @@
     "bab": "iptek",
     "tanya": "Sikap tepat menghadapi kecerdasan artifisial dalam belajar adalah ...",
     "pilihan": [
-     "Memanfaatkannya untuk belajar dengan tetap mengerjakan tugas sendiri dan jujur",
-     "Menyalin jawaban tanpa memahami",
-     "Menolak semua teknologi"
+     "Memanfaatkannya untuk belajar sambil tetap jujur mengerjakan tugas",
+     "Menyalin jawaban tanpa memahami isi dan prosesnya sama sekali",
+     "Menolak semua teknologi baru termasuk yang bermanfaat bagi siswa"
     ],
     "kunci": 0,
     "bahas": "Prinsip amanah akademik tidak berubah karena alat baru. Teknologi menjadi manfaat bila digunakan dengan jujur dan sadar."
@@ -13682,9 +13682,9 @@
     "bab": "iptek",
     "tanya": "Kesimpulan tentang iptek menurut Al-Qur'an adalah ...",
     "pilihan": [
-     "Sarana memakmurkan bumi yang nilai manfaatnya ditentukan oleh tujuan dan cara penggunaannya",
-     "Tujuan akhir hidup manusia",
-     "Sesuatu yang harus ditolak"
+     "Sarana memakmurkan bumi yang nilainya ditentukan tujuan dan cara",
+     "Tujuan akhir kehidupan manusia adalah menguasai teknologi modern",
+     "Menghormati tamu yang datang dengan keyakinan berbeda"
     ],
     "kunci": 0,
     "bahas": "Al-Qur'an mendorong pengamatan dan pemanfaatan (QS Yunus 10:101, QS al-Baqarah 2:29). Penggunaannya diarahkan pada maslahat."
@@ -13693,9 +13693,9 @@
     "bab": "dakwah",
     "tanya": "Mengapa dakwah memerlukan pengetahuan tentang audiens?",
     "pilihan": [
-     "Karena metode harus sesuai keadaan agar pesan dipahami, bukan ditolak",
-     "Karena audiens tidak penting",
-     "Karena semua orang sama persis"
+     "Metode harus sesuai keadaan agar pesan dipahami, bukan ditolak",
+     "Karena keadaan audiens tidak penting diperhatikan pendakwah",
+     "Karena semua orang memiliki keadaan yang sama persis di sekolah"
     ],
     "kunci": 0,
     "bahas": "QS an-Nahl 16:125 menyebut hikmah, nasihat baik, dan dialog terbaik — semuanya menuntut pembacaan situasi."
@@ -13704,9 +13704,9 @@
     "bab": "dakwah",
     "tanya": "Perbedaan \"dakwah fardiyah\" dan \"dakwah jama'iyah\" terletak pada ...",
     "pilihan": [
-     "Pendekatannya personal atau bersama dalam komunitas",
-     "Jumlah pendakwah yang terkenal",
-     "Tidak ada perbedaan"
+     "Pendekatannya personal kepada individu atau bersama komunitas",
+     "Jumlah pendakwah yang terkenal dan populer di media sosial",
+     "Tidak ada perbedaan sama sekali antara kedua istilah tersebut"
     ],
     "kunci": 0,
     "bahas": "Dakwah fardiyah menyapa individu dengan pendekatan pribadi, sedangkan jama'iyah menggerakkan komunitas. Keduanya saling melengkapi."
@@ -13716,8 +13716,8 @@
     "tanya": "\"Amar ma'ruf nahi munkar\" yang benar menuntut syarat ...",
     "pilihan": [
      "Ilmu, cara yang baik, dan memperhitungkan maslahat",
-     "Kekuasaan saja",
-     "Semangat semata"
+     "Kekuasaan dan jabatan yang dimiliki oleh pelakunya",
+     "Semangat semata tanpa ilmu dan tanpa pertimbangan"
     ],
     "kunci": 0,
     "bahas": "Tanpa ilmu, amar ma'ruf bisa berbuat salah; tanpa cara yang baik, ia menimbulkan penolakan. Karena itu syaratnya ilmu, adab, dan kearifan."
@@ -13726,9 +13726,9 @@
     "bab": "dakwah",
     "tanya": "Mengapa keteladanan lebih kuat daripada ceramah?",
     "pilihan": [
-     "Karena perilaku yang konsisten diuji sehari-hari sehingga menumbuhkan kepercayaan",
-     "Karena ceramah tidak penting",
-     "Karena orang mudah lupa ceramah"
+     "Perilaku konsisten diuji sehari-hari sehingga menumbuhkan percaya",
+     "Karena ceramah memang tidak penting untuk didengar siapa pun juga",
+     "Karena orang mudah lupa terhadap isi ceramah yang pernah didengar"
     ],
     "kunci": 0,
     "bahas": "QS al-Ahzab 33:21 menyebut Nabi sebagai uswah hasanah. Keteladanan menampilkan kebenaran secara nyata, bukan hanya diucapkan."
@@ -13737,9 +13737,9 @@
     "bab": "dakwah",
     "tanya": "Dakwah melalui karya (seni, tulisan, aplikasi) termasuk ...",
     "pilihan": [
-     "Dakwah bil hal, yang menyampaikan nilai melalui karya yang bermanfaat",
-     "Dakwah bil lisan murni",
-     "Bukan dakwah"
+     "Dakwah bil hal yang menyampaikan nilai melalui karya",
+     "Dakwah bil lisan murni yang hanya berupa ceramah",
+     "Bukan termasuk dakwah karena tidak berbentuk ceramah"
     ],
     "kunci": 0,
     "bahas": "Dakwah bil hal menampilkan Islam melalui perbuatan dan karya. Karena itu karya yang jujur dan bermanfaat bisa menjadi media dakwah."
@@ -13748,9 +13748,9 @@
     "bab": "dakwah",
     "tanya": "Apa bahaya dakwah tanpa ilmu?",
     "pilihan": [
-     "Dapat menyampaikan ajaran yang salah dan membuat orang menjauh",
-     "Selalu menguntungkan",
-     "Tidak ada bahaya"
+     "Dapat menyampaikan ajaran salah dan membuat orang menjauh",
+     "Selalu menguntungkan karena disampaikan dengan semangat",
+     "Tidak ada bahaya sama sekali bagi pendakwah maupun audiens"
     ],
     "kunci": 0,
     "bahas": "QS al-Isra' 17:36 melarang berbicara tanpa ilmu. Dakwah adalah amanah berat, sehingga penguasaan materi menjadi syarat."
@@ -13759,9 +13759,9 @@
     "bab": "dakwah",
     "tanya": "Bagaimana menyikapi perbedaan pendapat dalam dakwah?",
     "pilihan": [
-     "Menghargai ikhtilaf yang berdasar dan fokus pada hal yang lebih penting (asas kaidah al-awlawiyat)",
-     "Mengklaim hanya pendapat sendiri benar",
-     "Memutus hubungan"
+     "Menghargai ikhtilaf berdasar dan fokus pada hal lebih penting",
+     "Mengklaim hanya pendapat sendiri yang paling benar dan valid",
+     "Memutus hubungan dengan pihak yang berbeda pendapat"
     ],
     "kunci": 0,
     "bahas": "Ulama membedakan masalah ushul dan furu'. Menjaga ukhuwah pada furu' tidak berarti mengorbankan ushul."
@@ -13771,8 +13771,8 @@
     "tanya": "Peran media sosial dalam dakwah paling efektif bila ...",
     "pilihan": [
      "Isinya ringkas, akurat, dan konsisten dengan akhlak penyampai",
-     "Menampilkan perselisihan agar ramai",
-     "Menyebar tanpa sumber"
+     "Menampilkan perselisihan agar konten ramai diperbincangkan",
+     "Menyebar tanpa mencantumkan sumber yang jelas dan dapat diperiksa"
     ],
     "kunci": 0,
     "bahas": "Audiens menilai keutuhan pesan dari konsistensi penyampai. Akurasi dan adab menjaga kepercayaan."
@@ -13781,9 +13781,9 @@
     "bab": "dakwah",
     "tanya": "Mengapa dakwah kepada keluarga dimulai dari diri sendiri?",
     "pilihan": [
-     "Karena Al-Qur'an mencela orang yang menyuruh kebaikan tetapi melupakan dirinya (QS as-Saff 61:2-3)",
-     "Karena keluarga tidak penting",
-     "Karena dakwah hanya untuk orang lain"
+     "Al-Qur'an mencela orang yang menyuruh baik tetapi melupakan diri",
+     "Karena keluarga tidak penting dalam urusan dakwah sama sekali",
+     "Karena dakwah hanya ditujukan kepada orang lain, bukan diri sendiri"
     ],
     "kunci": 0,
     "bahas": "Ayat itu menegaskan kesesuaian ucapan dan perbuatan. Keluarga adalah tempat pertama pembuktian akhlak."
@@ -13792,9 +13792,9 @@
     "bab": "dakwah",
     "tanya": "Kesimpulan tentang dakwah keramahan Islam adalah ...",
     "pilihan": [
-     "Menyampaikan kebenaran dengan kasih, ilmu, dan keteladanan, bukan dengan paksaan atau kekerasan",
-     "Menyampaikan dengan tekanan",
-     "Menyembunyikan ajaran"
+     "Menyampaikan kebenaran dengan kasih, ilmu, dan keteladanan",
+     "Menyampaikan ajaran dengan tekanan agar orang segera patuh",
+     "Menyembunyikan ajaran agar tidak menimbulkan perdebatan"
     ],
     "kunci": 0,
     "bahas": "QS an-Nahl 16:125 dan QS Ali Imran 3:159 menunjukkan bahwa keramahan bukan kelemahan, melainkan strategi yang dicontohkan Nabi."
