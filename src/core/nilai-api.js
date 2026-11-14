@@ -267,9 +267,12 @@ export async function kirimJalur({ jalur, judul, benar, jumlah, nilai, kelas, ha
   }
 
   const r = await panggil(isi);
-  if (!r.ok && r.offline) { tulisAntre([...antre(), isi]); return { ...r, antre: true }; }
-  // Server menyimpan SEMUA percobaan (bukan hanya yang tertinggi), karena
-  // remedial yang gagal lalu berhasil adalah cerita yang ingin dilihat guru.
+  // Untuk jalur ini TIDAK ADA penolakan yang sah: semua hasil boleh dicatat,
+  // termasuk yang di bawah 80%. Jadi setiap kegagalan — jaringan putus MAUPUN
+  // server yang belum mengenal aksi `jalur` (Apps Script belum diperbarui) —
+  // disimpan ke antrean dan dicoba lagi nanti. Tanpa ini, hasil remedial murid
+  // hilang begitu saja saat gurunya belum sempat deploy ulang.
+  if (!r.ok) { tulisAntre([...antre(), isi]); return { ...r, antre: true }; }
   return r;
 }
 

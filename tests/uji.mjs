@@ -1200,6 +1200,32 @@ for (const k of ['X', 'XI', 'XII']) {
   ok('nilai-api: kirimNilai tetap ada (aturan lama tidak digeser)',
     typeof api.kirimNilai === 'function');
 
+  // --- perilaku nyata: server yang BELUM mengenal aksi `jalur`
+  // (Apps Script belum di-deploy ulang) menjawab { ok:false, error:'Aksi tidak
+  // dikenal' }. Hasil murid tidak boleh hilang: harus masuk antrean.
+  {
+    const simpan = globalThis.fetch;
+    const simpanLs = globalThis.localStorage;
+    const isiLs = {};
+    globalThis.localStorage = {
+      getItem: (k) => (k in isiLs ? isiLs[k] : null),
+      setItem: (k, v) => { isiLs[k] = String(v); },
+      removeItem: (k) => { delete isiLs[k]; },
+    };
+    isiLs.lk_murid = JSON.stringify({ nama: 'uji', kelas: 'X-M / X-13', pin: '1234', terdaftar: true });
+    let dikirim = 0;
+    globalThis.fetch = async () => { dikirim++; return { text: async () => '{"ok":false,"error":"Aksi tidak dikenal: jalur"}' }; };
+    const r = await api.kirimJalur({
+      jalur: 'remedial', judul: 'Ujian Remedial', benar: 31, jumlah: 50, nilai: 62,
+      perBab: { 'x-wahyu': { benar: 9, jumlah: 10 } },
+    });
+    ok('kirimJalur: server menolak -> hasil DITAHAN, bukan hilang', r.antre === true && r.ok === false);
+    ok('kirimJalur: satu permintaan benar-benar dikirim', dikirim === 1);
+    ok('kirimJalur: antrean berisi hasilnya', api.jumlahAntre() >= 1);
+    globalThis.fetch = simpan;
+    globalThis.localStorage = simpanLs;
+  }
+
   const sumberApi = baca('src/core/nilai-api.js');
   ok('nilai-api: kirimJalur mengirim aksi jalur (bukan aksi nilai)',
     /aksi: 'jalur'/.test(sumberApi));

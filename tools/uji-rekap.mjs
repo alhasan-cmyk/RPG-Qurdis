@@ -220,6 +220,19 @@ ok('doGet: hidup', JSON.parse(gs.doGet({}).getContent()).ok === true);
 const viaUrl = JSON.parse(gs.doGet({ parameter: { aksi: 'rekap' } }).getContent());
 ok('doGet ?aksi=rekap: menyegarkan rekap', viaUrl.ok === true && viaUrl.murid === 2);
 
+/* ---- 5b. server lama (belum diperbarui) mengembalikan galat untuk aksi
+   `jalur`; yang diuji di sisi server: PERMINTAANNYA TIDAK MERUSAK APA PUN,
+   dan hasilnya tidak ditulis ke tab Nilai. Sisi peramban (hasil disimpan ke
+   antrean) diuji di tests/uji.mjs. */
+{
+  const sebelum = buku.getSheetByName('Nilai').getLastRow();
+  const r = kirim({ aksi: 'jalur', nama: 'ahmad', pin: '1234', jalur: 'remedial', nilai: 55, benar: 27, jumlah: 50 });
+  ok('server: remedial 55% (di bawah 80) tetap DITERIMA di tab Remedial', r.ok === true);
+  ok('server: tidak ada baris baru di tab Nilai', buku.getSheetByName('Nilai').getLastRow() === sebelum);
+  ok('server: remedial 55% ditandai belum lulus',
+    buku.getSheetByName('Remedial').baris.some((b) => b[0] === 'ahmad' && b[3] === 55 && b[6] === 'belum lulus'));
+}
+
 /* ---- 6. kasus tepi: akun ada, tetapi BELUM ada satu pun nilai.
    Lembar Rekap hanya berisi baris judul; getRange(2, 3, 0, n) ditolak Google,
    jadi jalur ini dulu melempar galat dan nilainya ikut dilaporkan gagal. */

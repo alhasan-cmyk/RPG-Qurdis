@@ -859,7 +859,7 @@ export class IlmuUI {
     const status = {
       mengirim: 'Mengirim hasil ke spreadsheet guru...',
       ok: 'Hasil sudah terkirim ke spreadsheet guru.',
-      antre: 'Jaringan belum siap — hasil ditahan dan dikirim ke spreadsheet guru otomatis nanti.',
+      antre: 'Hasil ditahan dan akan dikirim ke spreadsheet guru otomatis (jaringan/server belum siap).',
       gagal: 'Hasil gagal terkirim. Coba lagi dengan membuka Rekap Belajar.',
     }[u.terkirim];
     if (status) {
