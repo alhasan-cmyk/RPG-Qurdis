@@ -54,7 +54,15 @@ export function muridAktif() {
   } catch { return null; }
 }
 
-function simpanMurid(d) {
+/**
+ * Simpan identitas murid di peramban ini.
+ *
+ * Diekspor karena `src/systems/chat.js` perlu menaikkan penanda `terdaftar`
+ * setelah ia berhasil mendaftarkan akun yang tertunda. Tanpa itu, penanda
+ * `false` menempel selamanya dan obrolan menolak terus walau pendaftarannya
+ * sudah berhasil.
+ */
+export function simpanMurid(d) {
   try { localStorage.setItem(KEY_MURID, JSON.stringify(d)); } catch {}
 }
 

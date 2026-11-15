@@ -251,6 +251,17 @@ YANG PERLU DIKETAHUI
     server untuk SETIAP pesan, jadi tidak ada yang bisa menulis atas nama
     temannya. Murid yang belum masuk melihat panelnya tetapi tidak bisa
     mengetik, beserta alasannya.
+    MASUK DARI DALAM GAME. Kalau akunmu belum dikenali obrolan, panel
+    menampilkan tombol Masuk; tekan itu dan panel berubah menjadi formulir
+    nama + PIN. Tidak perlu keluar dulu ke halaman depan. Ini penting karena
+    memilih "Lanjutkan" saat jaringan mati memang tidak menyimpan PIN, jadi
+    dulu panel menolak menulis padahal permainan jalan normal.
+    Akun yang terdaftar tetapi belum ditandai "terdaftar" di peramban dicoba
+    didaftarkan ulang sekali secara otomatis, tanpa murid melakukan apa pun.
+    Kalimatnya dibedakan menurut sebabnya: belum masuk, akun belum tercatat,
+    Apps Script belum dipasang, atau kelas belum tercatat (X/XI/XII). Dulu
+    keempatnya berbunyi "masuk dulu", sehingga murid disuruh mencari masalah
+    yang salah. PIN salah tetap ditolak, dengan pesan dari server.
     Isinya tersimpan di tab `Obrolan` dalam spreadsheet guru, jadi guru bisa
     membacanya. Pesan terlarang disensor sebelum disimpan. Ada juga jeda 1,2
     detik antar-pesan per murid supaya satu orang tidak membanjiri ruang.
@@ -384,6 +395,15 @@ kalau jsdom belum terpasang.
   node tools/uji-rekap.mjs           # server spreadsheet (apps-script/Code.gs)
   node tools/uji-obrolan.mjs         # obrolan kelas (apps-script/Obrolan.gs):
                                      # batas 30 baris, ruang per kelas, PIN
+  node tools/uji-obrolan-klien.mjs   # logika obrolan di peramban: akun yang
+                                     # belum ditandai "terdaftar" dipulihkan
+                                     # sendiri, PIN salah ditolak, server belum
+                                     # dipasang tidak disalahartikan sebagai
+                                     # "belum masuk"
+  node tools/uji-obrolan-tata-letak.mjs  # panel obrolan di lima ukuran layar ×
+                                     # enam keadaan: tidak ada tulisan keluar
+                                     # panel atau bertumpuk, kalimat alasan dan
+                                     # formulir masuk tergambar utuh
   node tools/gabung-server.mjs       # buat ulang apps-script/Server-Lengkap.gs
                                      # dari Code.gs + Obrolan.gs
                                      # diuji tanpa Google: nilai di bawah 80
